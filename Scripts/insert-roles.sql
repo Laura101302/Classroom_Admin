@@ -1,0 +1,3 @@
+INSERT INTO ROLE VALUES(001, "Equipo Directivo");
+INSERT INTO ROLE VALUES(002, "Jefe de Departamento");
+INSERT INTO ROLE VALUES(003, "Profesor");
