@@ -17,11 +17,11 @@
         case 'POST':
             $json_data = file_get_contents("php://input");
             $json = json_decode($json_data, true);
-            $register = registerTeacher($json);
-            if ($register) {
-                sendCode(SUCCESS_CODE, "Registered successfully", '');
+            $signUp = signUpTeacher($json);
+            if ($signUp) {
+                sendCode(SUCCESS_CODE, "Signed up successfully", '');
             } else {
-                sendCode(SERVER_ERROR_CODE, "Error registering", '');
+                sendCode(SERVER_ERROR_CODE, "Error signing up", '');
                 exit();
             }
             break;
