@@ -1,0 +1,1 @@
+INSERT INTO CENTER VALUES("12345678G", "FPD Rioja", "Avenida de Lobete, 17", 26003, "Logroño", "La Rioja")
