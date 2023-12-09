@@ -1,0 +1,20 @@
+<h1>Crear curso</h1>
+
+<form action="" method="post" [formGroup]="form" (ngSubmit)="createCourse()">
+  <label for="code">Código</label>
+  <input type="text" id="code" formControlName="code" />
+
+  <label for="name">Nombre</label>
+  <input type="text" id="name" formControlName="name" />
+
+  <label for="cif_center">CIF del centro</label>
+  <input type="text" id="cif_center" formControlName="cif_center" />
+
+  <div class="buttons">
+    <button type="submit" [disabled]="form.invalid">Añadir</button>
+    <button type="reset">Limpiar</button>
+  </div>
+</form>
+
+<p *ngIf="created">Creado correctamente</p>
+<p *ngIf="error">Ha ocurrido un error al crear el curso: {{ errorMessage }}</p>
