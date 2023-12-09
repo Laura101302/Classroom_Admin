@@ -1,5 +1,8 @@
 <?php
     header('Content-Type: application/json');
+    header("Access-Control-Allow-Origin:*");
+    header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
+    header("Access-Control-Allow-Headers: Content-Type");
 
     include_once "../services/teacher.php";
     require_once "../utils/consts.php";

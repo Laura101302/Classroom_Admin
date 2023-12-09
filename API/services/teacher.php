@@ -4,9 +4,15 @@
     require_once "../utils/consts.php";
 
     function signUpTeacher($json) {
-        $exists = getTeacherByEmail($json['email']);
+        $teacherExists = getTeacherByDni($json['dni']);
+        $emailExists = getTeacherByEmail($json['email']);
 
-        if ($exists) {
+        if ($teacherExists) {
+            sendCode(SERVER_ERROR_CODE, "DNI already in use", '');
+            exit();
+        }
+
+        if ($emailExists) {
             sendCode(SERVER_ERROR_CODE, "Email already in use", '');
             exit();
         }
@@ -30,33 +36,40 @@
         }
     }
 
+    function getTeacherByDni($dni) {
+        $db = getDatabase();
+        $sql = $db->prepare("SELECT * FROM TEACHER WHERE DNI = ? LIMIT 1;");
+        $sql->execute([$dni]);
+        return $sql->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     function getTeacherByEmail($email) {
         $db = getDatabase();
         $sql = $db->prepare("SELECT * FROM TEACHER WHERE EMAIL = ? LIMIT 1;");
         $sql->execute([$email]);
-        return $sql->fetchObject();
+        return $sql->fetchAll(PDO::FETCH_ASSOC);
     }
 
     function getAll() {
         $db = getDatabase();
         $sql = $db->prepare("SELECT * FROM TEACHER;");
         $sql->execute();
-        return $sql->fetchObject();
+        return $sql->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    function teacherLogin($email, $pass) {
-        $user = getTeacherByEmail($email);
-        if ($user === false) {
-            return false;
-        }
-        $dbPass = $user->PASS;
-        $match = verifyPass($pass, $dbPass);
-        if (!$match) {
-            return false;
-        }
+    // function teacherLogin($email, $pass) {
+    //     $user = getTeacherByEmail($email);
+    //     if ($user === false) {
+    //         return false;
+    //     }
+    //     $dbPass = $user->PASS;
+    //     $match = verifyPass($pass, $dbPass);
+    //     if (!$match) {
+    //         return false;
+    //     }
 
-        session_start();
-        $_SESSION["user"] = $user;
-        return true;
-    }
+    //     session_start();
+    //     $_SESSION["user"] = $user;
+    //     return true;
+    // }
 ?>
