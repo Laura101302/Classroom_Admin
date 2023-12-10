@@ -1,0 +1,30 @@
+<h1>Listado de alumnos</h1>
+
+<div *ngIf="students.length">
+  <table>
+    <tr>
+      <th></th>
+      <th>DNI</th>
+      <th>Nombre</th>
+      <th>Apellidos</th>
+      <th>Teléfono</th>
+      <th>Correo electrónico</th>
+      <th>Fecha de nacimiento</th>
+      <th>Curso</th>
+    </tr>
+    <tr *ngFor="let student of students">
+      <td><button (click)="edit(student.DNI)">Editar</button></td>
+      <td>{{ student.DNI }}</td>
+      <td>{{ student.NAME }}</td>
+      <td>{{ student.SURNAMES }}</td>
+      <td>{{ student.PHONE }}</td>
+      <td>{{ student.EMAIL }}</td>
+      <td>{{ student.BIRTHDATE }}</td>
+      <td>{{ student.CODE_COURSE }}</td>
+    </tr>
+  </table>
+</div>
+
+<div *ngIf="!students.length || error">
+  <p>No hay alumnos para mostrar</p>
+</div>
