@@ -1,0 +1,20 @@
+<h1>Listado de cursos</h1>
+
+<div *ngIf="courses.length">
+  <table>
+    <tr>
+      <th></th>
+      <th>Código</th>
+      <th>Nombre</th>
+    </tr>
+    <tr *ngFor="let course of courses">
+      <td><button (click)="edit(course.CODE)">Editar</button></td>
+      <td>{{ course.CODE }}</td>
+      <td>{{ course.NAME }}</td>
+    </tr>
+  </table>
+</div>
+
+<div *ngIf="!courses.length || error">
+  <p>No hay cursos para mostrar</p>
+</div>

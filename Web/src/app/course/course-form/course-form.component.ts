@@ -3,11 +3,11 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CourseService } from 'src/services/course.service';
 
 @Component({
-  selector: 'app-course',
-  templateUrl: './course.component.html',
-  styleUrls: ['./course.component.scss'],
+  selector: 'app-course-form',
+  templateUrl: './course-form.component.html',
+  styleUrls: ['./course-form.component.scss'],
 })
-export class CourseComponent {
+export class CourseFormComponent {
   form!: FormGroup;
   created: boolean = false;
   error: boolean = false;
