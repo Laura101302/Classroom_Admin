@@ -11,6 +11,7 @@ import { CourseListComponent } from './course/course-list/course-list.component'
 import { NavbarComponent } from './navbar/navbar.component';
 import { TeacherListComponent } from './teacher/teacher-list/teacher-list.component';
 import { StudentListComponent } from './student/student-list/student-list.component';
+import { StudentFormComponent } from './student/student-form/student-form.component';
 
 @NgModule({
   declarations: [
@@ -21,6 +22,7 @@ import { StudentListComponent } from './student/student-list/student-list.compon
     NavbarComponent,
     TeacherListComponent,
     StudentListComponent,
+    StudentFormComponent,
   ],
   imports: [
     BrowserModule,
