@@ -1,14 +1,14 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Teacher, TeacherResponse } from 'src/interfaces/teacher';
+import { TeacherResponse } from 'src/interfaces/teacher';
 import { TeacherService } from 'src/services/teacher.service';
 
 @Component({
-  selector: 'app-teacher-sign-up',
-  templateUrl: './teacher-sign-up.component.html',
-  styleUrls: ['./teacher-sign-up.component.scss'],
+  selector: 'app-teacher-form',
+  templateUrl: './teacher-form.component.html',
+  styleUrls: ['./teacher-form.component.scss'],
 })
-export class TeacherSignUpComponent {
+export class TeacherFormComponent {
   form!: FormGroup;
   created: boolean = false;
   error: boolean = false;

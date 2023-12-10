@@ -3,7 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { TeacherSignUpComponent } from './sign-up/teacher-sign-up/teacher-sign-up.component';
+import { TeacherFormComponent } from './teacher/teacher-form/teacher-form.component';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CourseFormComponent } from './course/course-form/course-form.component';
@@ -16,7 +16,7 @@ import { StudentFormComponent } from './student/student-form/student-form.compon
 @NgModule({
   declarations: [
     AppComponent,
-    TeacherSignUpComponent,
+    TeacherFormComponent,
     CourseFormComponent,
     CourseListComponent,
     NavbarComponent,
