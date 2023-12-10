@@ -14,7 +14,7 @@ export class TeacherService {
     return this.http.get<TeacherResponse>(this.url);
   }
 
-  signUp(body: Teacher) {
+  createTeacher(body: Teacher) {
     return this.http.post<TeacherResponse>(this.url, body);
   }
 

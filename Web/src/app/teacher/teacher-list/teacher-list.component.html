@@ -1,0 +1,30 @@
+<h1>Listado de profesores</h1>
+
+<div *ngIf="teachers.length">
+  <table>
+    <tr>
+      <th></th>
+      <th>DNI</th>
+      <th>Nombre</th>
+      <th>Apellidos</th>
+      <th>Teléfono</th>
+      <th>Correo electrónico</th>
+      <th>Fecha de nacimiento</th>
+      <th>Rol</th>
+    </tr>
+    <tr *ngFor="let teacher of teachers">
+      <td><button (click)="edit(teacher.DNI)">Editar</button></td>
+      <td>{{ teacher.DNI }}</td>
+      <td>{{ teacher.NAME }}</td>
+      <td>{{ teacher.SURNAMES }}</td>
+      <td>{{ teacher.PHONE }}</td>
+      <td>{{ teacher.EMAIL }}</td>
+      <td>{{ teacher.BIRTHDATE }}</td>
+      <td>{{ teacher.ID_ROLE }}</td>
+    </tr>
+  </table>
+</div>
+
+<div *ngIf="!teachers.length || error">
+  <p>No hay profesores para mostrar</p>
+</div>

@@ -30,8 +30,8 @@ export class TeacherSignUpComponent {
     });
   }
 
-  signUp() {
-    this.teacherService.signUp(this.form.value).subscribe({
+  createTeacher() {
+    this.teacherService.createTeacher(this.form.value).subscribe({
       next: (res: TeacherResponse) => {
         if (res.code === 200) {
           this.created = true;
