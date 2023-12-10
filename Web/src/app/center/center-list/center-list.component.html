@@ -1,0 +1,28 @@
+<h1>Listado de centros</h1>
+
+<div *ngIf="centers.length">
+  <table>
+    <tr>
+      <th></th>
+      <th>CIF</th>
+      <th>Nombre</th>
+      <th>Direction</th>
+      <th>Código postal</th>
+      <th>Ciudad</th>
+      <th>Provincia</th>
+    </tr>
+    <tr *ngFor="let center of centers">
+      <td><button (click)="edit(center.CIF)">Editar</button></td>
+      <td>{{ center.CIF }}</td>
+      <td>{{ center.NAME }}</td>
+      <td>{{ center.DIRECTION }}</td>
+      <td>{{ center.POSTAL_CODE }}</td>
+      <td>{{ center.CITY }}</td>
+      <td>{{ center.PROVINCE }}</td>
+    </tr>
+  </table>
+</div>
+
+<div *ngIf="!centers.length || error">
+  <p>No hay centros para mostrar</p>
+</div>
