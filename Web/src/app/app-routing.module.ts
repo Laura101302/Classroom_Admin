@@ -7,10 +7,13 @@ import { TeacherListComponent } from './teacher/teacher-list/teacher-list.compon
 import { StudentListComponent } from './student/student-list/student-list.component';
 import { StudentFormComponent } from './student/student-form/student-form.component';
 import { CenterListComponent } from './center/center-list/center-list.component';
+import { CenterFormComponent } from './center/center-form/center-form.component';
 
 const routes: Routes = [
   { path: '', component: TeacherListComponent },
   { path: 'centers', component: CenterListComponent },
+  { path: 'centers/create-center', component: CenterFormComponent },
+  { path: 'centers/edit-center/:cif', component: CenterFormComponent },
   { path: 'teachers', component: TeacherListComponent },
   { path: 'teachers/create-teacher', component: TeacherFormComponent },
   { path: 'teachers/edit-teacher/:dni', component: TeacherFormComponent },
