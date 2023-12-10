@@ -50,7 +50,7 @@
         return $sql->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    function getAll() {
+    function getAllTeachers() {
         $db = getDatabase();
         $sql = $db->prepare("SELECT * FROM TEACHER;");
         $sql->execute();

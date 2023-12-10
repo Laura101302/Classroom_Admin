@@ -16,7 +16,7 @@
             }else if(isset($_GET['email'])){
                 sendCode(SUCCESS_CODE, 'Data recovered successfully', json_encode(getTeacherByEmail($_GET['email'])));
             }else{
-                sendCode(SUCCESS_CODE, 'Data recovered successfully', json_encode(getAll()));
+                sendCode(SUCCESS_CODE, 'Data recovered successfully', json_encode(getAllTeachers()));
             }
             break;
         case 'POST':

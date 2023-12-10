@@ -18,8 +18,8 @@
 
     function editCourse($json) {
         $db = getDatabase();
-        $sql = $db->prepare("UPDATE COURSE SET CODE = ?, NAME = ?, CIF_CENTER = ?");
-        return $sql->execute([$json['code'], $json['name'], $json['cif_center'],]);
+        $sql = $db->prepare("UPDATE COURSE SET CODE = ?, NAME = ?, CIF_CENTER = ? WHERE CODE = ?");
+        return $sql->execute([$json['code'], $json['name'], $json['cif_center'], $json['code']]);
     }
 
     function getCourseByCode($code) {
