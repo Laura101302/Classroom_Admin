@@ -3,7 +3,7 @@
     include_once "../utils/functions.php";
     require_once "../utils/consts.php";
 
-    function signUpTeacher($json) {
+    function createTeacher($json) {
         $teacherExists = getTeacherByDni($json['dni']);
         $emailExists = getTeacherByEmail($json['email']);
 

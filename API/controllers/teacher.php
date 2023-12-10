@@ -11,7 +11,9 @@
     
     switch($method){
         case 'GET':
-            if(isset($_GET['email'])){
+            if(isset($_GET['dni'])){
+                sendCode(SUCCESS_CODE, 'Data recovered successfully', json_encode(getTeacherByDni($_GET['dni'])));
+            }else if(isset($_GET['email'])){
                 sendCode(SUCCESS_CODE, 'Data recovered successfully', json_encode(getTeacherByEmail($_GET['email'])));
             }else{
                 sendCode(SUCCESS_CODE, 'Data recovered successfully', json_encode(getAll()));
@@ -20,11 +22,11 @@
         case 'POST':
             $json_data = file_get_contents("php://input");
             $json = json_decode($json_data, true);
-            $signUp = signUpTeacher($json);
-            if ($signUp) {
-                sendCode(SUCCESS_CODE, "Signed up successfully", '');
+            $create = createTeacher($json);
+            if ($create) {
+                sendCode(SUCCESS_CODE, "Created successfully", '');
             } else {
-                sendCode(SERVER_ERROR_CODE, "Error signing up", '');
+                sendCode(SERVER_ERROR_CODE, "Error creating", '');
                 exit();
             }
             break;
