@@ -20,6 +20,10 @@ export class StudentListComponent {
     });
   }
 
+  create() {
+    this.router.navigate(['students/create-student']);
+  }
+
   edit(dni: string) {
     this.router.navigate(['/students/edit-student', dni]);
   }

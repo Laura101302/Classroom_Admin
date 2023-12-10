@@ -20,6 +20,10 @@ export class TeacherListComponent {
     });
   }
 
+  create() {
+    this.router.navigate(['teachers/create-teacher']);
+  }
+
   edit(dni: string) {
     this.router.navigate(['/teachers/edit-teacher', dni]);
   }

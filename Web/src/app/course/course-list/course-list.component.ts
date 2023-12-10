@@ -20,6 +20,10 @@ export class CourseListComponent implements OnInit {
     });
   }
 
+  create() {
+    this.router.navigate(['courses/create-course']);
+  }
+
   edit(code: string) {
     this.router.navigate(['/courses/edit-course', code]);
   }

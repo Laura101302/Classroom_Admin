@@ -20,6 +20,10 @@ export class CenterListComponent implements OnInit {
     });
   }
 
+  create() {
+    this.router.navigate(['centers/create-center']);
+  }
+
   edit(cif: string) {
     this.router.navigate(['/centers/edit-center', cif]);
   }
