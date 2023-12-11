@@ -20,4 +20,10 @@ export class StudentService {
   signIn() {}
 
   logOut() {}
+
+  editStudent() {}
+
+  deleteStudent(dni: string) {
+    return this.http.delete<any>(this.url + '/' + dni);
+  }
 }

@@ -6,6 +6,7 @@
   <table>
     <tr>
       <th></th>
+      <th></th>
       <th>DNI</th>
       <th>Nombre</th>
       <th>Apellidos</th>
@@ -16,6 +17,7 @@
     </tr>
     <tr *ngFor="let student of students">
       <td><button (click)="edit(student.DNI)">Editar</button></td>
+      <td><button (click)="delete(student.DNI)">Eliminar</button></td>
       <td>{{ student.DNI }}</td>
       <td>{{ student.NAME }}</td>
       <td>{{ student.SURNAMES }}</td>
@@ -29,4 +31,12 @@
 
 <div *ngIf="!students.length || error">
   <p>No hay alumnos para mostrar</p>
+</div>
+
+<div *ngIf="deleted">
+  <p>Alumno eliminado correctamente</p>
+</div>
+
+<div *ngIf="deletedError">
+  <p>No se ha podido eliminar el alumno</p>
 </div>
