@@ -1,8 +1,17 @@
 <?php
     header('Content-Type: application/json');
-    header("Access-Control-Allow-Origin:*");
-    header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
-    header("Access-Control-Allow-Headers: Content-Type");
+    if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+        header("Access-Control-Allow-Origin: http://localhost:4200");
+        header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
+        header("Access-Control-Allow-Headers: Content-Type");
+        header("Access-Control-Max-Age: 3600");
+        http_response_code(200);
+        exit();
+    }else{
+        header("Access-Control-Allow-Origin:*");
+        header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
+        header("Access-Control-Allow-Headers: Content-Type");
+    }
 
     include_once "../services/teacher.php";
     require_once "../utils/consts.php";
@@ -38,6 +47,16 @@
                 sendCode(SUCCESS_CODE, "Correctly edited", '');
             } else {
                 sendCode(SERVER_ERROR_CODE, "Error editing", '');
+                exit();
+            }
+            break;
+        case 'DELETE':
+            $dni = basename($_SERVER['REQUEST_URI']);
+            $delete = deleteTeacher($dni);
+            if ($delete) {
+                sendCode(SUCCESS_CODE, "Deleted successfully", '');
+            } else {
+                sendCode(SERVER_ERROR_CODE, "Error deleting", '');
                 exit();
             }
             break;

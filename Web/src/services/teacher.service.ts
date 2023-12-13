@@ -21,4 +21,8 @@ export class TeacherService {
   signIn() {}
 
   logOut() {}
+
+  deleteTeacher(dni: string) {
+    return this.http.delete<any>(this.url + '/' + dni);
+  }
 }

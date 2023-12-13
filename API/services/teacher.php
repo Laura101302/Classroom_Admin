@@ -36,6 +36,12 @@
         }
     }
 
+    function deleteTeacher($dni){
+        $db = getDatabase();
+        $sql = $db->prepare("DELETE FROM TEACHER WHERE DNI = ?");
+        return $sql->execute([$dni]);
+    }
+
     function getTeacherByDni($dni) {
         $db = getDatabase();
         $sql = $db->prepare("SELECT * FROM TEACHER WHERE DNI = ? LIMIT 1;");
