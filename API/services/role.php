@@ -19,19 +19,19 @@
     function editRole($json) {
         $db = getDatabase();
         
-        $sql = $db->prepare("UPDATE ROLE SET ID = ?, NAME = ?, WHERE ID = ?");
+        $sql = $db->prepare("UPDATE ROLE SET id = ?, name = ?, WHERE id = ?");
         return $sql->execute([$json['id'], $json['name'], $json['id']]);
     }
 
     function deleteRole($id){
         $db = getDatabase();
-        $sql = $db->prepare("DELETE FROM ROLE WHERE ID = ?");
+        $sql = $db->prepare("DELETE FROM ROLE WHERE id = ?");
         return $sql->execute([$id]);
     }
 
     function getRoleById($id) {
         $db = getDatabase();
-        $sql = $db->prepare("SELECT * FROM ROLE WHERE ID = ? LIMIT 1;");
+        $sql = $db->prepare("SELECT * FROM ROLE WHERE id = ? LIMIT 1;");
         $sql->execute([$id]);
         return $sql->fetchAll(PDO::FETCH_ASSOC);
     }

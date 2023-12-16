@@ -28,30 +28,30 @@
         $db = getDatabase();
         
         if(isset($json['pass'])){
-            $sql = $db->prepare("UPDATE TEACHER SET DNI = ?, PASS = ?, NAME = ?, SURNAMES = ?, PHONE = ?, EMAIL = ?, BIRTHDATE = ?, ID_ROLE = ? WHERE EMAIL = ?");
+            $sql = $db->prepare("UPDATE TEACHER SET dni = ?, pass = ?, name = ?, surnames = ?, phone = ?, email = ?, birthdate = ?, id_role = ? WHERE email = ?");
             return $sql->execute([$json['dni'], $HASH_PASS, $json['name'], $json['surnames'], $json['phone'], $json['email'], $json['birthdate'], $json['id_role'], $json['email']]);
         }else{
-            $sql = $db->prepare("UPDATE TEACHER SET DNI = ?, NAME = ?, SURNAMES = ?, PHONE = ?, EMAIL = ?, BIRTHDATE = ?, ID_ROLE = ? WHERE EMAIL = ?");
+            $sql = $db->prepare("UPDATE TEACHER SET dni = ?, name = ?, surnames = ?, phone = ?, email = ?, birthdate = ?, id_role = ? WHERE email = ?");
             return $sql->execute([$json['dni'], $json['name'], $json['surnames'], $json['phone'], $json['email'], $json['birthdate'], $json['id_role'], $json['email']]);
         }
     }
 
     function deleteTeacher($dni){
         $db = getDatabase();
-        $sql = $db->prepare("DELETE FROM TEACHER WHERE DNI = ?");
+        $sql = $db->prepare("DELETE FROM TEACHER WHERE dni = ?");
         return $sql->execute([$dni]);
     }
 
     function getTeacherByDni($dni) {
         $db = getDatabase();
-        $sql = $db->prepare("SELECT * FROM TEACHER WHERE DNI = ? LIMIT 1;");
+        $sql = $db->prepare("SELECT * FROM TEACHER WHERE dni = ? LIMIT 1;");
         $sql->execute([$dni]);
         return $sql->fetchAll(PDO::FETCH_ASSOC);
     }
 
     function getTeacherByEmail($email) {
         $db = getDatabase();
-        $sql = $db->prepare("SELECT * FROM TEACHER WHERE EMAIL = ? LIMIT 1;");
+        $sql = $db->prepare("SELECT * FROM TEACHER WHERE email = ? LIMIT 1;");
         $sql->execute([$email]);
         return $sql->fetchAll(PDO::FETCH_ASSOC);
     }

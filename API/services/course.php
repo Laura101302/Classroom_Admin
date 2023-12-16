@@ -18,13 +18,13 @@
 
     function editCourse($json) {
         $db = getDatabase();
-        $sql = $db->prepare("UPDATE COURSE SET CODE = ?, NAME = ?, CIF_CENTER = ? WHERE CODE = ?");
+        $sql = $db->prepare("UPDATE COURSE SET code = ?, name = ?, cif_center = ? WHERE code = ?");
         return $sql->execute([$json['code'], $json['name'], $json['cif_center'], $json['code']]);
     }
 
     function getCourseByCode($code) {
         $db = getDatabase();
-        $sql = $db->prepare("SELECT * FROM COURSE WHERE CODE = ? LIMIT 1;");
+        $sql = $db->prepare("SELECT * FROM COURSE WHERE code = ? LIMIT 1;");
         $sql->execute([$code]);
         return $sql->fetchAll(PDO::FETCH_ASSOC);
     }

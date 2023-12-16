@@ -16,15 +16,15 @@
       <th>Curso</th>
     </tr>
     <tr *ngFor="let student of students">
-      <td><button (click)="edit(student.DNI)">Editar</button></td>
-      <td><button (click)="delete(student.DNI)">Eliminar</button></td>
-      <td>{{ student.DNI }}</td>
-      <td>{{ student.NAME }}</td>
-      <td>{{ student.SURNAMES }}</td>
-      <td>{{ student.PHONE }}</td>
-      <td>{{ student.EMAIL }}</td>
-      <td>{{ student.BIRTHDATE }}</td>
-      <td>{{ student.CODE_COURSE }}</td>
+      <td><button (click)="edit(student.dni)">Editar</button></td>
+      <td><button (click)="delete(student.dni)">Eliminar</button></td>
+      <td>{{ student.dni }}</td>
+      <td>{{ student.name }}</td>
+      <td>{{ student.surnames }}</td>
+      <td>{{ student.phone }}</td>
+      <td>{{ student.email }}</td>
+      <td>{{ student.birthdate }}</td>
+      <td>{{ student.code_course }}</td>
     </tr>
   </table>
 </div>

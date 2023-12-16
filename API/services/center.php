@@ -18,13 +18,19 @@
 
     function editCenter($json) {
         $db = getDatabase();
-        $sql = $db->prepare("UPDATE CENTER SET CIF = ?, NAME = ?, DIRECTION = ?, POSTAL_CODE = ?, CITY = ?, PROVINCE = ? WHERE CIF = ?");
+        $sql = $db->prepare("UPDATE CENTER SET cif = ?, name = ?, direction = ?, postal_code = ?, city = ?, province = ? WHERE cif = ?");
         return $sql->execute([$json['cif'], $json['name'], $json['direction'], $json['postal_code'], $json['city'], $json['province'], $json['cif']]);
+    }
+
+    function deleteCenter($json){
+        $db = getDatabase();
+        $sql = $db->prepare("DELETE FROM CENTER WHERE cif = ?");
+        return $sql->execute([$json['cif']]);
     }
 
     function getCenterByCif($cif) {
         $db = getDatabase();
-        $sql = $db->prepare("SELECT * FROM CENTER WHERE CIF = ? LIMIT 1;");
+        $sql = $db->prepare("SELECT * FROM CENTER WHERE cif = ? LIMIT 1;");
         $sql->execute([$cif]);
         return $sql->fetchAll(PDO::FETCH_ASSOC);
     }
