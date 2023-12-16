@@ -14,6 +14,7 @@ import { StudentListComponent } from './student/student-list/student-list.compon
 import { StudentFormComponent } from './student/student-form/student-form.component';
 import { CenterListComponent } from './center/center-list/center-list.component';
 import { CenterFormComponent } from './center/center-form/center-form.component';
+import { RoleFormComponent } from './role/role-form/role-form.component';
 
 @NgModule({
   declarations: [
@@ -27,6 +28,7 @@ import { CenterFormComponent } from './center/center-form/center-form.component'
     StudentFormComponent,
     CenterListComponent,
     CenterFormComponent,
+    RoleFormComponent,
   ],
   imports: [
     BrowserModule,
