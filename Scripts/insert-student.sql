@@ -1,2 +1,0 @@
-INSERT INTO STUDENT VALUES("12345678O", "1234", "Luis", "Saez", "611111111", "luissaez@gmail.com", "1999-11-03", "DAW1");
-INSERT INTO STUDENT VALUES("12345678M", "1234", "Ana", "Gomez", "622222222", "anagomez@gmail.com", "2004-02-17", "DAW2");
