@@ -9,14 +9,14 @@ import { StudentFormComponent } from './student/student-form/student-form.compon
 import { CenterListComponent } from './center/center-list/center-list.component';
 import { CenterFormComponent } from './center/center-form/center-form.component';
 import { RoleFormComponent } from './role/role-form/role-form.component';
+import { RoleListComponent } from './role/role-list/role-list.component';
 
 const routes: Routes = [
   { path: '', component: TeacherListComponent },
   { path: 'centers', component: CenterListComponent },
   { path: 'centers/create-center', component: CenterFormComponent },
   { path: 'centers/edit-center/:cif', component: CenterFormComponent },
-  { path: 'roles', component: RoleFormComponent },
-  { path: 'roles/create-role', component: RoleFormComponent },
+  { path: 'roles', component: RoleListComponent },
   { path: 'roles/edit-role/:id', component: RoleFormComponent },
   { path: 'teachers', component: TeacherListComponent },
   { path: 'teachers/create-teacher', component: TeacherFormComponent },

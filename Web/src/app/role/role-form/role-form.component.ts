@@ -23,8 +23,8 @@ export class RoleFormComponent {
     });
   }
 
-  createRole() {
-    this.roleService.createRole(this.form.value).subscribe({
+  editRole() {
+    this.roleService.editRole(this.form.value).subscribe({
       next: (res: any) => {
         if (res.code === 200) {
           this.created = true;

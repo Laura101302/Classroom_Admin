@@ -1,0 +1,27 @@
+<h1>Listado de roles</h1>
+
+<div *ngIf="roles.length">
+  <table>
+    <tr>
+      <th></th>
+      <th></th>
+      <th>Nombre</th>
+    </tr>
+    <tr *ngFor="let role of roles">
+      <td><button (click)="edit(role.ID)">Editar</button></td>
+      <td>{{ role.NAME }}</td>
+    </tr>
+  </table>
+</div>
+
+<div *ngIf="!roles.length || error">
+  <p>No hay roles para mostrar</p>
+</div>
+
+<div *ngIf="deleted">
+  <p>Rol eliminado correctamente</p>
+</div>
+
+<div *ngIf="deletedError">
+  <p>No se ha podido eliminar el rol</p>
+</div>
