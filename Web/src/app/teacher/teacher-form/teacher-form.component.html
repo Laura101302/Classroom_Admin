@@ -1,0 +1,50 @@
+<h1>{{ isEditing ? "Editar profesor" : "Crear profesor" }}</h1>
+
+<form
+  action=""
+  method="post"
+  [formGroup]="form"
+  (ngSubmit)="isEditing ? editTeacher() : createTeacher()"
+>
+  <label for="dni">DNI</label>
+  <input type="text" id="dni" formControlName="dni" />
+
+  <label for="pass">Contraseña</label>
+  <input type="password" id="pass" formControlName="pass" />
+
+  <label for="name">Nombre</label>
+  <input type="text" id="name" formControlName="name" />
+
+  <label for="surnames">Apellidos</label>
+  <input type="text" id="surnames" formControlName="surnames" />
+
+  <label for="phone">Teléfono</label>
+  <input type="tel" id="phone" formControlName="phone" />
+
+  <label for="email">Correo electrónico</label>
+  <input type="email" id="email" formControlName="email" />
+
+  <label for="birthdate">Fecha de nacimiento</label>
+  <input type="date" id="birthdate" formControlName="birthdate" />
+
+  <label for="id_role">Rol</label>
+  <select name="id_role" id="id_role" formControlName="id_role">
+    <option value="" disabled selected>Selecciona un rol</option>
+    <option value="1" id="1">Equipo Directivo</option>
+    <option value="2" id="2">Jefe de Departamento</option>
+    <option value="3" id="3">Profesor</option>
+  </select>
+
+  <div class="buttons">
+    <button type="submit" [disabled]="form.invalid">
+      {{ isEditing ? "Editar" : "Añadir" }}
+    </button>
+    <button type="reset">Limpiar</button>
+  </div>
+</form>
+
+<p *ngIf="created">{{ isEditing ? "Editado" : "Creado" }} correctamente</p>
+<p *ngIf="error">
+  Ha ocurrido un error al {{ isEditing ? "editar" : "crear" }} el profesor:
+  {{ errorMessage }}
+</p>

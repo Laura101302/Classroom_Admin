@@ -14,11 +14,23 @@ export class TeacherService {
     return this.http.get<TeacherResponse>(this.url);
   }
 
-  signUp(body: Teacher) {
+  getTeacherByDni(dni: string) {
+    return this.http.get<TeacherResponse>(this.url + '/' + dni);
+  }
+
+  createTeacher(body: Teacher) {
     return this.http.post<TeacherResponse>(this.url, body);
+  }
+
+  editTeacher(body: Teacher) {
+    return this.http.put<TeacherResponse>(this.url, body);
   }
 
   signIn() {}
 
   logOut() {}
+
+  deleteTeacher(dni: string) {
+    return this.http.delete<any>(this.url + '/' + dni);
+  }
 }

@@ -1,21 +1,20 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Teacher, TeacherResponse } from 'src/interfaces/teacher';
-import { TeacherService } from 'src/services/teacher.service';
+import { StudentService } from 'src/services/student.service';
 
 @Component({
-  selector: 'app-teacher-sign-up',
-  templateUrl: './teacher-sign-up.component.html',
-  styleUrls: ['./teacher-sign-up.component.scss'],
+  selector: 'app-student-form',
+  templateUrl: './student-form.component.html',
+  styleUrls: ['./student-form.component.scss'],
 })
-export class TeacherSignUpComponent {
+export class StudentFormComponent {
   form!: FormGroup;
   created: boolean = false;
   error: boolean = false;
   errorMessage!: string;
 
   constructor(
-    private teacherService: TeacherService,
+    private studentService: StudentService,
     private formBuilder: FormBuilder
   ) {
     this.form = this.formBuilder.group({
@@ -26,13 +25,13 @@ export class TeacherSignUpComponent {
       phone: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       birthdate: ['', Validators.required],
-      id_role: ['', Validators.required],
+      code_course: ['', Validators.required],
     });
   }
 
-  signUp() {
-    this.teacherService.signUp(this.form.value).subscribe({
-      next: (res: TeacherResponse) => {
+  createStudent() {
+    this.studentService.createStudent(this.form.value).subscribe({
+      next: (res: any) => {
         if (res.code === 200) {
           this.created = true;
           this.error = false;

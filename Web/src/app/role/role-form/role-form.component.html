@@ -1,0 +1,14 @@
+<h1>Editar rol</h1>
+
+<form action="" method="post" [formGroup]="form" (ngSubmit)="editRole()">
+  <label for="name">Nombre</label>
+  <input type="text" id="name" formControlName="name" />
+
+  <div class="buttons">
+    <button type="submit" [disabled]="form.invalid">Añadir</button>
+    <button type="reset">Limpiar</button>
+  </div>
+</form>
+
+<p *ngIf="created">Creado correctamente</p>
+<p *ngIf="error">Ha ocurrido un error al crear el rol: {{ errorMessage }}</p>

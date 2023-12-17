@@ -1,0 +1,42 @@
+<h1>Listado de profesores</h1>
+
+<button (click)="create()">Crear profesor</button>
+
+<div *ngIf="teachers.length">
+  <table>
+    <tr>
+      <th></th>
+      <th></th>
+      <th>DNI</th>
+      <th>Nombre</th>
+      <th>Apellidos</th>
+      <th>Teléfono</th>
+      <th>Correo electrónico</th>
+      <th>Fecha de nacimiento</th>
+      <th>Rol</th>
+    </tr>
+    <tr *ngFor="let teacher of teachers">
+      <td><button (click)="edit(teacher.dni)">Editar</button></td>
+      <td><button (click)="delete(teacher.dni)">Eliminar</button></td>
+      <td>{{ teacher.dni }}</td>
+      <td>{{ teacher.name }}</td>
+      <td>{{ teacher.surnames }}</td>
+      <td>{{ teacher.phone }}</td>
+      <td>{{ teacher.email }}</td>
+      <td>{{ teacher.birthdate }}</td>
+      <td>{{ teacher.id_role }}</td>
+    </tr>
+  </table>
+</div>
+
+<div *ngIf="!teachers.length || error">
+  <p>No hay profesores para mostrar</p>
+</div>
+
+<div *ngIf="deleted">
+  <p>Profesor eliminado correctamente</p>
+</div>
+
+<div *ngIf="deletedError">
+  <p>No se ha podido eliminar el profesor</p>
+</div>
