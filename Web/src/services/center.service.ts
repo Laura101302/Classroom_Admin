@@ -13,6 +13,10 @@ export class CenterService {
     return this.http.get<any>(this.url);
   }
 
+  getCenterByCif(cif: string) {
+    return this.http.get<any>(this.url + '/' + cif);
+  }
+
   createCenter(body: any) {
     return this.http.post<any>(this.url, body);
   }
