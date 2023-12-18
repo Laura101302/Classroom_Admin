@@ -13,15 +13,21 @@ export class StudentService {
     return this.http.get<any>(this.url);
   }
 
+  getStudentByDni(dni: string) {
+    return this.http.get<any>(this.url + '/' + dni);
+  }
+
   createStudent(body: any) {
     return this.http.post<any>(this.url, body);
+  }
+
+  editStudent(body: any) {
+    return this.http.put<any>(this.url, body);
   }
 
   signIn() {}
 
   logOut() {}
-
-  editStudent() {}
 
   deleteStudent(dni: string) {
     return this.http.delete<any>(this.url + '/' + dni);

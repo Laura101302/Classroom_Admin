@@ -1,4 +1,4 @@
-<h1>{{ isEditing ? "Editar profesor" : "Crear profesor" }}</h1>
+<h1>{{ isEditing ? "Editar" : "Nuevo" }} profesor</h1>
 
 <form
   action=""
@@ -9,8 +9,8 @@
   <label for="dni">DNI</label>
   <input type="text" id="dni" formControlName="dni" />
 
-  <label for="pass">Contraseña</label>
-  <input type="password" id="pass" formControlName="pass" />
+  <label *ngIf="!isEditing" for="pass">Contraseña</label>
+  <input *ngIf="!isEditing" type="password" id="pass" formControlName="pass" />
 
   <label for="name">Nombre</label>
   <input type="text" id="name" formControlName="name" />

@@ -1,11 +1,16 @@
-<h1>Crear alumno</h1>
+<h1>{{ isEditing ? "Editar" : "Nuevo" }} alumno</h1>
 
-<form action="" method="post" [formGroup]="form" (ngSubmit)="createStudent()">
+<form
+  action=""
+  method="post"
+  [formGroup]="form"
+  (ngSubmit)="isEditing ? editStudent() : createStudent()"
+>
   <label for="dni">DNI</label>
   <input type="text" id="dni" formControlName="dni" />
 
-  <label for="pass">Contraseña</label>
-  <input type="password" id="pass" formControlName="pass" />
+  <label *ngIf="!isEditing" for="pass">Contraseña</label>
+  <input *ngIf="!isEditing" type="password" id="pass" formControlName="pass" />
 
   <label for="name">Nombre</label>
   <input type="text" id="name" formControlName="name" />
@@ -37,5 +42,8 @@
   </div>
 </form>
 
-<p *ngIf="created">Creado correctamente</p>
-<p *ngIf="error">Ha ocurrido un error al crear el alumno: {{ errorMessage }}</p>
+<p *ngIf="created">{{ isEditing ? "Editado" : "Creado" }} correctamente</p>
+<p *ngIf="error">
+  Ha ocurrido un error al {{ isEditing ? "editar" : "crear" }} el alumno:
+  {{ errorMessage }}
+</p>
