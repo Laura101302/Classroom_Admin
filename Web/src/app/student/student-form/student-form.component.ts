@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { CourseService } from 'src/services/course.service';
 import { StudentService } from 'src/services/student.service';
 
 @Component({
@@ -15,11 +16,13 @@ export class StudentFormComponent implements OnInit {
   errorMessage!: string;
   isEditing: boolean = false;
   student!: any;
+  courses!: any;
 
   constructor(
     private studentService: StudentService,
     private formBuilder: FormBuilder,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private courseService: CourseService
   ) {
     this.form = this.formBuilder.group({
       dni: ['', Validators.required],
@@ -34,6 +37,7 @@ export class StudentFormComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.getAllCourses();
     const params = this.activatedRoute.snapshot.params;
 
     if (params['dni']) {
@@ -85,5 +89,11 @@ export class StudentFormComponent implements OnInit {
         this.errorMessage = error.error.message;
       },
     });
+  }
+
+  getAllCourses() {
+    this.courseService
+      .getAllCourses()
+      .subscribe((res) => (this.courses = JSON.parse(res.response)));
   }
 }

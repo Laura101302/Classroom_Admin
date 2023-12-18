@@ -29,11 +29,16 @@
 
   <label for="code_course">Curso</label>
   <select name="code_course" id="code_course" formControlName="code_course">
-    <option value="" disabled selected>Selecciona un curso</option>
-    <option value="daw1" id="daw1">DAW1</option>
-    <option value="daw2" id="daw2">DAW2</option>
-    <option value="dam1" id="dam1">DAM1</option>
-    <option value="dam2" id="dam2">DAM2</option>
+    <option *ngIf="!isEditing" value="" disabled selected>
+      Selecciona un curso
+    </option>
+    <option
+      *ngFor="let course of courses"
+      [value]="course.code"
+      [id]="course.code"
+    >
+      {{ course.code }}
+    </option>
   </select>
 
   <div class="buttons">
