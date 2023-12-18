@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { Student, StudentResponse } from 'src/interfaces/student';
 import { CourseService } from 'src/services/course.service';
 import { StudentService } from 'src/services/student.service';
 
@@ -15,7 +16,7 @@ export class StudentFormComponent implements OnInit {
   error: boolean = false;
   errorMessage!: string;
   isEditing: boolean = false;
-  student!: any;
+  student!: Student;
   courses!: any;
 
   constructor(
@@ -61,7 +62,7 @@ export class StudentFormComponent implements OnInit {
 
   createStudent() {
     this.studentService.createStudent(this.form.value).subscribe({
-      next: (res: any) => {
+      next: (res: StudentResponse) => {
         if (res.code === 200) {
           this.created = true;
           this.error = false;
@@ -77,7 +78,7 @@ export class StudentFormComponent implements OnInit {
 
   editStudent() {
     this.studentService.editStudent(this.form.value).subscribe({
-      next: (res: any) => {
+      next: (res: StudentResponse) => {
         if (res.code === 200) {
           this.created = true;
           this.error = false;
