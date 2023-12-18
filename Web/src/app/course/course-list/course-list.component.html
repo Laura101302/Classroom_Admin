@@ -8,11 +8,13 @@
       <th></th>
       <th>Código</th>
       <th>Nombre</th>
+      <th>Centro</th>
     </tr>
     <tr *ngFor="let course of courses">
       <td><button (click)="edit(course.code)">Editar</button></td>
       <td>{{ course.code }}</td>
       <td>{{ course.name }}</td>
+      <td>{{ course.center_name }}</td>
     </tr>
   </table>
 </div>

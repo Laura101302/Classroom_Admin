@@ -7,8 +7,27 @@
   <label for="name">Nombre</label>
   <input type="text" id="name" formControlName="name" />
 
-  <label for="cif_center">CIF del centro</label>
-  <input type="text" id="cif_center" formControlName="cif_center" />
+  <label for="center_cif">CIF del centro</label>
+  <select name="center_cif" id="center_cif" formControlName="center_cif">
+    <option
+      *ngIf="!isEditing && centers && centers.length > 0"
+      value=""
+      disabled
+      selected
+    >
+      Selecciona un centro
+    </option>
+    <option *ngIf="!centers || centers.length === 0" disabled selected>
+      No hay centros disponibles
+    </option>
+    <option
+      *ngFor="let center of centers"
+      [value]="center.cif"
+      [id]="center.cif"
+    >
+      {{ center.name }}
+    </option>
+  </select>
 
   <div class="buttons">
     <button type="submit" [disabled]="form.invalid">Añadir</button>

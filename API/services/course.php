@@ -13,13 +13,13 @@
 
         $db = getDatabase();
         $sql = $db->prepare("INSERT INTO COURSE values(?, ?, ?)");
-        return $sql->execute([$json['code'], $json['name'], $json['cif_center']]);
+        return $sql->execute([$json['code'], $json['name'], $json['center_cif']]);
     }
 
     function editCourse($json) {
         $db = getDatabase();
-        $sql = $db->prepare("UPDATE COURSE SET code = ?, name = ?, cif_center = ? WHERE code = ?");
-        return $sql->execute([$json['code'], $json['name'], $json['cif_center'], $json['code']]);
+        $sql = $db->prepare("UPDATE COURSE SET code = ?, name = ?, center_cif = ? WHERE code = ?");
+        return $sql->execute([$json['code'], $json['name'], $json['center_cif'], $json['code']]);
     }
 
     function getCourseByCode($code) {

@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { CenterService } from 'src/services/center.service';
 import { CourseService } from 'src/services/course.service';
 
 @Component({
@@ -7,21 +8,28 @@ import { CourseService } from 'src/services/course.service';
   templateUrl: './course-form.component.html',
   styleUrls: ['./course-form.component.scss'],
 })
-export class CourseFormComponent {
+export class CourseFormComponent implements OnInit {
   form!: FormGroup;
   created: boolean = false;
   error: boolean = false;
   errorMessage!: string;
+  isEditing: boolean = false;
+  centers!: any;
 
   constructor(
     private courseService: CourseService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private centerService: CenterService
   ) {
     this.form = this.formBuilder.group({
       code: ['', Validators.required],
       name: ['', Validators.required],
-      cif_center: ['', Validators.required],
+      center_cif: ['', Validators.required],
     });
+  }
+
+  ngOnInit(): void {
+    this.getAllCenters();
   }
 
   createCourse() {
@@ -37,6 +45,12 @@ export class CourseFormComponent {
         this.error = true;
         this.errorMessage = error.error.message;
       },
+    });
+  }
+
+  getAllCenters() {
+    this.centerService.getAllCenters().subscribe((res) => {
+      this.centers = JSON.parse(res.response);
     });
   }
 }
