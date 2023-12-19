@@ -6,8 +6,6 @@ import { AppComponent } from './app.component';
 import { TeacherFormComponent } from './teacher/teacher-form/teacher-form.component';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { CourseFormComponent } from './course/course-form/course-form.component';
-import { CourseListComponent } from './course/course-list/course-list.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { TeacherListComponent } from './teacher/teacher-list/teacher-list.component';
 import { CenterListComponent } from './center/center-list/center-list.component';
@@ -19,8 +17,6 @@ import { RoleListComponent } from './role/role-list/role-list.component';
   declarations: [
     AppComponent,
     TeacherFormComponent,
-    CourseFormComponent,
-    CourseListComponent,
     NavbarComponent,
     TeacherListComponent,
     CenterListComponent,

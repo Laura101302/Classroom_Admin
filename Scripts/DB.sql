@@ -14,14 +14,6 @@ CREATE TABLE CENTER(
   province VARCHAR(100) NOT NULL
 );
 
--- TABLE COURSE
-CREATE TABLE COURSE(
-  code VARCHAR(10) PRIMARY KEY,
-  name VARCHAR(100) NOT NULL,
-  center_cif VARCHAR(9),
-  CONSTRAINT course_center_cif_fk FOREIGN KEY (center_cif) REFERENCES CENTER(cif) ON UPDATE CASCADE ON DELETE CASCADE
-);
-
 -- TABLE ROLE
 CREATE TABLE ROLE(
   id INT PRIMARY KEY,
@@ -39,15 +31,6 @@ CREATE TABLE TEACHER(
   birthdate DATE,
   id_role INT,
   CONSTRAINT teacher_id_role_fk FOREIGN KEY (id_role) REFERENCES ROLE(id)  ON UPDATE CASCADE ON DELETE CASCADE
-);
-
--- TABLE TEACHER_COURSE
-CREATE TABLE TEACHER_COURSE(
-  dni_teacher VARCHAR(9),
-  code_course VARCHAR(10),
-  PRIMARY KEY(dni_teacher, code_course),
-  CONSTRAINT teacher_course_dni_teacher_fk FOREIGN KEY (dni_teacher) REFERENCES TEACHER(dni),
-  CONSTRAINT teacher_course_code_course_fk FOREIGN KEY (code_course) REFERENCES COURSE(code)
 );
 
 -- TABLE FLOOR
