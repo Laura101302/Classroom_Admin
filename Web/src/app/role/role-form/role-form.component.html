@@ -5,10 +5,11 @@
   <input type="text" id="name" formControlName="name" />
 
   <div class="buttons">
-    <button type="submit" [disabled]="form.invalid">Añadir</button>
+    <button type="submit" [disabled]="form.invalid">Editar</button>
     <button type="reset">Limpiar</button>
+    <button type="button" (click)="goBack()">Volver</button>
   </div>
 </form>
 
-<p *ngIf="created">Creado correctamente</p>
-<p *ngIf="error">Ha ocurrido un error al crear el rol: {{ errorMessage }}</p>
+<p *ngIf="created">Editado correctamente</p>
+<p *ngIf="error">Ha ocurrido un error al editar el rol: {{ errorMessage }}</p>

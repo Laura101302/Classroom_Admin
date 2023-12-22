@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { RoleService } from 'src/services/role.service';
 
 @Component({
@@ -7,20 +8,37 @@ import { RoleService } from 'src/services/role.service';
   templateUrl: './role-form.component.html',
   styleUrls: ['./role-form.component.scss'],
 })
-export class RoleFormComponent {
+export class RoleFormComponent implements OnInit {
   form!: FormGroup;
   created: boolean = false;
   error: boolean = false;
   errorMessage!: string;
+  role!: any;
 
   constructor(
     private roleService: RoleService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private activatedRoute: ActivatedRoute,
+    private router: Router
   ) {
     this.form = this.formBuilder.group({
       id: ['', Validators.required],
       name: ['', Validators.required],
     });
+  }
+
+  ngOnInit(): void {
+    const params = this.activatedRoute.snapshot.params;
+    if (params['id']) {
+      this.roleService.getRoleById(params['id']).subscribe((res: any) => {
+        this.role = JSON.parse(res.response)[0];
+
+        this.form = this.formBuilder.group({
+          id: this.role.id,
+          name: this.role.name,
+        });
+      });
+    }
   }
 
   editRole() {
@@ -37,5 +55,9 @@ export class RoleFormComponent {
         this.errorMessage = error.error.message;
       },
     });
+  }
+
+  goBack() {
+    this.router.navigate(['roles']);
   }
 }
