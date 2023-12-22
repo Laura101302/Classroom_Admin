@@ -1,5 +1,23 @@
+.input_wrapper {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: flex-end;
+  margin: 1vh 0;
+
+  .input {
+    display: flex;
+    flex-direction: column;
+    gap: 1vh;
+
+    input,
+    p-dropdown {
+      min-width: 280px;
+    }
+  }
+}
+
 .buttons {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  gap: 1vw;
+  margin-top: 3vh;
 }

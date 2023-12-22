@@ -4,6 +4,11 @@ import { ActivatedRoute } from '@angular/router';
 import { Teacher, TeacherResponse } from 'src/interfaces/teacher';
 import { TeacherService } from 'src/services/teacher.service';
 
+interface Role {
+  id: string;
+  value: string;
+}
+
 @Component({
   selector: 'app-teacher-form',
   templateUrl: './teacher-form.component.html',
@@ -16,6 +21,8 @@ export class TeacherFormComponent implements OnInit {
   errorMessage!: string;
   isEditing: boolean = false;
   teacher!: Teacher;
+  roles!: Role[];
+  selectedRole!: Role;
 
   constructor(
     private teacherService: TeacherService,
@@ -36,6 +43,12 @@ export class TeacherFormComponent implements OnInit {
 
   ngOnInit(): void {
     const params = this.activatedRoute.snapshot.params;
+
+    this.roles = [
+      { id: '1', value: 'Equipo Directivo' },
+      { id: '2', value: 'Jefe de Departamento' },
+      { id: '3', value: 'Profesor' },
+    ];
 
     if (params['dni']) {
       this.isEditing = true;
