@@ -20,6 +20,7 @@ import { MenubarModule } from 'primeng/menubar';
 import { InputTextModule } from 'primeng/inputtext';
 import { DropdownModule } from 'primeng/dropdown';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { TableModule } from 'primeng/table';
 
 @NgModule({
   declarations: [
@@ -46,6 +47,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
     InputTextModule,
     DropdownModule,
     ProgressSpinnerModule,
+    TableModule,
   ],
   providers: [],
   bootstrap: [AppComponent],
