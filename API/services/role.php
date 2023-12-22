@@ -19,8 +19,8 @@
     function editRole($json) {
         $db = getDatabase();
         
-        $sql = $db->prepare("UPDATE ROLE SET id = ?, name = ?, WHERE id = ?");
-        return $sql->execute([$json['id'], $json['name'], $json['id']]);
+        $sql = $db->prepare("UPDATE ROLE SET name = ?, WHERE id = ?");
+        return $sql->execute([$json['name'], $json['id']]);
     }
 
     function deleteRole($id){

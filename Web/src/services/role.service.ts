@@ -13,6 +13,10 @@ export class RoleService {
     return this.http.get<any>(this.url);
   }
 
+  getRoleById(id: string) {
+    return this.http.get<any>(this.url + '/' + id);
+  }
+
   createRole(body: any) {
     return this.http.post<any>(this.url, body);
   }
