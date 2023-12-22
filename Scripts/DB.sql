@@ -14,27 +14,6 @@ CREATE TABLE CENTER(
   province VARCHAR(100) NOT NULL
 );
 
--- TABLE COURSE
-CREATE TABLE COURSE(
-  code VARCHAR(10) PRIMARY KEY,
-  name VARCHAR(100) NOT NULL,
-  cif_center VARCHAR(9) NOT NULL,
-  CONSTRAINT course_cif_center_fk FOREIGN KEY (cif_center) REFERENCES CENTER(cif)
-);
-
--- TABLE STUDENT
-CREATE TABLE STUDENT(
-  dni VARCHAR(9) PRIMARY KEY,
-  pass VARCHAR(255) NOT NULL,
-  name VARCHAR(50) NOT NULL,
-  surnames VARCHAR(100),
-  phone VARCHAR(20),
-  email VARCHAR(100) NOT NULL UNIQUE,
-  birthdate DATE,
-  code_course VARCHAR(10),
-  CONSTRAINT student_code_course_fk FOREIGN KEY (code_course) REFERENCES COURSE(code)
-);
-
 -- TABLE ROLE
 CREATE TABLE ROLE(
   id INT PRIMARY KEY,
@@ -51,24 +30,15 @@ CREATE TABLE TEACHER(
   email VARCHAR(100) NOT NULL UNIQUE,
   birthdate DATE,
   id_role INT,
-  CONSTRAINT teacher_id_role_fk FOREIGN KEY (id_role) REFERENCES ROLE(id)
-);
-
--- TABLE TEACHER_COURSE
-CREATE TABLE TEACHER_COURSE(
-  dni_teacher VARCHAR(9),
-  code_course VARCHAR(10),
-  PRIMARY KEY(dni_teacher, code_course),
-  CONSTRAINT teacher_course_dni_teacher_fk FOREIGN KEY (dni_teacher) REFERENCES TEACHER(dni),
-  CONSTRAINT teacher_course_code_course_fk FOREIGN KEY (code_course) REFERENCES COURSE(code)
+  CONSTRAINT teacher_id_role_fk FOREIGN KEY (id_role) REFERENCES ROLE(id)  ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 -- TABLE FLOOR
 CREATE TABLE FLOOR(
   id INT AUTO_INCREMENT PRIMARY KEY,
   floor_number INT(2),
-  cif_center VARCHAR(9) NOT NULL,
-  CONSTRAINT floor_cif_center_fk FOREIGN KEY (cif_center) REFERENCES CENTER(cif)
+  center_cif VARCHAR(9) NOT NULL,
+  CONSTRAINT floor_center_cif_fk FOREIGN KEY (center_cif) REFERENCES CENTER(cif) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 -- TABLE ROOM
@@ -78,7 +48,7 @@ CREATE TABLE ROOM(
   seats_number INT(2),
   type VARCHAR(10),
   id_floor INT,
-  CONSTRAINT room_id_floor_fk FOREIGN KEY (id_floor) REFERENCES FLOOR(id)
+  CONSTRAINT room_id_floor_fk FOREIGN KEY (id_floor) REFERENCES FLOOR(id)  ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 -- TABLE SEAT
@@ -86,5 +56,5 @@ CREATE TABLE SEAT(
   id INT AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(50),
   id_room INT,
-  CONSTRAINT seat_id_room_fk FOREIGN KEY (id_room) REFERENCES ROOM(id)
+  CONSTRAINT seat_id_room_fk FOREIGN KEY (id_room) REFERENCES ROOM(id) ON UPDATE CASCADE ON DELETE CASCADE
 );

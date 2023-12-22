@@ -6,11 +6,7 @@ import { AppComponent } from './app.component';
 import { TeacherFormComponent } from './teacher/teacher-form/teacher-form.component';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { CourseFormComponent } from './course/course-form/course-form.component';
-import { CourseListComponent } from './course/course-list/course-list.component';
 import { TeacherListComponent } from './teacher/teacher-list/teacher-list.component';
-import { StudentListComponent } from './student/student-list/student-list.component';
-import { StudentFormComponent } from './student/student-form/student-form.component';
 import { CenterListComponent } from './center/center-list/center-list.component';
 import { CenterFormComponent } from './center/center-form/center-form.component';
 import { RoleFormComponent } from './role/role-form/role-form.component';
@@ -29,11 +25,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
   declarations: [
     AppComponent,
     TeacherFormComponent,
-    CourseFormComponent,
-    CourseListComponent,
     TeacherListComponent,
-    StudentListComponent,
-    StudentFormComponent,
     CenterListComponent,
     CenterFormComponent,
     RoleFormComponent,
