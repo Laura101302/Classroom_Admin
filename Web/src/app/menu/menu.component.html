@@ -1,0 +1,13 @@
+<div>
+  <p-menubar [model]="menuItems">
+    <ng-template pTemplate="start">
+      <img src="../../assets/logo.png" height="40" class="mr-2" routerLink="/" class="logo" />
+    </ng-template>
+    <ng-template pTemplate="end">
+      <button pButton class="profile-button">
+        <span class="pi pi-user"></span>
+        Mi perfil
+      </button>
+    </ng-template>
+  </p-menubar>
+</div>

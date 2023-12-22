@@ -8,7 +8,6 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CourseFormComponent } from './course/course-form/course-form.component';
 import { CourseListComponent } from './course/course-list/course-list.component';
-import { NavbarComponent } from './navbar/navbar.component';
 import { TeacherListComponent } from './teacher/teacher-list/teacher-list.component';
 import { StudentListComponent } from './student/student-list/student-list.component';
 import { StudentFormComponent } from './student/student-form/student-form.component';
@@ -16,6 +15,15 @@ import { CenterListComponent } from './center/center-list/center-list.component'
 import { CenterFormComponent } from './center/center-form/center-form.component';
 import { RoleFormComponent } from './role/role-form/role-form.component';
 import { RoleListComponent } from './role/role-list/role-list.component';
+import { MenuComponent } from './menu/menu.component';
+import { MenuModule } from 'primeng/menu';
+import { SidebarModule } from 'primeng/sidebar';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ButtonModule } from 'primeng/button';
+import { MenubarModule } from 'primeng/menubar';
+import { InputTextModule } from 'primeng/inputtext';
+import { DropdownModule } from 'primeng/dropdown';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 @NgModule({
   declarations: [
@@ -23,7 +31,6 @@ import { RoleListComponent } from './role/role-list/role-list.component';
     TeacherFormComponent,
     CourseFormComponent,
     CourseListComponent,
-    NavbarComponent,
     TeacherListComponent,
     StudentListComponent,
     StudentFormComponent,
@@ -31,6 +38,7 @@ import { RoleListComponent } from './role/role-list/role-list.component';
     CenterFormComponent,
     RoleFormComponent,
     RoleListComponent,
+    MenuComponent,
   ],
   imports: [
     BrowserModule,
@@ -38,6 +46,14 @@ import { RoleListComponent } from './role/role-list/role-list.component';
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
+    MenuModule,
+    SidebarModule,
+    BrowserAnimationsModule,
+    ButtonModule,
+    MenubarModule,
+    InputTextModule,
+    DropdownModule,
+    ProgressSpinnerModule,
   ],
   providers: [],
   bootstrap: [AppComponent],
