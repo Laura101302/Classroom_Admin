@@ -1,6 +1,11 @@
 <h1>{{ isEditing ? "Editar" : "Nuevo" }} profesor</h1>
 
-<form action="" method="post" [formGroup]="form" (ngSubmit)="isEditing ? editTeacher() : createTeacher()">
+<form
+  action=""
+  method="post"
+  [formGroup]="form"
+  (ngSubmit)="isEditing ? editTeacher() : createTeacher()"
+>
   <div class="input_wrapper">
     <div class="input">
       <label for="dni">DNI</label>
@@ -9,7 +14,13 @@
 
     <div class="input">
       <label for="pass">Contraseña</label>
-      <input pInputText type="password" id="pass" formControlName="pass" [disabled]="isEditing ? true : false" />
+      <input
+        pInputText
+        type="password"
+        id="pass"
+        formControlName="pass"
+        [disabled]="isEditing ? true : false"
+      />
     </div>
   </div>
 
@@ -40,19 +51,50 @@
   <div class="input_wrapper">
     <div class="input">
       <label for="birthdate">Fecha de nacimiento</label>
-      <input pInputText type="date" id="birthdate" formControlName="birthdate" />
+      <input
+        pInputText
+        type="date"
+        id="birthdate"
+        formControlName="birthdate"
+      />
     </div>
 
     <div class="input">
+      <label for="cif_center">Centro</label>
+      <p-dropdown
+        [options]="centers"
+        [(ngModel)]="selectedCenter"
+        optionLabel="name"
+        [showClear]="false"
+        placeholder="Selecciona un centro"
+        id="cif_center"
+        formControlName="cif_center"
+      ></p-dropdown>
+    </div>
+  </div>
+
+  <div class="input_wrapper">
+    <div class="input">
       <label for="id_role">Rol</label>
-      <p-dropdown [options]="roles" [(ngModel)]="selectedRole" optionLabel="value" [showClear]="false"
-        placeholder="Selecciona un rol" id="id_role" formControlName="id_role"></p-dropdown>
+      <p-dropdown
+        [options]="roles"
+        [(ngModel)]="selectedRole"
+        optionLabel="name"
+        [showClear]="false"
+        placeholder="Selecciona un rol"
+        id="id_role"
+        formControlName="id_role"
+      ></p-dropdown>
     </div>
   </div>
 
   <div class="buttons">
-    <p-button type="submit" severity="success" [disabled]="form.invalid"
-      [label]="isEditing ? 'Editar' : 'Añadir'"></p-button>
+    <p-button
+      type="submit"
+      severity="success"
+      [disabled]="form.invalid"
+      [label]="isEditing ? 'Editar' : 'Añadir'"
+    ></p-button>
     <p-button type="reset" severity="danger" label="Limpiar"></p-button>
     <p-button type="button" label="Volver" routerLink="/teachers"></p-button>
   </div>
