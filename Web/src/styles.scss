@@ -1,1 +1,34 @@
-/* You can add global styles to this file, and also import other style files */
+@import "../node_modules/primeng/resources/primeng.min.css";
+@import "../node_modules/primeflex/primeflex.scss";
+@import "../node_modules/primeicons/primeicons.css";
+
+html,
+body {
+  // width: 100%;
+  height: 100%;
+}
+
+.p-button {
+  font-weight: bold !important;
+}
+
+.showDetails {
+  border: 1px solid #3b82f6;
+  border-radius: 7px;
+  background-color: #eff6ff;
+  padding: 5px;
+  cursor: pointer;
+}
+
+.p-dropdown {
+  width: 100%;
+}
+
+.new-button {
+  margin-bottom: 2vh;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 1vw;
+}

@@ -1,29 +1,49 @@
-<h1>Crear centro</h1>
+<h1>{{isEditing ? "Editar centro" : 'Nuevo centro'}}</h1>
 
-<form action="" method="post" [formGroup]="form" (ngSubmit)="createCenter()">
-  <label for="cif">CIF</label>
-  <input type="text" id="cif" formControlName="cif" />
+<form action="" method="post" [formGroup]="form" (ngSubmit)="isEditing ? editCenter() : createCenter()">
+  <div class="input_wrapper">
+    <div class="input">
+      <label for="cif">CIF</label>
+      <input pInputText type="text" id="cif" formControlName="cif" />
+    </div>
 
-  <label for="name">Nombre</label>
-  <input type="text" id="name" formControlName="name" />
+    <div class="input">
+      <label for="name">Nombre</label>
+      <input pInputText type="text" id="name" formControlName="name" />
+    </div>
+  </div>
 
-  <label for="direction">Dirección</label>
-  <input type="text" id="direction" formControlName="direction" />
+  <div class="input_wrapper">
+    <div class="input">
+      <label for="direction">Dirección</label>
+      <input pInputText type="text" id="direction" formControlName="direction" />
+    </div>
 
-  <label for="postal_code">Código postal</label>
-  <input type="number" id="postal_code" formControlName="postal_code" />
+    <div class="input">
+      <label for="postal_code">Código postal</label>
+      <input pInputText type="number" id="postal_code" formControlName="postal_code" />
+    </div>
+  </div>
 
-  <label for="city">Ciudad</label>
-  <input type="text" id="city" formControlName="city" />
+  <div class="input_wrapper">
+    <div class="input">
+      <label for="city">Ciudad</label>
+      <input pInputText type="text" id="city" formControlName="city" />
+    </div>
 
-  <label for="province">Provincia</label>
-  <input type="text" id="province" formControlName="province" />
+    <div class="input">
+      <label for="province">Provincia</label>
+      <input pInputText type="text" id="province" formControlName="province" />
+    </div>
+  </div>
 
   <div class="buttons">
-    <button type="submit" [disabled]="form.invalid">Añadir</button>
-    <button type="reset">Limpiar</button>
+    <p-button type="submit" severity="success" [disabled]="form.invalid"
+      [label]="isEditing ? 'Editar' : 'Añadir'"></p-button>
+    <p-button type="reset" severity="danger" label="Limpiar"></p-button>
+    <p-button type="button" label="Volver" routerLink="/centers"></p-button>
   </div>
 </form>
 
-<p *ngIf="created">Creado correctamente</p>
-<p *ngIf="error">Ha ocurrido un error al crear el centro: {{ errorMessage }}</p>
+<p *ngIf="created">{{ isEditing ? "Editado" : "Creado" }} correctamente</p>
+<p *ngIf="error">Ha ocurrido un error al {{ isEditing ? "editar" : "crear" }} el centro: {{ errorMessage }}</p>

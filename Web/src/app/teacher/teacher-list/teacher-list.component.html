@@ -1,32 +1,162 @@
 <h1>Listado de profesores</h1>
 
-<button (click)="create()">Crear profesor</button>
+<div class="new-button">
+  <p-button (click)="create()">Nuevo profesor</p-button>
+</div>
 
 <div *ngIf="teachers.length">
-  <table>
-    <tr>
-      <th></th>
-      <th></th>
-      <th>DNI</th>
-      <th>Nombre</th>
-      <th>Apellidos</th>
-      <th>Teléfono</th>
-      <th>Correo electrónico</th>
-      <th>Fecha de nacimiento</th>
-      <th>Rol</th>
-    </tr>
-    <tr *ngFor="let teacher of teachers">
-      <td><button (click)="edit(teacher.dni)">Editar</button></td>
-      <td><button (click)="delete(teacher.dni)">Eliminar</button></td>
-      <td>{{ teacher.dni }}</td>
-      <td>{{ teacher.name }}</td>
-      <td>{{ teacher.surnames }}</td>
-      <td>{{ teacher.phone }}</td>
-      <td>{{ teacher.email }}</td>
-      <td>{{ teacher.birthdate }}</td>
-      <td>{{ teacher.id_role }}</td>
-    </tr>
-  </table>
+  <p-table
+    #dt1
+    [value]="teachers"
+    dataKey="dni"
+    [rows]="10"
+    [showCurrentPageReport]="true"
+    [rowsPerPageOptions]="[10, 25, 50]"
+    [loading]="isLoading"
+    [paginator]="true"
+    currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} profesores"
+    [globalFilterFields]="[
+      '',
+      'dni',
+      'name',
+      'surnames',
+      'phone',
+      'email',
+      'birthdate',
+      'cif_center',
+      'id_role'
+    ]"
+    styleClass="p-datatable-striped"
+    [tableStyle]="{ 'min-width': '50rem' }"
+  >
+    <ng-template pTemplate="caption">
+      <div class="flex">
+        <button
+          pButton
+          label="Limpiar"
+          class="p-button-outlined"
+          icon="pi pi-filter-slash"
+          (click)="clearFilter(dt1)"
+        ></button>
+        <span class="p-input-icon-left ml-auto">
+          <i class="pi pi-search"></i>
+          <input
+            pInputText
+            type="text"
+            (input)="applyFilterGlobal($event, 'contains')"
+            placeholder="Buscar..."
+          />
+        </span>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="header">
+      <tr>
+        <th></th>
+        <th>
+          <div class="flex align-items-center">
+            DNI
+            <p-columnFilter
+              type="text"
+              field="dni"
+              display="menu"
+            ></p-columnFilter>
+          </div>
+        </th>
+        <th>
+          <div class="flex align-items-center">
+            Nombre
+            <p-columnFilter
+              type="text"
+              field="name"
+              display="menu"
+            ></p-columnFilter>
+          </div>
+        </th>
+        <th>
+          <div class="flex align-items-center">
+            Apellidos
+            <p-columnFilter
+              type="text"
+              field="surnames"
+              display="menu"
+            ></p-columnFilter>
+          </div>
+        </th>
+        <th>
+          <div class="flex align-items-center">
+            Teléfono
+            <p-columnFilter
+              type="text"
+              field="phone"
+              display="menu"
+            ></p-columnFilter>
+          </div>
+        </th>
+        <th>
+          <div class="flex align-items-center">
+            Correo electrónico
+            <p-columnFilter
+              type="text"
+              field="email"
+              display="menu"
+            ></p-columnFilter>
+          </div>
+        </th>
+        <th>
+          <div class="flex align-items-center">
+            Fecha de nacimiento
+            <p-columnFilter
+              type="text"
+              field="birthdate"
+              display="menu"
+            ></p-columnFilter>
+          </div>
+        </th>
+        <th>
+          <div class="flex align-items-center">
+            Centro
+            <p-columnFilter
+              type="text"
+              field="cif_center"
+              display="menu"
+            ></p-columnFilter>
+          </div>
+        </th>
+        <th>
+          <div class="flex align-items-center">
+            Rol
+            <p-columnFilter
+              type="text"
+              field="id_role"
+              display="menu"
+            ></p-columnFilter>
+          </div>
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-teacher>
+      <tr>
+        <td class="action-buttons">
+          <button
+            class="pi pi-file-edit showDetails"
+            (click)="edit(teacher.dni)"
+          ></button>
+          <button
+            class="pi pi-trash showDetails"
+            (click)="delete(teacher.dni)"
+          ></button>
+        </td>
+        <td>{{ teacher.dni }}</td>
+        <td>{{ teacher.name }}</td>
+        <td>{{ teacher.surnames }}</td>
+        <td>{{ teacher.phone }}</td>
+        <td>{{ teacher.email }}</td>
+        <td>{{ teacher.birthdate | date : "dd-MM-yyyy" }}</td>
+        <td>{{ teacher.cif_center }}</td>
+        <td>{{ teacher.id_role }}</td>
+      </tr>
+    </ng-template>
+  </p-table>
 </div>
 
 <div *ngIf="!teachers.length || error">
