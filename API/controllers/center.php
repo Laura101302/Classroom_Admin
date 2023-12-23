@@ -48,6 +48,16 @@
                 exit();
             }
             break;
+        case 'DELETE':
+            $cif = basename($_SERVER['REQUEST_URI']);
+            $delete = deleteCenter($cif);
+            if ($delete) {
+                sendCode(SUCCESS_CODE, "Deleted successfully", '');
+            } else {
+                sendCode(SERVER_ERROR_CODE, "Error deleting", '');
+                exit();
+            }
+            break;
         default:
             sendCode(SERVER_ERROR_CODE, "Not allowed method", '');
             exit();

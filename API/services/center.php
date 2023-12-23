@@ -22,10 +22,10 @@
         return $sql->execute([$json['cif'], $json['name'], $json['direction'], $json['postal_code'], $json['city'], $json['province'], $json['cif']]);
     }
 
-    function deleteCenter($json){
+    function deleteCenter($cif){
         $db = getDatabase();
         $sql = $db->prepare("DELETE FROM CENTER WHERE cif = ?");
-        return $sql->execute([$json['cif']]);
+        return $sql->execute([$cif]);
     }
 
     function getCenterByCif($cif) {

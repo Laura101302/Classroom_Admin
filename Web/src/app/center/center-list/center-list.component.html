@@ -1,20 +1,49 @@
 <h1>Listado de centros</h1>
 
-<p-button (click)="create()">Nuevo centro</p-button>
+<div class="new-button">
+  <p-button (click)="create()">Nuevo centro</p-button>
+</div>
 
 <div *ngIf="centers.length">
-  <p-table #dt1 [value]="centers" dataKey="cif" [rows]="10" [showCurrentPageReport]="true"
-    [rowsPerPageOptions]="[10, 25, 50]" [loading]="isLoading" [paginator]="true"
+  <p-table
+    #dt1
+    [value]="centers"
+    dataKey="cif"
+    [rows]="10"
+    [showCurrentPageReport]="true"
+    [rowsPerPageOptions]="[10, 25, 50]"
+    [loading]="isLoading"
+    [paginator]="true"
     currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} centros"
-    [globalFilterFields]="['', 'cif', 'name', 'direction', 'postal_code', 'city', 'province']"
-    styleClass="p-datatable-striped" [tableStyle]="{ 'min-width': '50rem' }">
+    [globalFilterFields]="[
+      '',
+      'cif',
+      'name',
+      'direction',
+      'postal_code',
+      'city',
+      'province'
+    ]"
+    styleClass="p-datatable-striped"
+    [tableStyle]="{ 'min-width': '50rem' }"
+  >
     <ng-template pTemplate="caption">
       <div class="flex">
-        <button pButton label="Limpiar" class="p-button-outlined" icon="pi pi-filter-slash"
-          (click)="clearFilter(dt1)"></button>
+        <button
+          pButton
+          label="Limpiar"
+          class="p-button-outlined"
+          icon="pi pi-filter-slash"
+          (click)="clearFilter(dt1)"
+        ></button>
         <span class="p-input-icon-left ml-auto">
           <i class="pi pi-search"></i>
-          <input pInputText type="text" (input)="applyFilterGlobal($event, 'contains')" placeholder="Buscar..." />
+          <input
+            pInputText
+            type="text"
+            (input)="applyFilterGlobal($event, 'contains')"
+            placeholder="Buscar..."
+          />
         </span>
       </div>
     </ng-template>
@@ -25,37 +54,61 @@
         <th>
           <div class="flex align-items-center">
             CIF
-            <p-columnFilter type="text" field="cif" display="menu"></p-columnFilter>
+            <p-columnFilter
+              type="text"
+              field="cif"
+              display="menu"
+            ></p-columnFilter>
           </div>
         </th>
         <th>
           <div class="flex align-items-center">
             Nombre
-            <p-columnFilter type="text" field="name" display="menu"></p-columnFilter>
+            <p-columnFilter
+              type="text"
+              field="name"
+              display="menu"
+            ></p-columnFilter>
           </div>
         </th>
         <th>
           <div class="flex align-items-center">
             Dirección
-            <p-columnFilter type="text" field="direction" display="menu"></p-columnFilter>
+            <p-columnFilter
+              type="text"
+              field="direction"
+              display="menu"
+            ></p-columnFilter>
           </div>
         </th>
         <th>
           <div class="flex align-items-center">
             Código postal
-            <p-columnFilter type="text" field="postal_code" display="menu"></p-columnFilter>
+            <p-columnFilter
+              type="text"
+              field="postal_code"
+              display="menu"
+            ></p-columnFilter>
           </div>
         </th>
         <th>
           <div class="flex align-items-center">
             Ciudad
-            <p-columnFilter type="text" field="city" display="menu"></p-columnFilter>
+            <p-columnFilter
+              type="text"
+              field="city"
+              display="menu"
+            ></p-columnFilter>
           </div>
         </th>
         <th>
           <div class="flex align-items-center">
             Provincia
-            <p-columnFilter type="text" field="province" display="menu"></p-columnFilter>
+            <p-columnFilter
+              type="text"
+              field="province"
+              display="menu"
+            ></p-columnFilter>
           </div>
         </th>
       </tr>
@@ -63,8 +116,14 @@
     <ng-template pTemplate="body" let-center>
       <tr>
         <td class="action-buttons">
-          <button class="pi pi-file-edit showDetails" (click)="edit(center.cif)"></button>
-          <button class="pi pi-trash showDetails" (click)="delete(center.cif)"></button>
+          <button
+            class="pi pi-file-edit showDetails"
+            (click)="edit(center.cif)"
+          ></button>
+          <button
+            class="pi pi-trash showDetails"
+            (click)="delete(center.cif)"
+          ></button>
         </td>
         <td>{{ center.cif }}</td>
         <td>{{ center.name }}</td>
