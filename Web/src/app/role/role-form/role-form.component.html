@@ -1,13 +1,22 @@
 <h1>Editar rol</h1>
 
 <form action="" method="post" [formGroup]="form" (ngSubmit)="editRole()">
-  <label for="name">Nombre</label>
-  <input type="text" id="name" formControlName="name" />
+  <div class="input_wrapper">
+    <div class="input">
+      <label for="name">Nombre</label>
+      <input pInputText type="text" id="name" formControlName="name" />
+    </div>
+  </div>
 
   <div class="buttons">
-    <button type="submit" [disabled]="form.invalid">Editar</button>
-    <button type="reset">Limpiar</button>
-    <button type="button" (click)="goBack()">Volver</button>
+    <p-button
+      type="submit"
+      severity="success"
+      [disabled]="form.invalid"
+      label="Editar"
+    ></p-button>
+    <p-button type="reset" severity="danger" label="Limpiar"></p-button>
+    <p-button type="button" label="Volver" routerLink="/roles"></p-button>
   </div>
 </form>
 
