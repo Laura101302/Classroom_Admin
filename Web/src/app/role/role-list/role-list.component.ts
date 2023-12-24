@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
+import { Table } from 'primeng/table';
 import { RoleService } from 'src/services/role.service';
 
 @Component({
@@ -8,10 +9,10 @@ import { RoleService } from 'src/services/role.service';
   styleUrls: ['./role-list.component.scss'],
 })
 export class RoleListComponent {
+  @ViewChild('dt1') dt1: Table | undefined;
   roles: any[] = [];
   error: boolean = false;
-  deleted: boolean = false;
-  deletedError: boolean = false;
+  isLoading: boolean = false;
 
   constructor(private roleService: RoleService, private router: Router) {}
 
@@ -20,9 +21,17 @@ export class RoleListComponent {
   }
 
   getAllRoles() {
+    this.isLoading = true;
+
     this.roleService.getAllRoles().subscribe({
-      next: (res: any) => (this.roles = JSON.parse(res.response)),
-      error: () => (this.error = true),
+      next: (res: any) => {
+        this.roles = JSON.parse(res.response);
+        this.isLoading = false;
+      },
+      error: () => {
+        this.error = true;
+        this.isLoading = false;
+      },
     });
   }
 
@@ -30,22 +39,14 @@ export class RoleListComponent {
     this.router.navigate(['/roles/edit-role', id]);
   }
 
-  delete(id: number) {
-    this.roleService.deleteRole(id).subscribe((res) => {
-      if (res.code === 200) {
-        this.deleted = true;
-        this.deletedError = false;
-        this.getAllRoles();
-        setTimeout(() => {
-          this.deleted = false;
-        }, 3000);
-      } else {
-        this.deleted = false;
-        this.deletedError = true;
-        setTimeout(() => {
-          this.deletedError = false;
-        }, 3000);
-      }
-    });
+  applyFilterGlobal($event: any, stringVal: string) {
+    this.dt1!.filterGlobal(
+      ($event.target as HTMLInputElement).value,
+      stringVal
+    );
+  }
+
+  clearFilter(table: Table) {
+    table.clear();
   }
 }

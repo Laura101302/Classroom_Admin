@@ -24,8 +24,4 @@ export class RoleService {
   editRole(body: any) {
     return this.http.put<any>(this.url, body);
   }
-
-  deleteRole(id: number) {
-    return this.http.delete<any>(this.url + '/' + id);
-  }
 }
