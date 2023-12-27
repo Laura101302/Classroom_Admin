@@ -14,7 +14,7 @@ export class CenterService {
   }
 
   getCenterByCif(cif: string) {
-    return this.http.get<any>(this.url + '/' + cif);
+    return this.http.get<any>(this.url + `?cif=${cif}`);
   }
 
   createCenter(body: any) {

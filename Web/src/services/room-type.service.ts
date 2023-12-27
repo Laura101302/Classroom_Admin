@@ -17,7 +17,7 @@ export class RoomTypeService {
   }
 
   getRoomTypeById(id: number) {
-    return this.http.get<IResponse>(this.url + '/' + id);
+    return this.http.get<IResponse>(this.url + `?id=${id}`);
   }
 
   createRoomType(body: RoomType) {

@@ -16,7 +16,7 @@ export class TeacherService {
   }
 
   getTeacherByDni(dni: string) {
-    return this.http.get<IResponse>(this.url + '/' + dni);
+    return this.http.get<IResponse>(this.url + `?dni=${dni}`);
   }
 
   createTeacher(body: Teacher) {
