@@ -13,7 +13,7 @@ export class RoleService {
     return this.http.get<any>(this.url);
   }
 
-  getRoleById(id: string) {
+  getRoleById(id: number) {
     return this.http.get<any>(this.url + `?id=${id}`);
   }
 
