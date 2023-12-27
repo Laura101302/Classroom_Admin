@@ -6,6 +6,8 @@ import { CenterListComponent } from './center/center-list/center-list.component'
 import { CenterFormComponent } from './center/center-form/center-form.component';
 import { RoleFormComponent } from './role/role-form/role-form.component';
 import { RoleListComponent } from './role/role-list/role-list.component';
+import { RoomListComponent } from './room/room-list/room-list.component';
+import { RoomFormComponent } from './room/room-form/room-form.component';
 
 const routes: Routes = [
   { path: '', component: TeacherListComponent },
@@ -17,6 +19,9 @@ const routes: Routes = [
   { path: 'teachers', component: TeacherListComponent },
   { path: 'teachers/create-teacher', component: TeacherFormComponent },
   { path: 'teachers/edit-teacher/:dni', component: TeacherFormComponent },
+  { path: 'rooms', component: RoomListComponent },
+  { path: 'rooms/create-room', component: RoomFormComponent },
+  { path: 'rooms/edit-room/:id', component: RoomFormComponent },
 ];
 
 @NgModule({

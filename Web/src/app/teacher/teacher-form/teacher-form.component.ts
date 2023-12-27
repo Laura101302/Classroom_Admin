@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { Teacher, TeacherResponse } from 'src/interfaces/teacher';
+import { IResponse } from 'src/interfaces/response';
+import { Teacher } from 'src/interfaces/teacher';
 import { CenterService } from 'src/services/center.service';
 import { RoleService } from 'src/services/role.service';
 import { TeacherService } from 'src/services/teacher.service';
@@ -115,7 +116,7 @@ export class TeacherFormComponent implements OnInit {
     };
 
     this.teacherService.createTeacher(form).subscribe({
-      next: (res: TeacherResponse) => {
+      next: (res: IResponse) => {
         if (res.code === 200) {
           this.created = true;
           this.error = false;
@@ -137,7 +138,7 @@ export class TeacherFormComponent implements OnInit {
     };
 
     this.teacherService.editTeacher(form).subscribe({
-      next: (res: TeacherResponse) => {
+      next: (res: IResponse) => {
         if (res.code === 200) {
           this.created = true;
           this.error = false;

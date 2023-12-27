@@ -9,10 +9,3 @@ export interface Teacher {
   cif_center: string;
   id_role: number;
 }
-
-export interface TeacherResponse {
-  code: number;
-  status: string;
-  message: string;
-  response: string;
-}

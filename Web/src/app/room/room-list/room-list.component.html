@@ -1,0 +1,136 @@
+<h1>Listado de salas</h1>
+
+<div class="new-button">
+  <p-button (click)="create()">Nueva sala</p-button>
+</div>
+
+<div *ngIf="rooms.length">
+  <p-table
+    #dt1
+    [value]="rooms"
+    dataKey="id"
+    [rows]="10"
+    [showCurrentPageReport]="true"
+    [rowsPerPageOptions]="[10, 25, 50]"
+    [loading]="isLoading"
+    [paginator]="true"
+    currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} salas"
+    [globalFilterFields]="[
+      '',
+      'name',
+      'seats_number',
+      'type',
+      'floor_number',
+      'center_cif'
+    ]"
+    styleClass="p-datatable-striped"
+    [tableStyle]="{ 'min-width': '50rem' }"
+  >
+    <ng-template pTemplate="caption">
+      <div class="flex">
+        <button
+          pButton
+          label="Limpiar"
+          class="p-button-outlined"
+          icon="pi pi-filter-slash"
+          (click)="clearFilter(dt1)"
+        ></button>
+        <span class="p-input-icon-left ml-auto">
+          <i class="pi pi-search"></i>
+          <input
+            pInputText
+            type="text"
+            (input)="applyFilterGlobal($event, 'contains')"
+            placeholder="Buscar..."
+          />
+        </span>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="header">
+      <tr>
+        <th></th>
+        <th>
+          <div class="flex align-items-center">
+            Nombre
+            <p-columnFilter
+              type="text"
+              field="name"
+              display="menu"
+            ></p-columnFilter>
+          </div>
+        </th>
+        <th>
+          <div class="flex align-items-center">
+            Número de asientos
+            <p-columnFilter
+              type="number"
+              field="seats_number"
+              display="menu"
+            ></p-columnFilter>
+          </div>
+        </th>
+        <th>
+          <div class="flex align-items-center">
+            Tipo
+            <p-columnFilter
+              type="text"
+              field="type"
+              display="menu"
+            ></p-columnFilter>
+          </div>
+        </th>
+        <th>
+          <div class="flex align-items-center">
+            Planta
+            <p-columnFilter
+              type="text"
+              field="floor_number"
+              display="menu"
+            ></p-columnFilter>
+          </div>
+        </th>
+        <th>
+          <div class="flex align-items-center">
+            Centro
+            <p-columnFilter
+              type="text"
+              field="center_cif"
+              display="menu"
+            ></p-columnFilter>
+          </div>
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-room>
+      <tr>
+        <td class="action-buttons">
+          <button
+            class="pi pi-file-edit showDetails"
+            (click)="edit(room.id)"
+          ></button>
+          <button
+            class="pi pi-trash showDetails"
+            (click)="delete(room.id)"
+          ></button>
+        </td>
+        <td>{{ room.name }}</td>
+        <td>{{ room.seats_number }}</td>
+        <td>{{ room.type }}</td>
+        <td>{{ room.floor_number }}</td>
+        <td>{{ room.center_cif }}</td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+
+<div *ngIf="!rooms.length || error">
+  <p>No hay salas para mostrar</p>
+</div>
+
+<div *ngIf="deleted">
+  <p>Sala eliminada correctamente</p>
+</div>
+
+<div *ngIf="deletedError">
+  <p>No se ha podido eliminar la sala</p>
+</div>
