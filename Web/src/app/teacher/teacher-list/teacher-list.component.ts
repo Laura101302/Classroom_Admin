@@ -70,9 +70,9 @@ export class TeacherListComponent {
     });
   }
 
-  getCenterByCif(center_cif: string): Observable<any> {
+  getCenterByCif(centerCif: string): Observable<any> {
     return this.centerService
-      .getCenterByCif(center_cif)
+      .getCenterByCif(centerCif)
       .pipe(map((res: IResponse) => JSON.parse(res.response)[0]));
   }
 
