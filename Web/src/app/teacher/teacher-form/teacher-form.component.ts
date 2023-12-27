@@ -53,8 +53,8 @@ export class TeacherFormComponent implements OnInit {
       phone: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       birthdate: ['', Validators.required],
-      cif_center: ['', Validators.required],
-      id_role: ['', Validators.required],
+      center_cif: ['', Validators.required],
+      role_id: ['', Validators.required],
     });
   }
 
@@ -71,12 +71,12 @@ export class TeacherFormComponent implements OnInit {
 
         if (this.centers)
           this.selectedCenter = this.centers.find(
-            (center) => center.cif === this.teacher.cif_center
+            (center) => center.cif === this.teacher.center_cif
           );
 
         if (this.roles)
           this.selectedRole = this.roles.find(
-            (role) => role.id === this.teacher.id_role
+            (role) => role.id === this.teacher.role_id
           );
 
         this.form = this.formBuilder.group({
@@ -87,8 +87,8 @@ export class TeacherFormComponent implements OnInit {
           phone: this.teacher.phone,
           email: this.teacher.email,
           birthdate: this.teacher.birthdate,
-          cif_center: this.selectedCenter,
-          id_role: this.selectedRole,
+          center_cif: this.selectedCenter,
+          role_id: this.selectedRole,
         });
       });
     }
@@ -111,8 +111,8 @@ export class TeacherFormComponent implements OnInit {
   createTeacher() {
     const form = {
       ...this.form.value,
-      cif_center: this.form.value.cif_center.cif,
-      id_role: this.form.value.id_role.id,
+      center_cif: this.form.value.center_cif.cif,
+      role_id: this.form.value.role_id.id,
     };
 
     this.teacherService.createTeacher(form).subscribe({
@@ -133,8 +133,8 @@ export class TeacherFormComponent implements OnInit {
   editTeacher() {
     const form = {
       ...this.form.value,
-      cif_center: this.form.value.cif_center.cif,
-      id_role: this.form.value.id_role.id,
+      center_cif: this.form.value.center_cif.cif,
+      role_id: this.form.value.role_id.id,
     };
 
     this.teacherService.editTeacher(form).subscribe({

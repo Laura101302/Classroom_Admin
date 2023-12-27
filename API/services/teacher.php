@@ -20,7 +20,7 @@
         $HASH_PASS = hashPass($json['pass']);
         $db = getDatabase();
         $sql = $db->prepare("INSERT INTO TEACHER values(?, ?, ?, ?, ?, ?, ?, ?, ?)");
-        return $sql->execute([$json['dni'], $HASH_PASS, $json['name'], $json['surnames'], $json['phone'], $json['email'], $json['birthdate'], $json['cif_center'], $json['id_role']]);
+        return $sql->execute([$json['dni'], $HASH_PASS, $json['name'], $json['surnames'], $json['phone'], $json['email'], $json['birthdate'], $json['center_cif'], $json['role_id']]);
     }
 
     function editTeacher($json) {
@@ -28,11 +28,11 @@
         $db = getDatabase();
         
         if(isset($json['pass'])){
-            $sql = $db->prepare("UPDATE TEACHER SET dni = ?, pass = ?, name = ?, surnames = ?, phone = ?, email = ?, birthdate = ?, cif_center = ?, id_role = ? WHERE email = ?");
-            return $sql->execute([$json['dni'], $HASH_PASS, $json['name'], $json['surnames'], $json['phone'], $json['email'], $json['birthdate'], $json['cif_center'], $json['id_role'], $json['email']]);
+            $sql = $db->prepare("UPDATE TEACHER SET dni = ?, pass = ?, name = ?, surnames = ?, phone = ?, email = ?, birthdate = ?, center_cif = ?, role_id = ? WHERE email = ?");
+            return $sql->execute([$json['dni'], $HASH_PASS, $json['name'], $json['surnames'], $json['phone'], $json['email'], $json['birthdate'], $json['center_cif'], $json['role_id'], $json['email']]);
         }else{
-            $sql = $db->prepare("UPDATE TEACHER SET dni = ?, name = ?, surnames = ?, phone = ?, email = ?, birthdate = ?, cif_center = ?, id_role = ? WHERE email = ?");
-            return $sql->execute([$json['dni'], $json['name'], $json['surnames'], $json['phone'], $json['email'], $json['birthdate'], $json['cif_center'], $json['id_role'], $json['email']]);
+            $sql = $db->prepare("UPDATE TEACHER SET dni = ?, name = ?, surnames = ?, phone = ?, email = ?, birthdate = ?, center_cif = ?, role_id = ? WHERE email = ?");
+            return $sql->execute([$json['dni'], $json['name'], $json['surnames'], $json['phone'], $json['email'], $json['birthdate'], $json['center_cif'], $json['role_id'], $json['email']]);
         }
     }
 

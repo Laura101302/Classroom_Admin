@@ -23,8 +23,8 @@
       'phone',
       'email',
       'birthdate',
-      'cif_center',
-      'id_role'
+      'center_cif',
+      'role_id'
     ]"
     styleClass="p-datatable-striped"
     [tableStyle]="{ 'min-width': '50rem' }"
@@ -117,7 +117,7 @@
             Centro
             <p-columnFilter
               type="text"
-              field="cif_center"
+              field="center_cif"
               display="menu"
             ></p-columnFilter>
           </div>
@@ -127,7 +127,7 @@
             Rol
             <p-columnFilter
               type="text"
-              field="id_role"
+              field="role_id"
               display="menu"
             ></p-columnFilter>
           </div>
@@ -152,8 +152,8 @@
         <td>{{ teacher.phone }}</td>
         <td>{{ teacher.email }}</td>
         <td>{{ teacher.birthdate | date : "dd-MM-yyyy" }}</td>
-        <td>{{ teacher.cif_center }}</td>
-        <td>{{ teacher.id_role }}</td>
+        <td>{{ teacher.center_cif }}</td>
+        <td>{{ teacher.role_id }}</td>
       </tr>
     </ng-template>
   </p-table>

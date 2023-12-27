@@ -6,6 +6,6 @@ export interface Teacher {
   phone: string;
   email: string;
   birthdate: Date;
-  cif_center: string;
-  id_role: number;
+  center_cif: string;
+  role_id: number;
 }
