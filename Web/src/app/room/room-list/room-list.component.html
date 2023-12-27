@@ -19,8 +19,8 @@
       '',
       'name',
       'seats_number',
-      'type',
       'floor_number',
+      'room_type_id',
       'center_cif'
     ]"
     styleClass="p-datatable-striped"
@@ -71,20 +71,20 @@
         </th>
         <th>
           <div class="flex align-items-center">
-            Tipo
+            Planta
             <p-columnFilter
               type="text"
-              field="type"
+              field="floor_number"
               display="menu"
             ></p-columnFilter>
           </div>
         </th>
         <th>
           <div class="flex align-items-center">
-            Planta
+            Tipo
             <p-columnFilter
               type="text"
-              field="floor_number"
+              field="room_type_id"
               display="menu"
             ></p-columnFilter>
           </div>
@@ -115,8 +115,8 @@
         </td>
         <td>{{ room.name }}</td>
         <td>{{ room.seats_number }}</td>
-        <td>{{ room.type }}</td>
         <td>{{ room.floor_number }}</td>
+        <td>{{ room.room_type_id }}</td>
         <td>{{ room.center_cif }}</td>
       </tr>
     </ng-template>

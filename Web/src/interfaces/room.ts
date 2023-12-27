@@ -2,7 +2,7 @@ export interface Room {
   id: number;
   name: string;
   seats_number: number;
-  type: string;
   floor_number: number;
+  room_type_id: number;
   center_cif: string;
 }

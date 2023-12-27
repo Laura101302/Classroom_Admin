@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { Table } from 'primeng/table';
+import { IResponse } from 'src/interfaces/response';
 import { RoomService } from 'src/services/room.service';
 
 @Component({
@@ -25,7 +26,7 @@ export class RoomListComponent implements OnInit {
     this.isLoading = true;
 
     this.roomService.getAllRooms().subscribe({
-      next: (res: any) => {
+      next: (res: IResponse) => {
         this.rooms = JSON.parse(res.response);
         this.isLoading = false;
       },
@@ -37,7 +38,7 @@ export class RoomListComponent implements OnInit {
   }
 
   create() {
-    this.router.navigate(['rooms/create-rooms']);
+    this.router.navigate(['rooms/create-room']);
   }
 
   edit(id: number) {
