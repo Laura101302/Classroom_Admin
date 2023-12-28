@@ -23,6 +23,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { TableModule } from 'primeng/table';
 import { RoomListComponent } from './room/room-list/room-list.component';
 import { RoomFormComponent } from './room/room-form/room-form.component';
+import { LoginComponent } from './login/login.component';
 
 @NgModule({
   declarations: [
@@ -36,6 +37,7 @@ import { RoomFormComponent } from './room/room-form/room-form.component';
     MenuComponent,
     RoomListComponent,
     RoomFormComponent,
+    LoginComponent,
   ],
   imports: [
     BrowserModule,

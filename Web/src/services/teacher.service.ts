@@ -27,10 +27,6 @@ export class TeacherService {
     return this.http.put<IResponse>(this.url, body);
   }
 
-  signIn() {}
-
-  logOut() {}
-
   deleteTeacher(dni: string) {
     return this.http.delete<IResponse>(this.url + '/' + dni);
   }

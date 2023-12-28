@@ -1,0 +1,23 @@
+<h1>Iniciar sesión</h1>
+
+<form action="" method="post" [formGroup]="form" (ngSubmit)="login()">
+  <div class="input_wrapper">
+    <div class="input">
+      <label for="email">Correo electrónico</label>
+      <input pInputText type="email" id="email" formControlName="email" />
+    </div>
+
+    <div class="input">
+      <label for="pass">Contraseña</label>
+      <input pInputText type="password" id="pass" formControlName="pass" />
+    </div>
+  </div>
+
+  <div class="buttons">
+    <p-button
+      type="submit"
+      [disabled]="form.invalid"
+      label="Iniciar sesión"
+    ></p-button>
+  </div>
+</form>

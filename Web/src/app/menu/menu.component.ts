@@ -10,6 +10,7 @@ export class MenuComponent implements OnInit {
   menuItems: MenuItem[] = [];
   screenSize: number = window.innerWidth;
   isMobile!: boolean;
+  isLogged: boolean = false;
 
   @HostListener('window:resize', ['$event'])
   onResize(): void {
