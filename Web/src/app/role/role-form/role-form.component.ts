@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { IResponse } from 'src/interfaces/response';
+import { Role } from 'src/interfaces/role';
 import { RoleService } from 'src/services/role.service';
 
 @Component({
@@ -13,7 +15,7 @@ export class RoleFormComponent implements OnInit {
   created: boolean = false;
   error: boolean = false;
   errorMessage!: string;
-  role!: any;
+  role!: Role;
 
   constructor(
     private roleService: RoleService,
@@ -30,7 +32,7 @@ export class RoleFormComponent implements OnInit {
   ngOnInit(): void {
     const params = this.activatedRoute.snapshot.params;
     if (params['id']) {
-      this.roleService.getRoleById(params['id']).subscribe((res: any) => {
+      this.roleService.getRoleById(params['id']).subscribe((res: IResponse) => {
         this.role = JSON.parse(res.response)[0];
 
         this.form = this.formBuilder.group({
@@ -43,7 +45,7 @@ export class RoleFormComponent implements OnInit {
 
   editRole() {
     this.roleService.editRole(this.form.value).subscribe({
-      next: (res: any) => {
+      next: (res: IResponse) => {
         if (res.code === 200) {
           this.created = true;
           this.error = false;

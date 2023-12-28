@@ -1,6 +1,8 @@
 import { Component, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { Table } from 'primeng/table';
+import { IResponse } from 'src/interfaces/response';
+import { Role } from 'src/interfaces/role';
 import { RoleService } from 'src/services/role.service';
 
 @Component({
@@ -10,7 +12,7 @@ import { RoleService } from 'src/services/role.service';
 })
 export class RoleListComponent {
   @ViewChild('dt1') dt1: Table | undefined;
-  roles: any[] = [];
+  roles: Role[] = [];
   error: boolean = false;
   isLoading: boolean = false;
 
@@ -24,7 +26,7 @@ export class RoleListComponent {
     this.isLoading = true;
 
     this.roleService.getAllRoles().subscribe({
-      next: (res: any) => {
+      next: (res: IResponse) => {
         this.roles = JSON.parse(res.response);
         this.isLoading = false;
       },

@@ -36,7 +36,7 @@ export class TeacherListComponent {
     this.isLoading = true;
 
     this.teacherService.getAllTeachers().subscribe({
-      next: (res: any) => {
+      next: (res: IResponse) => {
         const teacherArray = JSON.parse(res.response);
 
         const observablesArray = teacherArray.map((teacher: Teacher) => {

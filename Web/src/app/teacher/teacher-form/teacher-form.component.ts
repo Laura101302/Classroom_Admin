@@ -1,25 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { Center } from 'src/interfaces/center';
 import { IResponse } from 'src/interfaces/response';
+import { Role } from 'src/interfaces/role';
 import { Teacher } from 'src/interfaces/teacher';
 import { CenterService } from 'src/services/center.service';
 import { RoleService } from 'src/services/role.service';
 import { TeacherService } from 'src/services/teacher.service';
-
-interface Center {
-  cif: string;
-  name: string;
-  direction: string;
-  postal_code: number;
-  city: string;
-  province: string;
-}
-
-interface Role {
-  id: number;
-  value: string;
-}
 
 @Component({
   selector: 'app-teacher-form',
