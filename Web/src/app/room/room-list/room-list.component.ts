@@ -1,60 +1,59 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { Table } from 'primeng/table';
 import { Observable, forkJoin, map } from 'rxjs';
 import { IResponse } from 'src/interfaces/response';
-import { Teacher } from 'src/interfaces/teacher';
+import { Room } from 'src/interfaces/room';
 import { CenterService } from 'src/services/center.service';
-import { RoleService } from 'src/services/role.service';
-import { TeacherService } from 'src/services/teacher.service';
+import { RoomTypeService } from 'src/services/room-type.service';
+import { RoomService } from 'src/services/room.service';
 
 @Component({
-  selector: 'app-teacher-list',
-  templateUrl: './teacher-list.component.html',
-  styleUrls: ['./teacher-list.component.scss'],
+  selector: 'app-room-list',
+  templateUrl: './room-list.component.html',
+  styleUrl: './room-list.component.scss',
 })
-export class TeacherListComponent {
+export class RoomListComponent implements OnInit {
   @ViewChild('dt1') dt1: Table | undefined;
-  teachers: Teacher[] = [];
+  rooms: Room[] = [];
   error: boolean = false;
   deleted: boolean = false;
   deletedError: boolean = false;
   isLoading: boolean = false;
 
   constructor(
-    private teacherService: TeacherService,
+    private roomService: RoomService,
     private router: Router,
-    private centerService: CenterService,
-    private roleService: RoleService
+    private roomTypeService: RoomTypeService,
+    private centerService: CenterService
   ) {}
-
   ngOnInit(): void {
-    this.getAllTeachers();
+    this.getAllRooms();
   }
 
-  getAllTeachers() {
+  getAllRooms() {
     this.isLoading = true;
 
-    this.teacherService.getAllTeachers().subscribe({
+    this.roomService.getAllRooms().subscribe({
       next: (res: IResponse) => {
-        const teacherArray = JSON.parse(res.response);
+        const roomArray = JSON.parse(res.response);
 
-        const observablesArray = teacherArray.map((teacher: Teacher) => {
+        const observablesArray = roomArray.map((room: Room) => {
           return forkJoin({
-            center: this.getCenterByCif(teacher.center_cif),
-            role: this.getRoleById(teacher.role_id),
+            room_type: this.getRoomTypeById(room.room_type_id),
+            center: this.getCenterByCif(room.center_cif),
           }).pipe(
             map((data) => ({
-              ...teacher,
+              ...room,
+              room_type_id: data.room_type.name,
               center_cif: data.center.name,
-              role_id: data.role.name,
             }))
           );
         });
 
         forkJoin(observablesArray).subscribe({
           next: (res) => {
-            this.teachers = res as Teacher[];
+            this.rooms = res as Room[];
             this.isLoading = false;
           },
           error: () => {
@@ -70,34 +69,34 @@ export class TeacherListComponent {
     });
   }
 
+  getRoomTypeById(roomTypeId: number) {
+    return this.roomTypeService
+      .getRoomTypeById(roomTypeId)
+      .pipe(map((res: IResponse) => JSON.parse(res.response)[0]));
+  }
+
   getCenterByCif(centerCif: string): Observable<any> {
     return this.centerService
       .getCenterByCif(centerCif)
       .pipe(map((res: IResponse) => JSON.parse(res.response)[0]));
   }
 
-  getRoleById(role_id: number): Observable<any> {
-    return this.roleService
-      .getRoleById(role_id)
-      .pipe(map((res: IResponse) => JSON.parse(res.response)[0]));
-  }
-
   create() {
-    this.router.navigate(['teachers/create-teacher']);
+    this.router.navigate(['rooms/create-room']);
   }
 
-  edit(dni: string) {
-    this.router.navigate(['/teachers/edit-teacher', dni]);
+  edit(id: number) {
+    this.router.navigate(['/rooms/edit-room', id]);
   }
 
-  delete(dni: string) {
+  delete(id: number) {
     this.isLoading = true;
 
-    this.teacherService.deleteTeacher(dni).subscribe((res) => {
+    this.roomService.deleteRoom(id).subscribe((res) => {
       if (res.code === 200) {
         this.deleted = true;
         this.deletedError = false;
-        this.getAllTeachers();
+        this.getAllRooms();
         setTimeout(() => {
           this.deleted = false;
         }, 3000);

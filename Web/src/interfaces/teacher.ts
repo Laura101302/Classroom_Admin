@@ -6,13 +6,6 @@ export interface Teacher {
   phone: string;
   email: string;
   birthdate: Date;
-  cif_center: string;
-  id_role: number;
-}
-
-export interface TeacherResponse {
-  code: number;
-  status: string;
-  message: string;
-  response: string;
+  center_cif: string;
+  role_id: number;
 }

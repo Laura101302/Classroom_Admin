@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { Center } from 'src/interfaces/center';
+import { IResponse } from 'src/interfaces/response';
 import { CenterService } from 'src/services/center.service';
 
 @Component({
@@ -14,7 +16,7 @@ export class CenterFormComponent implements OnInit {
   error: boolean = false;
   errorMessage!: string;
   isEditing: boolean = false;
-  center!: any;
+  center!: Center;
 
   constructor(
     private centerService: CenterService,
@@ -53,7 +55,7 @@ export class CenterFormComponent implements OnInit {
 
   createCenter() {
     this.centerService.createCenter(this.form.value).subscribe({
-      next: (res: any) => {
+      next: (res: IResponse) => {
         if (res.code === 200) {
           this.created = true;
           this.error = false;

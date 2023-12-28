@@ -21,6 +21,8 @@ import { InputTextModule } from 'primeng/inputtext';
 import { DropdownModule } from 'primeng/dropdown';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { TableModule } from 'primeng/table';
+import { RoomListComponent } from './room/room-list/room-list.component';
+import { RoomFormComponent } from './room/room-form/room-form.component';
 
 @NgModule({
   declarations: [
@@ -32,6 +34,8 @@ import { TableModule } from 'primeng/table';
     RoleFormComponent,
     RoleListComponent,
     MenuComponent,
+    RoomListComponent,
+    RoomFormComponent,
   ],
   imports: [
     BrowserModule,

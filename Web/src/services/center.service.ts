@@ -1,5 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Center } from 'src/interfaces/center';
+import { IResponse } from 'src/interfaces/response';
 
 @Injectable({
   providedIn: 'root',
@@ -10,18 +12,18 @@ export class CenterService {
   constructor(private http: HttpClient) {}
 
   getAllCenters() {
-    return this.http.get<any>(this.url);
+    return this.http.get<IResponse>(this.url);
   }
 
   getCenterByCif(cif: string) {
-    return this.http.get<any>(this.url + '/' + cif);
+    return this.http.get<IResponse>(this.url + `?cif=${cif}`);
   }
 
-  createCenter(body: any) {
-    return this.http.post<any>(this.url, body);
+  createCenter(body: Center) {
+    return this.http.post<IResponse>(this.url, body);
   }
 
-  editCenter(body: any) {
+  editCenter(body: Center) {
     return this.http.put(this.url, body);
   }
 

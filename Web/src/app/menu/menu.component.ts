@@ -61,6 +61,21 @@ export class MenuComponent implements OnInit {
           },
         ],
       },
+      {
+        label: 'Salas',
+        items: [
+          {
+            label: 'Lista de salas',
+            icon: 'pi pi-fw pi-building',
+            routerLink: ['rooms'],
+          },
+          {
+            label: 'Nueva sala',
+            icon: 'pi pi-fw pi-building',
+            routerLink: ['rooms/create-room'],
+          },
+        ],
+      },
     ];
   }
 

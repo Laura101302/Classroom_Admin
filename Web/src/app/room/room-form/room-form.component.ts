@@ -3,46 +3,43 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Center } from 'src/interfaces/center';
 import { IResponse } from 'src/interfaces/response';
-import { Role } from 'src/interfaces/role';
-import { Teacher } from 'src/interfaces/teacher';
+import { Room } from 'src/interfaces/room';
+import { RoomType } from 'src/interfaces/room-type';
 import { CenterService } from 'src/services/center.service';
-import { RoleService } from 'src/services/role.service';
-import { TeacherService } from 'src/services/teacher.service';
+import { RoomTypeService } from 'src/services/room-type.service';
+import { RoomService } from 'src/services/room.service';
 
 @Component({
-  selector: 'app-teacher-form',
-  templateUrl: './teacher-form.component.html',
-  styleUrls: ['./teacher-form.component.scss'],
+  selector: 'app-room-form',
+  templateUrl: './room-form.component.html',
+  styleUrl: './room-form.component.scss',
 })
-export class TeacherFormComponent implements OnInit {
+export class RoomFormComponent implements OnInit {
   form!: FormGroup;
   created: boolean = false;
   error: boolean = false;
   errorMessage!: string;
   isEditing: boolean = false;
-  teacher!: Teacher;
+  room!: Room;
+  roomTypes!: RoomType[];
+  selectedRoomType!: RoomType | undefined;
   centers!: Center[];
   selectedCenter!: Center | undefined;
-  roles!: Role[];
-  selectedRole!: Role | undefined;
 
   constructor(
-    private teacherService: TeacherService,
+    private roomService: RoomService,
     private formBuilder: FormBuilder,
     private activatedRoute: ActivatedRoute,
-    private centerService: CenterService,
-    private roleService: RoleService
+    private roomTypeService: RoomTypeService,
+    private centerService: CenterService
   ) {
     this.form = this.formBuilder.group({
-      dni: ['', Validators.required],
-      pass: ['', Validators.required],
+      id: [''],
       name: ['', Validators.required],
-      surnames: ['', Validators.required],
-      phone: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
-      birthdate: ['', Validators.required],
+      seats_number: ['', Validators.required],
+      floor_number: ['', Validators.required],
+      room_type_id: ['', Validators.required],
       center_cif: ['', Validators.required],
-      role_id: ['', Validators.required],
     });
   }
 
@@ -50,33 +47,30 @@ export class TeacherFormComponent implements OnInit {
     const params = this.activatedRoute.snapshot.params;
 
     this.getAllCenters();
-    this.getAllRoles();
+    this.getAllRoomTypes();
 
-    if (params['dni']) {
+    if (params['id']) {
       this.isEditing = true;
-      this.teacherService.getTeacherByDni(params['dni']).subscribe((res) => {
-        this.teacher = JSON.parse(res.response)[0];
+      this.roomService.getRoomById(params['id']).subscribe((res) => {
+        this.room = JSON.parse(res.response)[0];
 
         if (this.centers)
           this.selectedCenter = this.centers.find(
-            (center) => center.cif === this.teacher.center_cif
+            (center) => center.cif === this.room.center_cif
           );
 
-        if (this.roles)
-          this.selectedRole = this.roles.find(
-            (role) => role.id === this.teacher.role_id
+        if (this.roomTypes)
+          this.selectedRoomType = this.roomTypes.find(
+            (roomType) => roomType.id === this.room.room_type_id
           );
 
         this.form = this.formBuilder.group({
-          dni: this.teacher.dni,
-          pass: this.teacher.pass,
-          name: this.teacher.name,
-          surnames: this.teacher.surnames,
-          phone: this.teacher.phone,
-          email: this.teacher.email,
-          birthdate: this.teacher.birthdate,
-          center_cif: this.selectedCenter,
-          role_id: this.selectedRole,
+          id: this.room.id,
+          name: this.room.name,
+          seats_number: this.room.seats_number,
+          floor_number: this.room.floor_number,
+          room_type_id: this.room.room_type_id,
+          center_cif: this.room.center_cif,
         });
       });
     }
@@ -89,21 +83,21 @@ export class TeacherFormComponent implements OnInit {
     });
   }
 
-  getAllRoles() {
-    this.roleService.getAllRoles().subscribe({
-      next: (res) => (this.roles = JSON.parse(res.response)),
+  getAllRoomTypes() {
+    this.roomTypeService.getAllRoomTypes().subscribe({
+      next: (res) => (this.roomTypes = JSON.parse(res.response)),
       error: (error) => console.log(error),
     });
   }
 
-  createTeacher() {
+  createRoom() {
     const form = {
       ...this.form.value,
       center_cif: this.form.value.center_cif.cif,
-      role_id: this.form.value.role_id.id,
+      room_type_id: this.form.value.room_type_id.id,
     };
 
-    this.teacherService.createTeacher(form).subscribe({
+    this.roomService.createRoom(form).subscribe({
       next: (res: IResponse) => {
         if (res.code === 200) {
           this.created = true;
@@ -118,14 +112,14 @@ export class TeacherFormComponent implements OnInit {
     });
   }
 
-  editTeacher() {
+  editRoom() {
     const form = {
       ...this.form.value,
       center_cif: this.form.value.center_cif.cif,
-      role_id: this.form.value.role_id.id,
+      room_type_id: this.form.value.room_type_id.id,
     };
 
-    this.teacherService.editTeacher(form).subscribe({
+    this.roomService.editRoom(form).subscribe({
       next: (res: IResponse) => {
         if (res.code === 200) {
           this.created = true;

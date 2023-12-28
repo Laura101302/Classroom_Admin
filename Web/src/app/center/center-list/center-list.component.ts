@@ -1,6 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { Table } from 'primeng/table';
+import { Center } from 'src/interfaces/center';
+import { IResponse } from 'src/interfaces/response';
 import { CenterService } from 'src/services/center.service';
 
 @Component({
@@ -10,7 +12,7 @@ import { CenterService } from 'src/services/center.service';
 })
 export class CenterListComponent implements OnInit {
   @ViewChild('dt1') dt1: Table | undefined;
-  centers: any[] = [];
+  centers: Center[] = [];
   error: boolean = false;
   deleted: boolean = false;
   deletedError: boolean = false;
@@ -26,7 +28,7 @@ export class CenterListComponent implements OnInit {
     this.isLoading = true;
 
     this.centerService.getAllCenters().subscribe({
-      next: (res: any) => {
+      next: (res: IResponse) => {
         this.centers = JSON.parse(res.response);
         this.isLoading = false;
       },

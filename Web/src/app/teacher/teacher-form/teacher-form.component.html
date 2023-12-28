@@ -60,30 +60,30 @@
     </div>
 
     <div class="input">
-      <label for="cif_center">Centro</label>
+      <label for="center_cif">Centro</label>
       <p-dropdown
         [options]="centers"
         [(ngModel)]="selectedCenter"
         optionLabel="name"
         [showClear]="false"
         placeholder="Selecciona un centro"
-        id="cif_center"
-        formControlName="cif_center"
+        id="center_cif"
+        formControlName="center_cif"
       ></p-dropdown>
     </div>
   </div>
 
   <div class="input_wrapper">
     <div class="input">
-      <label for="id_role">Rol</label>
+      <label for="role_id">Rol</label>
       <p-dropdown
         [options]="roles"
         [(ngModel)]="selectedRole"
         optionLabel="name"
         [showClear]="false"
         placeholder="Selecciona un rol"
-        id="id_role"
-        formControlName="id_role"
+        id="role_id"
+        formControlName="role_id"
       ></p-dropdown>
     </div>
   </div>

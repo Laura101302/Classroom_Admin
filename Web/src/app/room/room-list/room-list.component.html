@@ -1,30 +1,27 @@
-<h1>Listado de profesores</h1>
+<h1>Listado de salas</h1>
 
 <div class="new-button">
-  <p-button (click)="create()">Nuevo profesor</p-button>
+  <p-button (click)="create()">Nueva sala</p-button>
 </div>
 
-<div *ngIf="teachers.length">
+<div *ngIf="rooms.length">
   <p-table
     #dt1
-    [value]="teachers"
-    dataKey="dni"
+    [value]="rooms"
+    dataKey="id"
     [rows]="10"
     [showCurrentPageReport]="true"
     [rowsPerPageOptions]="[10, 25, 50]"
     [loading]="isLoading"
     [paginator]="true"
-    currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} profesores"
+    currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} salas"
     [globalFilterFields]="[
       '',
-      'dni',
       'name',
-      'surnames',
-      'phone',
-      'email',
-      'birthdate',
-      'center_cif',
-      'role_id'
+      'seats_number',
+      'floor_number',
+      'room_type_id',
+      'center_cif'
     ]"
     styleClass="p-datatable-striped"
     [tableStyle]="{ 'min-width': '50rem' }"
@@ -54,16 +51,6 @@
         <th></th>
         <th>
           <div class="flex align-items-center">
-            DNI
-            <p-columnFilter
-              type="text"
-              field="dni"
-              display="menu"
-            ></p-columnFilter>
-          </div>
-        </th>
-        <th>
-          <div class="flex align-items-center">
             Nombre
             <p-columnFilter
               type="text"
@@ -74,40 +61,30 @@
         </th>
         <th>
           <div class="flex align-items-center">
-            Apellidos
+            Número de asientos
             <p-columnFilter
-              type="text"
-              field="surnames"
+              type="number"
+              field="seats_number"
               display="menu"
             ></p-columnFilter>
           </div>
         </th>
         <th>
           <div class="flex align-items-center">
-            Teléfono
+            Planta
             <p-columnFilter
               type="text"
-              field="phone"
+              field="floor_number"
               display="menu"
             ></p-columnFilter>
           </div>
         </th>
         <th>
           <div class="flex align-items-center">
-            Correo electrónico
+            Tipo
             <p-columnFilter
               type="text"
-              field="email"
-              display="menu"
-            ></p-columnFilter>
-          </div>
-        </th>
-        <th>
-          <div class="flex align-items-center">
-            Fecha de nacimiento
-            <p-columnFilter
-              type="text"
-              field="birthdate"
+              field="room_type_id"
               display="menu"
             ></p-columnFilter>
           </div>
@@ -122,51 +99,38 @@
             ></p-columnFilter>
           </div>
         </th>
-        <th>
-          <div class="flex align-items-center">
-            Rol
-            <p-columnFilter
-              type="text"
-              field="role_id"
-              display="menu"
-            ></p-columnFilter>
-          </div>
-        </th>
       </tr>
     </ng-template>
-    <ng-template pTemplate="body" let-teacher>
+    <ng-template pTemplate="body" let-room>
       <tr>
         <td class="action-buttons">
           <button
             class="pi pi-file-edit showDetails"
-            (click)="edit(teacher.dni)"
+            (click)="edit(room.id)"
           ></button>
           <button
             class="pi pi-trash showDetails"
-            (click)="delete(teacher.dni)"
+            (click)="delete(room.id)"
           ></button>
         </td>
-        <td>{{ teacher.dni }}</td>
-        <td>{{ teacher.name }}</td>
-        <td>{{ teacher.surnames }}</td>
-        <td>{{ teacher.phone }}</td>
-        <td>{{ teacher.email }}</td>
-        <td>{{ teacher.birthdate | date : "dd-MM-yyyy" }}</td>
-        <td>{{ teacher.center_cif }}</td>
-        <td>{{ teacher.role_id }}</td>
+        <td>{{ room.name }}</td>
+        <td>{{ room.seats_number }}</td>
+        <td>{{ room.floor_number }}</td>
+        <td>{{ room.room_type_id }}</td>
+        <td>{{ room.center_cif }}</td>
       </tr>
     </ng-template>
   </p-table>
 </div>
 
-<div *ngIf="!teachers.length || error">
-  <p>No hay profesores para mostrar</p>
+<div *ngIf="!rooms.length || error">
+  <p>No hay salas para mostrar</p>
 </div>
 
 <div *ngIf="deleted">
-  <p>Profesor eliminado correctamente</p>
+  <p>Sala eliminada correctamente</p>
 </div>
 
 <div *ngIf="deletedError">
-  <p>No se ha podido eliminar el profesor</p>
+  <p>No se ha podido eliminar la sala</p>
 </div>
