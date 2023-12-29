@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Login } from 'src/interfaces/login';
 import { IResponse } from 'src/interfaces/response';
@@ -12,7 +12,10 @@ export class LoginService {
   constructor(private http: HttpClient) {}
 
   signIn(body: Login) {
-    return this.http.post<IResponse>(this.url, body);
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    const options = { withCredentials: true, headers: headers };
+
+    return this.http.post<IResponse>(this.url, body, options);
   }
 
   logOut() {

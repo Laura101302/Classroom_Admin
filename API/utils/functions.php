@@ -1,12 +1,4 @@
 <?php
-    function verifyPass($pass, $dbPass) {
-        return password_verify($pass, $dbPass);
-    }
-
-    function hashPass($pass) {
-        return password_hash($pass, PASSWORD_BCRYPT);
-    }
-
     function sendCode($code, $message, $response) {
         if($code == 200){
             $status = 'ok';
@@ -21,5 +13,9 @@
         ];
         http_response_code($code);
         echo json_encode($response);
+    }
+
+    function generateToken() {
+        return bin2hex(random_bytes(32));
     }
 ?>
