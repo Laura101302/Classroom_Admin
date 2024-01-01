@@ -1,22 +1,23 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { IResponse } from 'src/interfaces/response';
-import { LoginService } from 'src/services/login.service';
-import { TeacherService } from 'src/services/teacher.service';
+import { AuthService } from 'src/services/auth.service';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   form!: FormGroup;
   error: boolean = false;
   errorMessage!: string;
 
   constructor(
-    private loginService: LoginService,
-    private formBuilder: FormBuilder
+    private authService: AuthService,
+    private formBuilder: FormBuilder,
+    private router: Router
   ) {
     this.form = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
@@ -24,14 +25,31 @@ export class LoginComponent {
     });
   }
 
-  login() {
-    this.loginService.signIn(this.form.value).subscribe({
+  ngOnInit(): void {
+    this.isAuthenticated();
+  }
+
+  signIn() {
+    this.authService.signIn(this.form.value).subscribe({
       next: (res: IResponse) => {
-        console.log(res);
+        if (res.status === 'ok') {
+          localStorage.setItem('token', res.response);
+          this.router.navigate(['/']).then(() => {
+            window.location.reload();
+          });
+        }
       },
       error: (error) => {
         console.log(error);
       },
     });
+  }
+
+  isAuthenticated() {
+    if (this.authService.isAuthenticated()) this.router.navigate(['/']);
+  }
+
+  logOut() {
+    localStorage.removeItem('token');
   }
 }

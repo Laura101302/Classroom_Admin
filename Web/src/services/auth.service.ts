@@ -6,8 +6,9 @@ import { IResponse } from 'src/interfaces/response';
 @Injectable({
   providedIn: 'root',
 })
-export class LoginService {
+export class AuthService {
   url: string = 'http://localhost/Classroom_Admin/API/controllers/login.php';
+  authUrl: string = '';
 
   constructor(private http: HttpClient) {}
 
@@ -18,7 +19,20 @@ export class LoginService {
     return this.http.post<IResponse>(this.url, body, options);
   }
 
-  logOut() {
-    return;
+  getToken() {
+    return localStorage.getItem('token');
   }
+
+  isAuthenticated() {
+    if (localStorage.getItem('token')) return true;
+    else return false;
+
+    // return this.http.get<boolean>(`${this.url}`);
+
+    // return token !== null && !this.isTokenExpired(token);
+  }
+
+  // isTokenExpired(token: string) {
+  //   return false;
+  // }
 }

@@ -1,9 +1,9 @@
 <div class="layout-wrapper">
-  <div class="layout-sidebar">
+  <div class="layout-sidebar" *ngIf="isLogged">
     <app-menu></app-menu>
   </div>
   <div class="layout-main-container">
-    <div class="layout-main">
+    <div class="layout-main" [ngClass]="isLogged ? 'layout-margin' : ''">
       <router-outlet></router-outlet>
     </div>
   </div>
