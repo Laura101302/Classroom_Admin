@@ -14,8 +14,4 @@
         http_response_code($code);
         echo json_encode($response);
     }
-
-    function generateToken() {
-        return bin2hex(random_bytes(32));
-    }
 ?>

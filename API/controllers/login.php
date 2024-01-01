@@ -21,30 +21,36 @@
     $method = $_SERVER['REQUEST_METHOD'];
     
     switch($method){
+        case 'GET':
+            isAuthenticated();
+            break;
         case 'POST':
             $json_data = file_get_contents("php://input");
             $json = json_decode($json_data);
 
             if (property_exists($json, 'email')) {
                 $signIn = signIn($json);
-
+                
                 if($signIn){
                     session_start();
-                    $token = generateToken(); 
-                    $cookieExpiration = time() + 365 * 24 * 60 * 60;                   
-                    setcookie('token', $token, $cookieExpiration, '/', 'localhost', false, true); 
+                    $email = $json->email;
+                    $token = generateToken($email); 
                     sendCode(SUCCESS_CODE, "Logged in successfully", $token);
                 } else {
-                    sendCode(SERVER_ERROR_CODE, "Failed to login", '');
+                    sendCode(INTERNAL_SERVER_ERROR_CODE, "Failed to login", '');
                 }
             } else {
-                sendCode(SERVER_ERROR_CODE, "Failed to login", '');
+                sendCode(INTERNAL_SERVER_ERROR_CODE, "Failed to login", '');
             }
 
             break;
         default:
-            sendCode(SERVER_ERROR_CODE, "Not allowed method", '');
+            sendCode(INTERNAL_SERVER_ERROR_CODE, "Not allowed method", '');
             exit();
             break;
+    }
+
+    function isAuthenticated() {
+        session_start();
     }
 ?>

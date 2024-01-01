@@ -8,12 +8,12 @@
         $emailExists = getTeacherByEmail($json['email']);
 
         if ($teacherExists) {
-            sendCode(SERVER_ERROR_CODE, "DNI already in use", '');
+            sendCode(INTERNAL_SERVER_ERROR_CODE, "DNI already in use", '');
             exit();
         }
 
         if ($emailExists) {
-            sendCode(SERVER_ERROR_CODE, "Email already in use", '');
+            sendCode(INTERNAL_SERVER_ERROR_CODE, "Email already in use", '');
             exit();
         }
 
