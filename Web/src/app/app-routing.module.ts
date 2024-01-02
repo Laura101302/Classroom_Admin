@@ -9,9 +9,10 @@ import { RoleListComponent } from './role/role-list/role-list.component';
 import { RoomListComponent } from './room/room-list/room-list.component';
 import { RoomFormComponent } from './room/room-form/room-form.component';
 import { LoginComponent } from './login/login.component';
+import { ProfileComponent } from './profile/profile.component';
 
 const routes: Routes = [
-  { path: '', component: TeacherListComponent },
+  { path: '', component: ProfileComponent },
   { path: 'centers', component: CenterListComponent },
   { path: 'centers/create-center', component: CenterFormComponent },
   { path: 'centers/edit-center/:cif', component: CenterFormComponent },

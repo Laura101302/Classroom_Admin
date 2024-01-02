@@ -19,6 +19,10 @@ export class TeacherService {
     return this.http.get<IResponse>(this.url + `?dni=${dni}`);
   }
 
+  getTeacherByEmail(email: string) {
+    return this.http.get<IResponse>(this.url + `?email=${email}`);
+  }
+
   createTeacher(body: Teacher) {
     return this.http.post<IResponse>(this.url, body);
   }

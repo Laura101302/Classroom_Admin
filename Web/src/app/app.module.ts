@@ -24,6 +24,7 @@ import { TableModule } from 'primeng/table';
 import { RoomListComponent } from './room/room-list/room-list.component';
 import { RoomFormComponent } from './room/room-form/room-form.component';
 import { LoginComponent } from './login/login.component';
+import { ProfileComponent } from './profile/profile.component';
 
 @NgModule({
   declarations: [
@@ -38,6 +39,7 @@ import { LoginComponent } from './login/login.component';
     RoomListComponent,
     RoomFormComponent,
     LoginComponent,
+    ProfileComponent,
   ],
   imports: [
     BrowserModule,

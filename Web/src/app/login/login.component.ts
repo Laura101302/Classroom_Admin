@@ -34,6 +34,7 @@ export class LoginComponent implements OnInit {
       next: (res: IResponse) => {
         if (res.status === 'ok') {
           localStorage.setItem('token', res.response);
+          localStorage.setItem('user', this.form.value.email);
           this.router.navigate(['/']).then(() => {
             window.location.reload();
           });
@@ -47,9 +48,5 @@ export class LoginComponent implements OnInit {
 
   isAuthenticated() {
     if (this.authService.isAuthenticated()) this.router.navigate(['/']);
-  }
-
-  logOut() {
-    localStorage.removeItem('token');
   }
 }
