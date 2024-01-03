@@ -65,8 +65,6 @@ export class ProfileComponent implements OnInit {
     });
   }
 
-  changePass(pass: string) {}
-
   deleteAccount(dni: string) {
     this.teacherService.deleteTeacher(dni).subscribe({
       next: (res: IResponse) => {
