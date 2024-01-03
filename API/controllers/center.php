@@ -33,7 +33,7 @@
             if ($create) {
                 sendCode(SUCCESS_CODE, "Created successfully", '');
             } else {
-                sendCode(SERVER_ERROR_CODE, "Error creating", '');
+                sendCode(INTERNAL_SERVER_ERROR_CODE, "Error creating", '');
                 exit();
             }
             break;
@@ -44,7 +44,7 @@
             if ($edit) {
                 sendCode(SUCCESS_CODE, "Correctly edited", '');
             } else {
-                sendCode(SERVER_ERROR_CODE, "Error editing", '');
+                sendCode(INTERNAL_SERVER_ERROR_CODE, "Error editing", '');
                 exit();
             }
             break;
@@ -54,12 +54,12 @@
             if ($delete) {
                 sendCode(SUCCESS_CODE, "Deleted successfully", '');
             } else {
-                sendCode(SERVER_ERROR_CODE, "Error deleting", '');
+                sendCode(INTERNAL_SERVER_ERROR_CODE, "Error deleting", '');
                 exit();
             }
             break;
         default:
-            sendCode(SERVER_ERROR_CODE, "Not allowed method", '');
+            sendCode(INTERNAL_SERVER_ERROR_CODE, "Not allowed method", '');
             exit();
             break;
     }

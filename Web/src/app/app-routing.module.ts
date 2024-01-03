@@ -8,9 +8,12 @@ import { RoleFormComponent } from './role/role-form/role-form.component';
 import { RoleListComponent } from './role/role-list/role-list.component';
 import { RoomListComponent } from './room/room-list/room-list.component';
 import { RoomFormComponent } from './room/room-form/room-form.component';
+import { LoginComponent } from './login/login.component';
+import { ProfileComponent } from './profile/profile/profile.component';
+import { UpdatePassComponent } from './profile/update-pass/update-pass.component';
 
 const routes: Routes = [
-  { path: '', component: TeacherListComponent },
+  { path: '', component: ProfileComponent },
   { path: 'centers', component: CenterListComponent },
   { path: 'centers/create-center', component: CenterFormComponent },
   { path: 'centers/edit-center/:cif', component: CenterFormComponent },
@@ -22,6 +25,8 @@ const routes: Routes = [
   { path: 'rooms', component: RoomListComponent },
   { path: 'rooms/create-room', component: RoomFormComponent },
   { path: 'rooms/edit-room/:id', component: RoomFormComponent },
+  { path: 'login', component: LoginComponent },
+  { path: 'update-pass', component: UpdatePassComponent },
 ];
 
 @NgModule({

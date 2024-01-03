@@ -7,7 +7,7 @@
         $centerExists = getCenterByCif($json['cif']);
 
         if ($centerExists) {
-            sendCode(SERVER_ERROR_CODE, "CIF already in use", '');
+            sendCode(INTERNAL_SERVER_ERROR_CODE, "CIF already in use", '');
             exit();
         }
 

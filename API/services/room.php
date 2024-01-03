@@ -7,7 +7,7 @@
         $roomExists = getRoomById($json['id']);
 
         if ($roomExists) {
-            sendCode(SERVER_ERROR_CODE, "ID already in use", '');
+            sendCode(INTERNAL_SERVER_ERROR_CODE, "ID already in use", '');
             exit();
         }
 

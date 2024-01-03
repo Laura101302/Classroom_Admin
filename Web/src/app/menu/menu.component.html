@@ -1,12 +1,23 @@
-<div>
+<div class="menu">
   <p-menubar [model]="menuItems">
     <ng-template pTemplate="start">
-      <img src="../../assets/logo.png" height="40" class="mr-2" routerLink="/" class="logo" />
+      <img
+        src="../../assets/logo.png"
+        height="40"
+        class="mr-2"
+        routerLink="/"
+        class="logo"
+      />
     </ng-template>
     <ng-template pTemplate="end">
-      <button pButton class="profile-button">
+      <button
+        pButton
+        type="button"
+        class="profile-button"
+        [routerLink]="isLogged ? '/' : '/login'"
+      >
         <span class="pi pi-user"></span>
-        Mi perfil
+        {{ isLogged ? "Mi perfil" : "Iniciar sesión" }}
       </button>
     </ng-template>
   </p-menubar>

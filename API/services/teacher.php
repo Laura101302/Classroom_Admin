@@ -8,23 +8,23 @@
         $emailExists = getTeacherByEmail($json['email']);
 
         if ($teacherExists) {
-            sendCode(SERVER_ERROR_CODE, "DNI already in use", '');
+            sendCode(INTERNAL_SERVER_ERROR_CODE, "DNI already in use", '');
             exit();
         }
 
         if ($emailExists) {
-            sendCode(SERVER_ERROR_CODE, "Email already in use", '');
+            sendCode(INTERNAL_SERVER_ERROR_CODE, "Email already in use", '');
             exit();
         }
 
-        $HASH_PASS = hashPass($json['pass']);
+        $HASH_PASS = password_hash($json['pass'], PASSWORD_BCRYPT);
         $db = getDatabase();
         $sql = $db->prepare("INSERT INTO TEACHER values(?, ?, ?, ?, ?, ?, ?, ?, ?)");
         return $sql->execute([$json['dni'], $HASH_PASS, $json['name'], $json['surnames'], $json['phone'], $json['email'], $json['birthdate'], $json['center_cif'], $json['role_id']]);
     }
 
     function editTeacher($json) {
-        $HASH_PASS = hashPass($json['pass']);
+        $HASH_PASS = password_hash($json['pass'], PASSWORD_BCRYPT);
         $db = getDatabase();
         
         if(isset($json['pass'])){
@@ -62,20 +62,4 @@
         $sql->execute();
         return $sql->fetchAll(PDO::FETCH_ASSOC);
     }
-
-    // function teacherLogin($email, $pass) {
-    //     $user = getTeacherByEmail($email);
-    //     if ($user === false) {
-    //         return false;
-    //     }
-    //     $dbPass = $user->PASS;
-    //     $match = verifyPass($pass, $dbPass);
-    //     if (!$match) {
-    //         return false;
-    //     }
-
-    //     session_start();
-    //     $_SESSION["user"] = $user;
-    //     return true;
-    // }
 ?>

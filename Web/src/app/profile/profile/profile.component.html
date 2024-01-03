@@ -1,0 +1,49 @@
+<div *ngIf="user">
+  <h1>Bienvenido, {{ user.name }}</h1>
+  <h3>Datos personales</h3>
+
+  <div class="info">
+    <div>
+      <p><span>Nombre completo: </span>{{ user.name + " " + user.surnames }}</p>
+      <p><span>Teléfono: </span>{{ user.phone }}</p>
+      <p><span>Correo electrónico: </span>{{ user.email }}</p>
+    </div>
+    <div>
+      <p>
+        <span>Fecha de nacimiento: </span
+        >{{ user.birthdate | date : "dd-MM-yyyy" }}
+      </p>
+      <p><span>Centro: </span>{{ user.center_cif }}</p>
+      <p><span>Rol: </span>{{ user.role_id }}</p>
+    </div>
+  </div>
+
+  <div class="buttons">
+    <p-button
+      type="button"
+      label="Cerrar sesión"
+      routerLink="/login"
+      (onClick)="logOut()"
+    ></p-button>
+    <div class="action-buttons">
+      <p-button
+        type="button"
+        severity="success"
+        label="Editar"
+        [routerLink]="'/teachers/edit-teacher/' + user.dni"
+      ></p-button>
+      <p-button
+        type="button"
+        severity="warning"
+        label="Cambiar contraseña"
+        routerLink="/update-pass"
+      ></p-button>
+      <p-button
+        type="button"
+        severity="danger"
+        label="Eliminar cuenta"
+        (onClick)="deleteAccount(user.dni)"
+      ></p-button>
+    </div>
+  </div>
+</div>

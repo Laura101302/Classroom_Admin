@@ -19,6 +19,10 @@ export class TeacherService {
     return this.http.get<IResponse>(this.url + `?dni=${dni}`);
   }
 
+  getTeacherByEmail(email: string) {
+    return this.http.get<IResponse>(this.url + `?email=${email}`);
+  }
+
   createTeacher(body: Teacher) {
     return this.http.post<IResponse>(this.url, body);
   }
@@ -26,10 +30,6 @@ export class TeacherService {
   editTeacher(body: Teacher) {
     return this.http.put<IResponse>(this.url, body);
   }
-
-  signIn() {}
-
-  logOut() {}
 
   deleteTeacher(dni: string) {
     return this.http.delete<IResponse>(this.url + '/' + dni);
