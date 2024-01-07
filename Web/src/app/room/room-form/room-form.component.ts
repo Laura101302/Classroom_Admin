@@ -23,6 +23,21 @@ export class RoomFormComponent implements OnInit {
   room!: Room;
   roomTypes!: RoomType[];
   selectedRoomType!: RoomType | undefined;
+  reserveTypes = [
+    {
+      id: 1,
+      name: 'Sala entera',
+    },
+    {
+      id: 2,
+      name: 'Puestos individuales',
+    },
+    {
+      id: 3,
+      name: 'Entera / Individual',
+    },
+  ];
+  selectedReserveType!: any;
   centers!: Center[];
   selectedCenter!: Center | undefined;
 
@@ -38,6 +53,7 @@ export class RoomFormComponent implements OnInit {
       name: ['', Validators.required],
       seats_number: ['', Validators.required],
       floor_number: ['', Validators.required],
+      reservation_type: ['', Validators.required],
       room_type_id: ['', Validators.required],
       center_cif: ['', Validators.required],
     });
@@ -54,9 +70,9 @@ export class RoomFormComponent implements OnInit {
       this.roomService.getRoomById(params['id']).subscribe((res) => {
         this.room = JSON.parse(res.response)[0];
 
-        if (this.centers)
-          this.selectedCenter = this.centers.find(
-            (center) => center.cif === this.room.center_cif
+        if (this.reserveTypes)
+          this.selectedReserveType = this.reserveTypes.find(
+            (reserveType) => reserveType.id === this.room.reservation_type
           );
 
         if (this.roomTypes)
@@ -64,11 +80,17 @@ export class RoomFormComponent implements OnInit {
             (roomType) => roomType.id === this.room.room_type_id
           );
 
+        if (this.centers)
+          this.selectedCenter = this.centers.find(
+            (center) => center.cif === this.room.center_cif
+          );
+
         this.form = this.formBuilder.group({
           id: this.room.id,
           name: this.room.name,
           seats_number: this.room.seats_number,
           floor_number: this.room.floor_number,
+          reservation_type: this.room.reservation_type,
           room_type_id: this.room.room_type_id,
           center_cif: this.room.center_cif,
         });
@@ -93,8 +115,9 @@ export class RoomFormComponent implements OnInit {
   createRoom() {
     const form = {
       ...this.form.value,
-      center_cif: this.form.value.center_cif.cif,
+      reservation_type: this.form.value.reservation_type.id,
       room_type_id: this.form.value.room_type_id.id,
+      center_cif: this.form.value.center_cif.cif,
     };
 
     this.roomService.createRoom(form).subscribe({
@@ -115,8 +138,9 @@ export class RoomFormComponent implements OnInit {
   editRoom() {
     const form = {
       ...this.form.value,
-      center_cif: this.form.value.center_cif.cif,
+      reservation_type: this.form.value.reservation_type.id,
       room_type_id: this.form.value.room_type_id.id,
+      center_cif: this.form.value.center_cif.cif,
     };
 
     this.roomService.editRoom(form).subscribe({

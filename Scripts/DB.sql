@@ -47,6 +47,8 @@ CREATE TABLE ROOM(
   name VARCHAR(50),
   seats_number INT(2),
   floor_number INT(2),
+  reservation_type INT(2),
+  state VARCHAR(50),
   room_type_id INT,
   center_cif VARCHAR(9) NOT NULL,
   CONSTRAINT room_room_type_id_fk FOREIGN KEY (room_type_id) REFERENCES ROOM_TYPE(id) ON UPDATE CASCADE ON DELETE CASCADE,
@@ -57,6 +59,7 @@ CREATE TABLE ROOM(
 CREATE TABLE SEAT(
   id INT AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(50),
+  state VARCHAR(50),
   room_id INT,
   CONSTRAINT seat_room_id_fk FOREIGN KEY (room_id) REFERENCES ROOM(id) ON UPDATE CASCADE ON DELETE CASCADE
 );

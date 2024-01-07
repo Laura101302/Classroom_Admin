@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { Table } from 'primeng/table';
-import { Observable, forkJoin, map } from 'rxjs';
+import { Observable, forkJoin, map, of } from 'rxjs';
 import { IResponse } from 'src/interfaces/response';
 import { Room } from 'src/interfaces/room';
 import { CenterService } from 'src/services/center.service';
@@ -40,11 +40,15 @@ export class RoomListComponent implements OnInit {
 
         const observablesArray = roomArray.map((room: Room) => {
           return forkJoin({
+            reservation_type: of(
+              this.getReserveTypeById(room.reservation_type)
+            ),
             room_type: this.getRoomTypeById(room.room_type_id),
             center: this.getCenterByCif(room.center_cif),
           }).pipe(
             map((data) => ({
               ...room,
+              reservation_type: data.reservation_type,
               room_type_id: data.room_type.name,
               center_cif: data.center.name,
             }))
@@ -69,6 +73,27 @@ export class RoomListComponent implements OnInit {
     });
   }
 
+  getReserveTypeById(reserveTypeId: number) {
+    let type = '';
+
+    switch (reserveTypeId) {
+      case 1:
+        type = 'Sala entera';
+        break;
+      case 2:
+        type = 'Puestos individuales';
+        break;
+      case 3:
+        type = 'Entera / Individual';
+        break;
+      default:
+        console.log(reserveTypeId);
+        break;
+    }
+
+    return type;
+  }
+
   getRoomTypeById(roomTypeId: number) {
     return this.roomTypeService
       .getRoomTypeById(roomTypeId)
@@ -85,8 +110,12 @@ export class RoomListComponent implements OnInit {
     this.router.navigate(['rooms/create-room']);
   }
 
+  reserve(id: number) {
+    this.router.navigate(['reservation', id]);
+  }
+
   edit(id: number) {
-    this.router.navigate(['/rooms/edit-room', id]);
+    this.router.navigate(['rooms/edit-room', id]);
   }
 
   delete(id: number) {

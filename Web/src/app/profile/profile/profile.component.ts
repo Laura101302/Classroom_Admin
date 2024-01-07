@@ -79,6 +79,9 @@ export class ProfileComponent implements OnInit {
   logOut() {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
+    localStorage.removeItem('center');
+    localStorage.removeItem('role');
+
     window.location.reload();
   }
 }

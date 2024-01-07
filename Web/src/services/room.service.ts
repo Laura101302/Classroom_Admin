@@ -15,7 +15,7 @@ export class RoomService {
     return this.http.get<IResponse>(this.url);
   }
 
-  getRoomById(id: string) {
+  getRoomById(id: number) {
     return this.http.get<IResponse>(this.url + `?id=${id}`);
   }
 

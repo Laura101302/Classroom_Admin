@@ -11,6 +11,7 @@ import { RoomFormComponent } from './room/room-form/room-form.component';
 import { LoginComponent } from './login/login.component';
 import { ProfileComponent } from './profile/profile/profile.component';
 import { UpdatePassComponent } from './profile/update-pass/update-pass.component';
+import { ReservationFormComponent } from './reservation/reservation-form/reservation-form.component';
 
 const routes: Routes = [
   { path: '', component: ProfileComponent },
@@ -27,6 +28,7 @@ const routes: Routes = [
   { path: 'rooms/edit-room/:id', component: RoomFormComponent },
   { path: 'login', component: LoginComponent },
   { path: 'update-pass', component: UpdatePassComponent },
+  { path: 'reservation/:id', component: ReservationFormComponent },
 ];
 
 @NgModule({

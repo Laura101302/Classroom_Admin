@@ -35,20 +35,33 @@
     </div>
 
     <div class="input">
-      <label for="room_type_id">Tipo</label>
+      <label for="reservation_type">Tipo de reserva</label>
       <p-dropdown
-        [options]="roomTypes"
-        [(ngModel)]="selectedRoomType"
+        [options]="reserveTypes"
+        [(ngModel)]="selectedReserveType"
         optionLabel="name"
         [showClear]="false"
-        placeholder="Selecciona un tipo de sala"
-        id="room_type_id"
-        formControlName="room_type_id"
+        placeholder="Selecciona un tipo"
+        id="reservation_type"
+        formControlName="reservation_type"
       ></p-dropdown>
     </div>
   </div>
 
   <div class="input_wrapper">
+    <div class="input">
+      <label for="room_type_id">Tipo de sala</label>
+      <p-dropdown
+        [options]="roomTypes"
+        [(ngModel)]="selectedRoomType"
+        optionLabel="name"
+        [showClear]="false"
+        placeholder="Selecciona un tipo"
+        id="room_type_id"
+        formControlName="room_type_id"
+      ></p-dropdown>
+    </div>
+
     <div class="input">
       <label for="center_cif">Centro</label>
       <p-dropdown

@@ -12,14 +12,14 @@
         }
 
         $db = getDatabase();
-        $sql = $db->prepare("INSERT INTO ROOM values(?, ?, ?, ?, ?, ?)");
-        return $sql->execute([$json['id'], $json['name'], $json['seats_number'], $json['floor_number'], $json['room_type_id'], $json['center_cif']]);
+        $sql = $db->prepare("INSERT INTO ROOM values(?, ?, ?, ?, ?, ?, ?)");
+        return $sql->execute([$json['id'], $json['name'], $json['seats_number'], $json['floor_number'], $json['reservation_type'], $json['room_type_id'], $json['center_cif']]);
     }
 
     function editRoom($json) {
         $db = getDatabase();
-        $sql = $db->prepare("UPDATE ROOM SET id = ?, name = ?, seats_number = ?, floor_number = ?, room_type_id = ?, center_cif = ? WHERE id = ?");
-        return $sql->execute([$json['id'], $json['name'], $json['seats_number'], $json['floor_number'], $json['room_type_id'], $json['center_cif'], $json['id']]);
+        $sql = $db->prepare("UPDATE ROOM SET id = ?, name = ?, seats_number = ?, floor_number = ?, reservation_type = ?, room_type_id = ?, center_cif = ? WHERE id = ?");
+        return $sql->execute([$json['id'], $json['name'], $json['seats_number'], $json['floor_number'], $json['reservation_type'], $json['room_type_id'], $json['center_cif'], $json['id']]);
     }
 
     function deleteRoom($id){
