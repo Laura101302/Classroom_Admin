@@ -38,6 +38,10 @@ export class RoomFormComponent implements OnInit {
     },
   ];
   selectedReserveType!: any;
+  state = [
+    { id: 1, name: 'Disponible' },
+    { id: 2, name: 'Ocupada' },
+  ];
   centers!: Center[];
   selectedCenter!: Center | undefined;
 
@@ -116,6 +120,7 @@ export class RoomFormComponent implements OnInit {
     const form = {
       ...this.form.value,
       reservation_type: this.form.value.reservation_type.id,
+      state: this.state[0].id,
       room_type_id: this.form.value.room_type_id.id,
       center_cif: this.form.value.center_cif.cif,
     };

@@ -12,6 +12,7 @@ import { LoginComponent } from './login/login.component';
 import { ProfileComponent } from './profile/profile/profile.component';
 import { UpdatePassComponent } from './profile/update-pass/update-pass.component';
 import { ReservationFormComponent } from './reservation/reservation-form/reservation-form.component';
+import { ReservationListComponent } from './reservation/reservation-list/reservation-list.component';
 
 const routes: Routes = [
   { path: '', component: ProfileComponent },
@@ -28,6 +29,7 @@ const routes: Routes = [
   { path: 'rooms/edit-room/:id', component: RoomFormComponent },
   { path: 'login', component: LoginComponent },
   { path: 'update-pass', component: UpdatePassComponent },
+  { path: 'my-reserves', component: ReservationListComponent },
   { path: 'reservation/:id', component: ReservationFormComponent },
 ];
 

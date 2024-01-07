@@ -27,8 +27,10 @@ export class RoomListComponent implements OnInit {
     private roomTypeService: RoomTypeService,
     private centerService: CenterService
   ) {}
+
   ngOnInit(): void {
-    this.getAllRooms();
+    const center = localStorage.getItem('center');
+    if (center) this.getAllRooms();
   }
 
   getAllRooms() {
@@ -43,12 +45,14 @@ export class RoomListComponent implements OnInit {
             reservation_type: of(
               this.getReserveTypeById(room.reservation_type)
             ),
+            state: of(this.getStateById(room.state)),
             room_type: this.getRoomTypeById(room.room_type_id),
             center: this.getCenterByCif(room.center_cif),
           }).pipe(
             map((data) => ({
               ...room,
               reservation_type: data.reservation_type,
+              state: data.state,
               room_type_id: data.room_type.name,
               center_cif: data.center.name,
             }))
@@ -92,6 +96,24 @@ export class RoomListComponent implements OnInit {
     }
 
     return type;
+  }
+
+  getStateById(stateId: number) {
+    let state = '';
+
+    switch (stateId) {
+      case 1:
+        state = 'Disponible';
+        break;
+      case 2:
+        state = 'Ocupada';
+        break;
+      default:
+        console.log(stateId);
+        break;
+    }
+
+    return state;
   }
 
   getRoomTypeById(roomTypeId: number) {

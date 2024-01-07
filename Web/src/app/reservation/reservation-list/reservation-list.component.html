@@ -1,0 +1,81 @@
+<h1>Listado de reservas</h1>
+
+<div class="new-button">
+  <p-button routerLink="/rooms">Nueva reserva</p-button>
+</div>
+
+<div *ngIf="reservations.length">
+  <p-table
+    #dt1
+    [value]="reservations"
+    dataKey="id"
+    [rows]="10"
+    [showCurrentPageReport]="true"
+    [rowsPerPageOptions]="[10, 25, 50]"
+    [loading]="isLoading"
+    [paginator]="true"
+    currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} salas"
+    [globalFilterFields]="['', 'room_id']"
+    styleClass="p-datatable-striped"
+    [tableStyle]="{ 'min-width': '50rem' }"
+  >
+    <ng-template pTemplate="caption">
+      <div class="flex">
+        <button
+          pButton
+          label="Limpiar"
+          class="p-button-outlined"
+          icon="pi pi-filter-slash"
+          (click)="clearFilter(dt1)"
+        ></button>
+        <span class="p-input-icon-left ml-auto">
+          <i class="pi pi-search"></i>
+          <input
+            pInputText
+            type="text"
+            (input)="applyFilterGlobal($event, 'contains')"
+            placeholder="Buscar..."
+          />
+        </span>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="header">
+      <tr>
+        <th></th>
+        <th>
+          <div class="flex align-items-center">
+            Sala
+            <p-columnFilter
+              type="text"
+              field="room_id"
+              display="menu"
+            ></p-columnFilter>
+          </div>
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-room>
+      <tr>
+        <td class="action-buttons">
+          <button
+            class="pi pi-trash showDetails"
+            (click)="delete(room.id, room.room_id)"
+          ></button>
+        </td>
+        <td>{{ room.room_id }}</td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+
+<div *ngIf="!reservations.length || error">
+  <p>No hay reservas para mostrar</p>
+</div>
+
+<div *ngIf="deleted">
+  <p>Reserva eliminada correctamente</p>
+</div>
+
+<div *ngIf="deletedError">
+  <p>No se ha podido eliminar la reserva</p>
+</div>

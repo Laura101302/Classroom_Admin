@@ -88,6 +88,22 @@ export class MenuComponent implements OnInit {
           },
         ],
       },
+
+      {
+        label: 'Reservas',
+        items: [
+          {
+            label: 'Mis reservas',
+            icon: 'pi pi-fw pi-calendar',
+            routerLink: ['my-reserves'],
+          },
+          {
+            label: 'Reservar',
+            icon: 'pi pi-fw pi-calendar',
+            routerLink: ['rooms'],
+          },
+        ],
+      },
     ];
   }
 

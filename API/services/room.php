@@ -12,17 +12,17 @@
         }
 
         $db = getDatabase();
-        $sql = $db->prepare("INSERT INTO ROOM values(?, ?, ?, ?, ?, ?, ?)");
-        return $sql->execute([$json['id'], $json['name'], $json['seats_number'], $json['floor_number'], $json['reservation_type'], $json['room_type_id'], $json['center_cif']]);
+        $sql = $db->prepare("INSERT INTO ROOM values(?, ?, ?, ?, ?, ?, ?, ?)");
+        return $sql->execute([$json['id'], $json['name'], $json['seats_number'], $json['floor_number'], $json['reservation_type'], $json['state'], $json['room_type_id'], $json['center_cif']]);
     }
 
     function editRoom($json) {
         $db = getDatabase();
-        $sql = $db->prepare("UPDATE ROOM SET id = ?, name = ?, seats_number = ?, floor_number = ?, reservation_type = ?, room_type_id = ?, center_cif = ? WHERE id = ?");
-        return $sql->execute([$json['id'], $json['name'], $json['seats_number'], $json['floor_number'], $json['reservation_type'], $json['room_type_id'], $json['center_cif'], $json['id']]);
+        $sql = $db->prepare("UPDATE ROOM SET id = ?, name = ?, seats_number = ?, floor_number = ?, reservation_type = ?, state = ?, room_type_id = ?, center_cif = ? WHERE id = ?");
+        return $sql->execute([$json['id'], $json['name'], $json['seats_number'], $json['floor_number'], $json['reservation_type'], $json['state'], $json['room_type_id'], $json['center_cif'], $json['id']]);
     }
 
-    function deleteRoom($id){
+    function deleteRoom($id) {
         $db = getDatabase();
         $sql = $db->prepare("DELETE FROM ROOM WHERE id = ?");
         return $sql->execute([$id]);
@@ -32,6 +32,13 @@
         $db = getDatabase();
         $sql = $db->prepare("SELECT * FROM ROOM WHERE id = ? LIMIT 1;");
         $sql->execute([$id]);
+        return $sql->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    function getAllRoomsByCif($cif) {
+        $db = getDatabase();
+        $sql = $db->prepare("SELECT * FROM ROOM WHERE center_cif = ?");
+        $sql->execute([$cif]);
         return $sql->fetchAll(PDO::FETCH_ASSOC);
     }
 
