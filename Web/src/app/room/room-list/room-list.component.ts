@@ -20,6 +20,7 @@ export class RoomListComponent implements OnInit {
   deleted: boolean = false;
   deletedError: boolean = false;
   isLoading: boolean = false;
+  center!: string;
 
   constructor(
     private roomService: RoomService,
@@ -30,13 +31,16 @@ export class RoomListComponent implements OnInit {
 
   ngOnInit(): void {
     const center = localStorage.getItem('center');
-    if (center) this.getAllRooms();
+    if (center) {
+      this.center = center;
+      this.getAllRoomsByCif();
+    }
   }
 
-  getAllRooms() {
+  getAllRoomsByCif() {
     this.isLoading = true;
 
-    this.roomService.getAllRooms().subscribe({
+    this.roomService.getAllRoomsByCif(this.center).subscribe({
       next: (res: IResponse) => {
         const roomArray = JSON.parse(res.response);
 
@@ -147,7 +151,7 @@ export class RoomListComponent implements OnInit {
       if (res.code === 200) {
         this.deleted = true;
         this.deletedError = false;
-        this.getAllRooms();
+        this.getAllRoomsByCif();
         setTimeout(() => {
           this.deleted = false;
         }, 3000);

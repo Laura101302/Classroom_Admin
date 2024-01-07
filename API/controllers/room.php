@@ -22,6 +22,8 @@
         case 'GET':
             if(isset($_GET['id'])){
                 sendCode(SUCCESS_CODE, 'Data recovered successfully', json_encode(getRoomById($_GET['id'])));
+            }elseif(isset($_GET['cif'])){
+                sendCode(SUCCESS_CODE, 'Data recovered successfully', json_encode(getAllRoomsByCif($_GET['cif'])));
             }else{
                 sendCode(SUCCESS_CODE, 'Data recovered successfully', json_encode(getAllRooms()));
             }
@@ -38,14 +40,19 @@
             }
             break;
         case 'PUT':
-            $json_data = file_get_contents("php://input");
-            $json = json_decode($json_data, true);
-            $edit = editRoom($json);
-            if ($edit) {
-                sendCode(SUCCESS_CODE, "Correctly edited", '');
-            } else {
-                sendCode(INTERNAL_SERVER_ERROR_CODE, "Error editing", '');
+            if(isset($_GET['id']) && isset($_GET['state'])){
+                sendCode(SUCCESS_CODE, 'Updated successfully', updateState($_GET['id'], $_GET['state']));
                 exit();
+            }else{
+                $json_data = file_get_contents("php://input");
+                $json = json_decode($json_data, true);
+                $edit = editRoom($json);
+                if ($edit) {
+                    sendCode(SUCCESS_CODE, "Correctly edited", '');
+                } else {
+                    sendCode(INTERNAL_SERVER_ERROR_CODE, "Error editing", '');
+                    exit();
+                }
             }
             break;
         case 'DELETE':
