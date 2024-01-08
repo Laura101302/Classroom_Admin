@@ -22,6 +22,8 @@
         case 'GET':
             if(isset($_GET['id'])){
                 sendCode(SUCCESS_CODE, 'Data recovered successfully', json_encode(getReservationById($_GET['id'])));
+            }elseif(isset($_GET['email'])){
+                sendCode(SUCCESS_CODE, 'Data recovered successfully', json_encode(getAllReservationsByTeacherEmail($_GET['email'])));
             }else{
                 sendCode(SUCCESS_CODE, 'Data recovered successfully', json_encode(getAllReservations()));
             }

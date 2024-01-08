@@ -21,6 +21,7 @@ export class RoomListComponent implements OnInit {
   deletedError: boolean = false;
   isLoading: boolean = false;
   center!: string;
+  isAdmin: boolean = false;
 
   constructor(
     private roomService: RoomService,
@@ -31,10 +32,14 @@ export class RoomListComponent implements OnInit {
 
   ngOnInit(): void {
     const center = localStorage.getItem('center');
+    const role = localStorage.getItem('role');
+
     if (center) {
       this.center = center;
       this.getAllRoomsByCif();
     }
+
+    if (role && role === '1') this.isAdmin = true;
   }
 
   getAllRoomsByCif() {

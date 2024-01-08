@@ -18,6 +18,7 @@ export class ReservationListComponent implements OnInit {
   deleted: boolean = false;
   deletedError: boolean = false;
   isLoading: boolean = false;
+  email!: string;
 
   constructor(
     private router: Router,
@@ -26,13 +27,15 @@ export class ReservationListComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.getAllReservations();
+    const email = localStorage.getItem('user');
+    if (email) this.email = email;
+    this.getAllReservesByTeacherEmail();
   }
 
-  getAllReservations() {
+  getAllReservesByTeacherEmail() {
     this.isLoading = true;
 
-    this.reservationService.getAllReserves().subscribe({
+    this.reservationService.getAllReservesByTeacherEmail(this.email).subscribe({
       next: (res: IResponse) => {
         const reservationArray = JSON.parse(res.response);
 
@@ -78,7 +81,7 @@ export class ReservationListComponent implements OnInit {
       if (res.code === 200) {
         this.deleted = true;
         this.deletedError = false;
-        this.getAllReservations();
+        this.getAllReservesByTeacherEmail();
         setTimeout(() => {
           this.deleted = false;
         }, 3000);

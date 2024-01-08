@@ -48,5 +48,12 @@
         $sql->execute();
         return $sql->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    function getAllReservationsByTeacherEmail($email) {
+        $db = getDatabase();
+        $sql = $db->prepare("SELECT * FROM RESERVATION WHERE teacher_email = ?;");
+        $sql->execute([$email]);
+        return $sql->fetchAll(PDO::FETCH_ASSOC);
+    }
 ?>
 

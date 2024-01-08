@@ -15,6 +15,10 @@ export class ReservationService {
     return this.http.get<IResponse>(this.url);
   }
 
+  getAllReservesByTeacherEmail(email: string) {
+    return this.http.get<IResponse>(this.url + `?email=${email}`);
+  }
+
   getReserveById(id: number) {
     return this.http.get<IResponse>(this.url + `?id=${id}`);
   }

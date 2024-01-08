@@ -1,6 +1,6 @@
 <h1>Listado de salas</h1>
 
-<div class="new-button">
+<div class="new-button" *ngIf="isAdmin">
   <p-button (click)="create()">Nueva sala</p-button>
 </div>
 
@@ -139,10 +139,12 @@
           <button
             class="pi pi-file-edit showDetails"
             (click)="edit(room.id)"
+            *ngIf="isAdmin"
           ></button>
           <button
             class="pi pi-trash showDetails"
             (click)="delete(room.id)"
+            *ngIf="isAdmin"
           ></button>
         </td>
         <td>{{ room.name }}</td>
