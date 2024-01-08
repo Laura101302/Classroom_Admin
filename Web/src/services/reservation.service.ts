@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Reserve } from 'src/interfaces/reserve';
 import { IResponse } from 'src/interfaces/response';
 
 @Injectable({
@@ -23,11 +24,11 @@ export class ReservationService {
     return this.http.get<IResponse>(this.url + `?id=${id}`);
   }
 
-  createReserve(body: any) {
+  createReserve(body: Reserve) {
     return this.http.post<IResponse>(this.url, body);
   }
 
-  editReserve(body: any) {
+  editReserve(body: Reserve) {
     return this.http.put<IResponse>(this.url, body);
   }
 

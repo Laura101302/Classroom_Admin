@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, forkJoin, map } from 'rxjs';
+import { Reserve } from 'src/interfaces/reserve';
 import { IResponse } from 'src/interfaces/response';
 import { CenterService } from 'src/services/center.service';
 import { ReservationService } from 'src/services/reservation.service';
@@ -59,7 +59,7 @@ export class ReservationFormComponent implements OnInit {
       id: this.form.value['id'],
       room_id: this.params['id'],
       teacher_email: this.email,
-    };
+    } as Reserve;
 
     this.reservationService.createReserve(body).subscribe({
       next: (res: IResponse) => {

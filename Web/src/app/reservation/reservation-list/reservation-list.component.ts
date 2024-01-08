@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { Table } from 'primeng/table';
 import { forkJoin, map } from 'rxjs';
+import { Reserve } from 'src/interfaces/reserve';
 import { IResponse } from 'src/interfaces/response';
 import { ReservationService } from 'src/services/reservation.service';
 import { RoomService } from 'src/services/room.service';
@@ -13,7 +14,7 @@ import { RoomService } from 'src/services/room.service';
 })
 export class ReservationListComponent implements OnInit {
   @ViewChild('dt1') dt1: Table | undefined;
-  reservations: any[] = [];
+  reservations: Reserve[] = [];
   error: boolean = false;
   deleted: boolean = false;
   deletedError: boolean = false;
@@ -39,7 +40,7 @@ export class ReservationListComponent implements OnInit {
       next: (res: IResponse) => {
         const reservationArray = JSON.parse(res.response);
 
-        const observablesArray = reservationArray.map((r: any) => {
+        const observablesArray = reservationArray.map((r: Reserve) => {
           return forkJoin({
             room: this.getRoomById(r.room_id),
           }).pipe(
@@ -52,7 +53,7 @@ export class ReservationListComponent implements OnInit {
 
         forkJoin(observablesArray).subscribe({
           next: (res) => {
-            this.reservations = res as any[];
+            this.reservations = res as Reserve[];
             this.isLoading = false;
           },
           error: () => {
