@@ -20,6 +20,8 @@ import { ProfileComponent } from './profile/profile/profile.component';
 import { UpdatePassComponent } from './profile/update-pass/update-pass.component';
 import { ReservationFormComponent } from './reservation/reservation-form/reservation-form.component';
 import { ReservationListComponent } from './reservation/reservation-list/reservation-list.component';
+import { SeatFormComponent } from './seat/seat-form/seat-form.component';
+import { SeatListComponent } from './seat/seat-list/seat-list.component';
 
 import { MenuModule } from 'primeng/menu';
 import { SidebarModule } from 'primeng/sidebar';
@@ -48,6 +50,8 @@ import { CheckboxModule } from 'primeng/checkbox';
     UpdatePassComponent,
     ReservationFormComponent,
     ReservationListComponent,
+    SeatFormComponent,
+    SeatListComponent,
   ],
   imports: [
     BrowserModule,

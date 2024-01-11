@@ -19,12 +19,15 @@
   </div>
 
   <div class="buttons">
-    <p-button
+    <button
+      class="p-button log-out"
       type="button"
-      label="Cerrar sesión"
       routerLink="/login"
       (onClick)="logOut()"
-    ></p-button>
+    >
+      <span class="pi pi-sign-out"></span>
+      Cerrar sesión
+    </button>
     <div class="action-buttons">
       <p-button
         type="button"

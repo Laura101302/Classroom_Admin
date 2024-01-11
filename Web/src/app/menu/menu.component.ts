@@ -2,8 +2,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, HostListener, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MenuItem } from 'primeng/api';
-import { IResponse } from 'src/interfaces/response';
 import { AuthService } from 'src/services/auth.service';
+import { TeacherService } from 'src/services/teacher.service';
 
 @Component({
   selector: 'app-menu',
@@ -11,15 +11,16 @@ import { AuthService } from 'src/services/auth.service';
   styleUrls: ['./menu.component.scss'],
 })
 export class MenuComponent implements OnInit {
+  adminMenuItems: MenuItem[] = [];
   menuItems: MenuItem[] = [];
   screenSize: number = window.innerWidth;
   isMobile!: boolean;
   isLogged: boolean = false;
+  isAdmin: boolean = false;
 
   constructor(
     private authService: AuthService,
-    private http: HttpClient,
-    private router: Router
+    private teacherService: TeacherService
   ) {}
 
   @HostListener('window:resize', ['$event'])
@@ -30,9 +31,10 @@ export class MenuComponent implements OnInit {
 
   ngOnInit(): void {
     this.isAuthenticated();
+    this.roleType();
     this.menuType();
 
-    this.menuItems = [
+    this.adminMenuItems = [
       {
         label: 'Centros',
         items: [
@@ -43,7 +45,7 @@ export class MenuComponent implements OnInit {
           },
           {
             label: 'Nuevo centro',
-            icon: 'pi pi-fw pi-building',
+            icon: 'pi pi-fw pi-plus',
             routerLink: ['centers/create-center'],
           },
         ],
@@ -58,7 +60,7 @@ export class MenuComponent implements OnInit {
           },
           {
             label: 'Nuevo profesor',
-            icon: 'pi pi-fw pi-user',
+            icon: 'pi pi-fw pi-user-plus',
             routerLink: ['teachers/create-teacher'],
           },
         ],
@@ -68,7 +70,7 @@ export class MenuComponent implements OnInit {
         items: [
           {
             label: 'Lista de roles',
-            icon: 'pi pi-fw pi-user',
+            icon: 'pi pi-fw pi-list',
             routerLink: ['roles'],
           },
         ],
@@ -83,8 +85,24 @@ export class MenuComponent implements OnInit {
           },
           {
             label: 'Nueva sala',
-            icon: 'pi pi-fw pi-building',
+            icon: 'pi pi-fw pi-plus',
             routerLink: ['rooms/create-room'],
+          },
+        ],
+      },
+
+      {
+        label: 'Puestos',
+        items: [
+          {
+            label: 'Lista de puestos',
+            icon: 'pi pi-fw pi-building',
+            routerLink: ['seats'],
+          },
+          {
+            label: 'Nuevo puesto',
+            icon: 'pi pi-fw pi-plus',
+            routerLink: ['seats/create-seat'],
           },
         ],
       },
@@ -99,7 +117,36 @@ export class MenuComponent implements OnInit {
           },
           {
             label: 'Reservar',
+            icon: 'pi pi-fw pi-plus',
+            routerLink: ['rooms'],
+          },
+        ],
+      },
+    ];
+
+    this.menuItems = [
+      {
+        label: 'Salas',
+        items: [
+          {
+            label: 'Lista de salas',
+            icon: 'pi pi-fw pi-building',
+            routerLink: ['rooms'],
+          },
+        ],
+      },
+
+      {
+        label: 'Reservas',
+        items: [
+          {
+            label: 'Mis reservas',
             icon: 'pi pi-fw pi-calendar',
+            routerLink: ['my-reserves'],
+          },
+          {
+            label: 'Reservar',
+            icon: 'pi pi-fw pi-plus',
             routerLink: ['rooms'],
           },
         ],
@@ -110,6 +157,13 @@ export class MenuComponent implements OnInit {
   isAuthenticated() {
     if (this.authService.isAuthenticated()) this.isLogged = true;
     else this.isLogged = false;
+  }
+
+  roleType() {
+    const role = localStorage.getItem('role');
+
+    if (role && role === '1') this.isAdmin = true;
+    else this.isAdmin = false;
   }
 
   menuType() {

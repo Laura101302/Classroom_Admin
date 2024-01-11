@@ -13,6 +13,8 @@ import { ProfileComponent } from './profile/profile/profile.component';
 import { UpdatePassComponent } from './profile/update-pass/update-pass.component';
 import { ReservationFormComponent } from './reservation/reservation-form/reservation-form.component';
 import { ReservationListComponent } from './reservation/reservation-list/reservation-list.component';
+import { SeatListComponent } from './seat/seat-list/seat-list.component';
+import { SeatFormComponent } from './seat/seat-form/seat-form.component';
 
 const routes: Routes = [
   { path: '', component: ProfileComponent },
@@ -31,6 +33,9 @@ const routes: Routes = [
   { path: 'update-pass', component: UpdatePassComponent },
   { path: 'my-reserves', component: ReservationListComponent },
   { path: 'reservation/:id', component: ReservationFormComponent },
+  { path: 'seats', component: SeatListComponent },
+  { path: 'seats/create-seat', component: SeatFormComponent },
+  { path: 'seats/edit-seat/:id', component: SeatFormComponent },
 ];
 
 @NgModule({
