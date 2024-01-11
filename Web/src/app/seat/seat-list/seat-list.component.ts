@@ -3,19 +3,18 @@ import { Router } from '@angular/router';
 import { Table } from 'primeng/table';
 import { Observable, forkJoin, map, of } from 'rxjs';
 import { IResponse } from 'src/interfaces/response';
-import { Room } from 'src/interfaces/room';
-import { CenterService } from 'src/services/center.service';
-import { RoomTypeService } from 'src/services/room-type.service';
+import { Seat } from 'src/interfaces/seat';
 import { RoomService } from 'src/services/room.service';
+import { SeatService } from 'src/services/seat.service';
 
 @Component({
-  selector: 'app-room-list',
-  templateUrl: './room-list.component.html',
-  styleUrl: './room-list.component.scss',
+  selector: 'app-seat-list',
+  templateUrl: './seat-list.component.html',
+  styleUrl: './seat-list.component.scss',
 })
-export class RoomListComponent implements OnInit {
+export class SeatListComponent implements OnInit {
   @ViewChild('dt1') dt1: Table | undefined;
-  rooms: Room[] = [];
+  seats: Seat[] = [];
   error: boolean = false;
   deleted: boolean = false;
   deletedError: boolean = false;
@@ -24,53 +23,42 @@ export class RoomListComponent implements OnInit {
   isAdmin: boolean = false;
 
   constructor(
+    private seatService: SeatService,
     private roomService: RoomService,
-    private router: Router,
-    private roomTypeService: RoomTypeService,
-    private centerService: CenterService
+    private router: Router
   ) {}
 
   ngOnInit(): void {
-    const center = localStorage.getItem('center');
     const role = localStorage.getItem('role');
 
-    if (center) {
-      this.center = center;
-      this.getAllRoomsByCif();
-    }
+    this.getAllSeats();
 
     if (role && role === '1') this.isAdmin = true;
   }
 
-  getAllRoomsByCif() {
+  getAllSeats() {
     this.isLoading = true;
 
-    this.roomService.getAllRoomsByCif(this.center).subscribe({
+    this.seatService.getAllSeats().subscribe({
       next: (res: IResponse) => {
-        const roomArray = JSON.parse(res.response);
+        const seatArray = JSON.parse(res.response);
 
-        const observablesArray = roomArray.map((room: Room) => {
+        const observablesArray = seatArray.map((seat: Seat) => {
           return forkJoin({
-            reservation_type: of(
-              this.getReserveTypeById(room.reservation_type)
-            ),
-            state: of(this.getState(room.state)),
-            room_type: this.getRoomTypeById(room.room_type_id),
-            center: this.getCenterByCif(room.center_cif),
+            state: of(this.getState(seat.state)),
+            room: this.getRoomById(seat.room_id),
           }).pipe(
             map((data) => ({
-              ...room,
-              reservation_type: data.reservation_type,
+              ...seat,
               state: data.state,
-              room_type_id: data.room_type.name,
-              center_cif: data.center.name,
+              room_id: data.room.name,
             }))
           );
         });
 
         forkJoin(observablesArray).subscribe({
           next: (res) => {
-            this.rooms = res as Room[];
+            this.seats = res as Seat[];
             this.isLoading = false;
           },
           error: () => {
@@ -86,53 +74,26 @@ export class RoomListComponent implements OnInit {
     });
   }
 
-  getReserveTypeById(reserveTypeId: number) {
-    let type = '';
-
-    switch (reserveTypeId) {
-      case 1:
-        type = 'Sala entera';
-        break;
-      case 2:
-        type = 'Puestos individuales';
-        break;
-      case 3:
-        type = 'Entera / Individual';
-        break;
-      default:
-        console.log(reserveTypeId);
-        break;
-    }
-
-    return type;
-  }
-
   getState(state: number) {
     switch (state) {
       case 1:
         return 'Disponible';
       case 0:
-        return 'Ocupada';
+        return 'Ocupado';
       default:
         console.log(state);
         return '';
     }
   }
 
-  getRoomTypeById(roomTypeId: number) {
-    return this.roomTypeService
-      .getRoomTypeById(roomTypeId)
-      .pipe(map((res: IResponse) => JSON.parse(res.response)[0]));
-  }
-
-  getCenterByCif(centerCif: string): Observable<any> {
-    return this.centerService
-      .getCenterByCif(centerCif)
+  getRoomById(roomId: number): Observable<any> {
+    return this.roomService
+      .getRoomById(roomId)
       .pipe(map((res: IResponse) => JSON.parse(res.response)[0]));
   }
 
   create() {
-    this.router.navigate(['rooms/create-room']);
+    this.router.navigate(['seats/create-seat']);
   }
 
   reserve(id: number) {
@@ -140,17 +101,17 @@ export class RoomListComponent implements OnInit {
   }
 
   edit(id: number) {
-    this.router.navigate(['rooms/edit-room', id]);
+    this.router.navigate(['seats/edit-seat', id]);
   }
 
   delete(id: number) {
     this.isLoading = true;
 
-    this.roomService.deleteRoom(id).subscribe((res) => {
+    this.seatService.deleteSeat(id).subscribe((res) => {
       if (res.code === 200) {
         this.deleted = true;
         this.deletedError = false;
-        this.getAllRoomsByCif();
+        this.getAllSeats();
         setTimeout(() => {
           this.deleted = false;
         }, 3000);

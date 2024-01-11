@@ -63,7 +63,7 @@ export class ReservationFormComponent implements OnInit {
 
     this.reservationService.createReserve(body).subscribe({
       next: (res: IResponse) => {
-        this.roomService.updateState(this.params['id'], 2).subscribe({
+        this.roomService.updateState(this.params['id'], 0).subscribe({
           next: (res) => {
             if (res.code === 200) {
               this.created = true;

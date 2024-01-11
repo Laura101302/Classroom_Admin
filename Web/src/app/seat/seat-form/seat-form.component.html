@@ -1,0 +1,45 @@
+<h1>{{ isEditing ? "Editar" : "Nuevo" }} puesto</h1>
+
+<form
+  action=""
+  method="post"
+  [formGroup]="form"
+  (ngSubmit)="isEditing ? editSeat() : createSeat()"
+>
+  <div class="input_wrapper">
+    <div class="input">
+      <label for="name">Nombre</label>
+      <input pInputText type="text" id="name" formControlName="name" />
+    </div>
+
+    <div class="input">
+      <label for="room_id">Sala</label>
+      <p-dropdown
+        [options]="rooms"
+        [(ngModel)]="selectedRoom"
+        optionLabel="name"
+        [showClear]="false"
+        placeholder="Selecciona una sala"
+        id="room_id"
+        formControlName="room_id"
+      ></p-dropdown>
+    </div>
+  </div>
+
+  <div class="buttons">
+    <p-button
+      type="submit"
+      severity="success"
+      [disabled]="form.invalid"
+      [label]="isEditing ? 'Editar' : 'Añadir'"
+    ></p-button>
+    <p-button type="reset" severity="danger" label="Limpiar"></p-button>
+    <p-button type="button" label="Volver" routerLink="/seats"></p-button>
+  </div>
+</form>
+
+<p *ngIf="created">{{ isEditing ? "Editado" : "Creado" }} correctamente</p>
+<p *ngIf="error">
+  Ha ocurrido un error al {{ isEditing ? "editar" : "crear" }} el puesto:
+  {{ errorMessage }}
+</p>

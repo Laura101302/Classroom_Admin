@@ -56,9 +56,10 @@
     <ng-template pTemplate="header">
       <tr>
         <th></th>
-        <th>
+        <th pSortableColumn="name">
           <div class="flex align-items-center">
             Nombre
+            <p-sortIcon field="name"></p-sortIcon>
             <p-columnFilter
               type="text"
               field="name"
@@ -66,9 +67,10 @@
             ></p-columnFilter>
           </div>
         </th>
-        <th>
+        <th pSortableColumn="seats_number">
           <div class="flex align-items-center">
             Número de asientos
+            <p-sortIcon field="seats_number"></p-sortIcon>
             <p-columnFilter
               type="number"
               field="seats_number"
@@ -76,9 +78,10 @@
             ></p-columnFilter>
           </div>
         </th>
-        <th>
+        <th pSortableColumn="floor_number">
           <div class="flex align-items-center">
             Planta
+            <p-sortIcon field="floor_number"></p-sortIcon>
             <p-columnFilter
               type="text"
               field="floor_number"
@@ -86,9 +89,10 @@
             ></p-columnFilter>
           </div>
         </th>
-        <th>
+        <th pSortableColumn="reservation_type">
           <div class="flex align-items-center">
             Tipo de reserva
+            <p-sortIcon field="reservation_type"></p-sortIcon>
             <p-columnFilter
               type="text"
               field="reservation_type"
@@ -96,9 +100,10 @@
             ></p-columnFilter>
           </div>
         </th>
-        <th>
+        <th pSortableColumn="state">
           <div class="flex align-items-center">
             Estado
+            <p-sortIcon field="state"></p-sortIcon>
             <p-columnFilter
               type="text"
               field="state"
@@ -106,9 +111,10 @@
             ></p-columnFilter>
           </div>
         </th>
-        <th>
+        <th pSortableColumn="room_type_id">
           <div class="flex align-items-center">
             Tipo de sala
+            <p-sortIcon field="room_type_id"></p-sortIcon>
             <p-columnFilter
               type="text"
               field="room_type_id"
@@ -116,9 +122,10 @@
             ></p-columnFilter>
           </div>
         </th>
-        <th>
+        <th pSortableColumn="center_cif">
           <div class="flex align-items-center">
             Centro
+            <p-sortIcon field="center_cif"></p-sortIcon>
             <p-columnFilter
               type="text"
               field="center_cif"

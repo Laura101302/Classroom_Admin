@@ -35,4 +35,11 @@ export class AuthService {
   // isTokenExpired(token: string) {
   //   return false;
   // }
+
+  getUserType() {
+    const role = localStorage.getItem('role');
+
+    if (role && role === '1') return 'admin';
+    else return '';
+  }
 }
