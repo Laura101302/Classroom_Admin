@@ -1,11 +1,12 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { Table } from 'primeng/table';
-import { forkJoin, map } from 'rxjs';
+import { forkJoin, map, of } from 'rxjs';
 import { Reserve } from 'src/interfaces/reserve';
 import { IResponse } from 'src/interfaces/response';
 import { ReservationService } from 'src/services/reservation.service';
 import { RoomService } from 'src/services/room.service';
+import { SeatService } from 'src/services/seat.service';
 
 @Component({
   selector: 'app-reservation-list',
@@ -24,7 +25,8 @@ export class ReservationListComponent implements OnInit {
   constructor(
     private router: Router,
     private reservationService: ReservationService,
-    private roomService: RoomService
+    private roomService: RoomService,
+    private seatService: SeatService
   ) {}
 
   ngOnInit(): void {
@@ -43,10 +45,12 @@ export class ReservationListComponent implements OnInit {
         const observablesArray = reservationArray.map((r: Reserve) => {
           return forkJoin({
             room: this.getRoomById(r.room_id),
+            seat: this.getSeatById(r.seat_id),
           }).pipe(
             map((data: any) => ({
               ...r,
               room_id: data.room,
+              seat_id: data.seat,
             }))
           );
         });
@@ -75,7 +79,15 @@ export class ReservationListComponent implements OnInit {
       .pipe(map((res: IResponse) => JSON.parse(res.response)[0].name));
   }
 
-  delete(id: number, idRoom: number) {
+  getSeatById(id: number | undefined) {
+    if (id)
+      return this.seatService
+        .getSeatById(id)
+        .pipe(map((res: IResponse) => JSON.parse(res.response)[0].name));
+    else return of('Sala entera');
+  }
+
+  delete(id: number) {
     this.isLoading = true;
 
     this.reservationService.deleteReserve(id).subscribe((res) => {

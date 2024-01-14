@@ -8,22 +8,40 @@
     </div>
 
     <div class="input">
-      <label for="room">Sala</label>
-      <input pInputText type="text" id="room" formControlName="room" />
+      <label for="center">Centro</label>
+      <input pInputText type="text" id="center" formControlName="center" />
     </div>
   </div>
 
   <div class="input_wrapper">
     <div class="input">
-      <label for="center">Centro</label>
-      <input pInputText type="text" id="center" formControlName="center" />
+      <label for="room">Sala</label>
+      <input pInputText type="text" id="room" formControlName="room" />
     </div>
 
+    <div class="input">
+      <label for="seat_id">Puesto</label>
+      <p-dropdown
+        [options]="seats"
+        [(ngModel)]="selectedSeat"
+        optionLabel="name"
+        [showClear]="false"
+        placeholder="Selecciona un puesto"
+        id="seat_id"
+        formControlName="seat_id"
+      ></p-dropdown>
+    </div>
+  </div>
+
+  <div class="input_wrapper">
     <div class="input checkbox">
       <p-checkbox
         formControlName="whole_room"
         value="Whole room"
         inputId="whole_room"
+        [(ngModel)]="isChecked"
+        [binary]="true"
+        [disabled]="isDisabled"
       ></p-checkbox>
       <label for="whole_room">Reservar toda la sala</label>
     </div>

@@ -35,6 +35,13 @@
         return $sql->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    function getAvailableSeatsByRoomId($room_id){
+        $db = getDatabase();
+        $sql = $db->prepare("SELECT * FROM SEAT WHERE room_id = ? AND state = 1;");
+        $sql->execute([$room_id]);
+        return $sql->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     function getAllSeats() {
         $db = getDatabase();
         $sql = $db->prepare("SELECT * FROM SEAT;");

@@ -12,14 +12,20 @@
         }
 
         $db = getDatabase();
-        $sql = $db->prepare("INSERT INTO RESERVATION values(?, ?, ?)");
-        return $sql->execute([$json['id'], $json['room_id'], $json['teacher_email']]);
+
+        if(isset($json['seat_id'])){
+            $sql = $db->prepare("INSERT INTO RESERVATION values(?, ?, ?, ?)");
+            return $sql->execute([$json['id'], $json['room_id'], $json['seat_id'], $json['teacher_email']]);
+        }else{
+            $sql = $db->prepare("INSERT INTO RESERVATION values(?, ?, ?, ?)");
+            return $sql->execute([$json['id'], $json['room_id'], null, $json['teacher_email']]);
+        }
     }
 
     function editReservation($json) {
         $db = getDatabase();
-        $sql = $db->prepare("UPDATE RESERVATION SET id = ?, room_id = ?, teacher_email = ? WHERE id = ?");
-        return $sql->execute([$json['id'], $json['room_id'], $json['teacher_email'], $json['id']]);
+        $sql = $db->prepare("UPDATE RESERVATION SET id = ?, room_id = ?, seat_id = ?, teacher_email = ? WHERE id = ?");
+        return $sql->execute([$json['id'], $json['room_id'], $json['seat_id'], $json['teacher_email'], $json['id']]);
     }
 
     function deleteReservation($id) {
@@ -28,8 +34,13 @@
         $getRoomId = $db->prepare("SELECT room_id FROM RESERVATION WHERE id = ?");
         $getRoomId->execute([$id]);
         $roomId = $getRoomId->fetchColumn();
+
+        $getSeatId = $db->prepare("SELECT seat_id FROM RESERVATION WHERE id = ?");
+        $getSeatId->execute([$id]);
+        $seatId = $getSeatId->fetchColumn();
     
-        updateState($roomId, 1);
+        updateRoomState($roomId, 1);
+        updateSeatState($seatId, 1);
     
         $sql = $db->prepare("DELETE FROM RESERVATION WHERE id = ?");
         return $sql->execute([$id]);

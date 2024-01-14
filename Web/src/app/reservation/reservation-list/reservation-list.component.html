@@ -15,7 +15,7 @@
     [loading]="isLoading"
     [paginator]="true"
     currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} salas"
-    [globalFilterFields]="['', 'room_id']"
+    [globalFilterFields]="['', 'room_id', 'seat_id']"
     styleClass="p-datatable-striped"
     [tableStyle]="{ 'min-width': '50rem' }"
   >
@@ -42,12 +42,24 @@
     <ng-template pTemplate="header">
       <tr>
         <th></th>
-        <th>
+        <th pSortableColumn="room_id">
           <div class="flex align-items-center">
             Sala
+            <p-sortIcon field="room_id"></p-sortIcon>
             <p-columnFilter
               type="text"
               field="room_id"
+              display="menu"
+            ></p-columnFilter>
+          </div>
+        </th>
+        <th pSortableColumn="seat_id">
+          <div class="flex align-items-center">
+            Puesto
+            <p-sortIcon field="seat_id"></p-sortIcon>
+            <p-columnFilter
+              type="text"
+              field="seat_id"
               display="menu"
             ></p-columnFilter>
           </div>
@@ -59,10 +71,11 @@
         <td class="action-buttons">
           <button
             class="pi pi-trash showDetails"
-            (click)="delete(room.id, room.room_id)"
+            (click)="delete(room.id)"
           ></button>
         </td>
         <td>{{ room.room_id }}</td>
+        <td>{{ room.seat_id }}</td>
       </tr>
     </ng-template>
   </p-table>

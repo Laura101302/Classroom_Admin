@@ -15,6 +15,10 @@ export class SeatService {
     return this.http.get<IResponse>(this.url);
   }
 
+  getAvailableSeatsByRoomId(room_id: number) {
+    return this.http.get<IResponse>(this.url + `?room_id=${room_id}`);
+  }
+
   getSeatById(id: number) {
     return this.http.get<IResponse>(this.url + `?id=${id}`);
   }
