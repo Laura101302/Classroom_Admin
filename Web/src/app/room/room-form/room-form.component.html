@@ -1,3 +1,5 @@
+<p-toast></p-toast>
+
 <h1>{{ isEditing ? "Editar" : "Nueva" }} sala</h1>
 
 <form
@@ -87,9 +89,3 @@
     <p-button type="button" label="Volver" routerLink="/rooms"></p-button>
   </div>
 </form>
-
-<p *ngIf="created">{{ isEditing ? "Editada" : "Creada" }} correctamente</p>
-<p *ngIf="error">
-  Ha ocurrido un error al {{ isEditing ? "editar" : "crear" }} la sala:
-  {{ errorMessage }}
-</p>

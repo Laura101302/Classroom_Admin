@@ -1,3 +1,5 @@
+<p-toast></p-toast>
+
 <h1>Listado de centros</h1>
 
 <div class="new-button">
@@ -138,12 +140,4 @@
 
 <div *ngIf="!centers.length || error">
   <p>No hay centros para mostrar</p>
-</div>
-
-<div *ngIf="deleted">
-  <p>Centro eliminado correctamente</p>
-</div>
-
-<div *ngIf="deletedError">
-  <p>No se ha podido eliminar el centro</p>
 </div>

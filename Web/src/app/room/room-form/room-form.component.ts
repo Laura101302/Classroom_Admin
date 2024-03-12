@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { MessageService } from 'primeng/api';
 import { Center } from 'src/interfaces/center';
 import { IResponse } from 'src/interfaces/response';
 import { Room } from 'src/interfaces/room';
@@ -16,9 +17,6 @@ import { RoomService } from 'src/services/room.service';
 })
 export class RoomFormComponent implements OnInit {
   form!: FormGroup;
-  created: boolean = false;
-  error: boolean = false;
-  errorMessage!: string;
   isEditing: boolean = false;
   room!: Room;
   roomTypes!: RoomType[];
@@ -50,7 +48,8 @@ export class RoomFormComponent implements OnInit {
     private formBuilder: FormBuilder,
     private activatedRoute: ActivatedRoute,
     private roomTypeService: RoomTypeService,
-    private centerService: CenterService
+    private centerService: CenterService,
+    private messageService: MessageService
   ) {
     this.form = this.formBuilder.group({
       id: [''],
@@ -105,14 +104,26 @@ export class RoomFormComponent implements OnInit {
   getAllCenters() {
     this.centerService.getAllCenters().subscribe({
       next: (res) => (this.centers = JSON.parse(res.response)),
-      error: (error) => console.log(error),
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al recuperar los centros',
+        });
+      },
     });
   }
 
   getAllRoomTypes() {
     this.roomTypeService.getAllRoomTypes().subscribe({
       next: (res) => (this.roomTypes = JSON.parse(res.response)),
-      error: (error) => console.log(error),
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al recuperar los tipos de salas',
+        });
+      },
     });
   }
 
@@ -128,14 +139,19 @@ export class RoomFormComponent implements OnInit {
     this.roomService.createRoom(form).subscribe({
       next: (res: IResponse) => {
         if (res.code === 200) {
-          this.created = true;
-          this.error = false;
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Creada',
+            detail: 'Creada correctamente',
+          });
         }
       },
-      error: (error) => {
-        this.created = false;
-        this.error = true;
-        this.errorMessage = error.error.message;
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al crear la sala',
+        });
       },
     });
   }
@@ -151,14 +167,19 @@ export class RoomFormComponent implements OnInit {
     this.roomService.editRoom(form).subscribe({
       next: (res: IResponse) => {
         if (res.code === 200) {
-          this.created = true;
-          this.error = false;
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Editada',
+            detail: 'Editada correctamente',
+          });
         }
       },
-      error: (error) => {
-        this.created = false;
-        this.error = true;
-        this.errorMessage = error.error.message;
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al editar la sala',
+        });
       },
     });
   }

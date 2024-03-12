@@ -1,3 +1,5 @@
+<p-toast></p-toast>
+
 <h1>Listado de salas</h1>
 
 <div class="new-button" *ngIf="isAdmin">
@@ -174,12 +176,4 @@
 
 <div *ngIf="!rooms.length || error">
   <p>No hay salas para mostrar</p>
-</div>
-
-<div *ngIf="deleted">
-  <p>Sala eliminada correctamente</p>
-</div>
-
-<div *ngIf="deletedError">
-  <p>No se ha podido eliminar la sala</p>
 </div>

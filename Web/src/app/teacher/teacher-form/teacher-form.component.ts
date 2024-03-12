@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { MessageService } from 'primeng/api';
 import { Center } from 'src/interfaces/center';
 import { IResponse } from 'src/interfaces/response';
 import { Role } from 'src/interfaces/role';
@@ -16,9 +17,6 @@ import { TeacherService } from 'src/services/teacher.service';
 })
 export class TeacherFormComponent implements OnInit {
   form!: FormGroup;
-  created: boolean = false;
-  error: boolean = false;
-  errorMessage!: string;
   isEditing: boolean = false;
   teacher!: Teacher;
   centers!: Center[];
@@ -31,7 +29,8 @@ export class TeacherFormComponent implements OnInit {
     private formBuilder: FormBuilder,
     private activatedRoute: ActivatedRoute,
     private centerService: CenterService,
-    private roleService: RoleService
+    private roleService: RoleService,
+    private messageService: MessageService
   ) {
     this.form = this.formBuilder.group({
       dni: ['', Validators.required],
@@ -54,30 +53,39 @@ export class TeacherFormComponent implements OnInit {
 
     if (params['dni']) {
       this.isEditing = true;
-      this.teacherService.getTeacherByDni(params['dni']).subscribe((res) => {
-        this.teacher = JSON.parse(res.response)[0];
+      this.teacherService.getTeacherByDni(params['dni']).subscribe({
+        next: (res: IResponse) => {
+          this.teacher = JSON.parse(res.response)[0];
 
-        if (this.centers)
-          this.selectedCenter = this.centers.find(
-            (center) => center.cif === this.teacher.center_cif
-          );
+          if (this.centers)
+            this.selectedCenter = this.centers.find(
+              (center) => center.cif === this.teacher.center_cif
+            );
 
-        if (this.roles)
-          this.selectedRole = this.roles.find(
-            (role) => role.id === this.teacher.role_id
-          );
+          if (this.roles)
+            this.selectedRole = this.roles.find(
+              (role) => role.id === this.teacher.role_id
+            );
 
-        this.form = this.formBuilder.group({
-          dni: this.teacher.dni,
-          pass: this.teacher.pass,
-          name: this.teacher.name,
-          surnames: this.teacher.surnames,
-          phone: this.teacher.phone,
-          email: this.teacher.email,
-          birthdate: this.teacher.birthdate,
-          center_cif: this.selectedCenter,
-          role_id: this.selectedRole,
-        });
+          this.form = this.formBuilder.group({
+            dni: this.teacher.dni,
+            pass: this.teacher.pass,
+            name: this.teacher.name,
+            surnames: this.teacher.surnames,
+            phone: this.teacher.phone,
+            email: this.teacher.email,
+            birthdate: this.teacher.birthdate,
+            center_cif: this.selectedCenter,
+            role_id: this.selectedRole,
+          });
+        },
+        error: () => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Error al recuperar el profesor',
+          });
+        },
       });
     }
   }
@@ -85,14 +93,26 @@ export class TeacherFormComponent implements OnInit {
   getAllCenters() {
     this.centerService.getAllCenters().subscribe({
       next: (res) => (this.centers = JSON.parse(res.response)),
-      error: (error) => console.log(error),
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al recuperar los centros',
+        });
+      },
     });
   }
 
   getAllRoles() {
     this.roleService.getAllRoles().subscribe({
       next: (res) => (this.roles = JSON.parse(res.response)),
-      error: (error) => console.log(error),
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al recuperar los roles',
+        });
+      },
     });
   }
 
@@ -106,14 +126,19 @@ export class TeacherFormComponent implements OnInit {
     this.teacherService.createTeacher(form).subscribe({
       next: (res: IResponse) => {
         if (res.code === 200) {
-          this.created = true;
-          this.error = false;
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Creado',
+            detail: 'Creado correctamente',
+          });
         }
       },
-      error: (error) => {
-        this.created = false;
-        this.error = true;
-        this.errorMessage = error.error.message;
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al crear el profesor',
+        });
       },
     });
   }
@@ -128,14 +153,19 @@ export class TeacherFormComponent implements OnInit {
     this.teacherService.editTeacher(form).subscribe({
       next: (res: IResponse) => {
         if (res.code === 200) {
-          this.created = true;
-          this.error = false;
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Editado',
+            detail: 'Editado correctamente',
+          });
         }
       },
-      error: (error) => {
-        this.created = false;
-        this.error = true;
-        this.errorMessage = error.error.message;
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al editar el profesor',
+        });
       },
     });
   }

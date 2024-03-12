@@ -1,3 +1,5 @@
+<p-toast></p-toast>
+
 <h1>Listado de reservas</h1>
 
 <div class="new-button">
@@ -83,12 +85,4 @@
 
 <div *ngIf="!reservations.length || error">
   <p>No hay reservas para mostrar</p>
-</div>
-
-<div *ngIf="deleted">
-  <p>Reserva eliminada correctamente</p>
-</div>
-
-<div *ngIf="deletedError">
-  <p>No se ha podido eliminar la reserva</p>
 </div>

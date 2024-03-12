@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { MessageService } from 'primeng/api';
 import { Center } from 'src/interfaces/center';
 import { IResponse } from 'src/interfaces/response';
 import { CenterService } from 'src/services/center.service';
@@ -12,16 +13,14 @@ import { CenterService } from 'src/services/center.service';
 })
 export class CenterFormComponent implements OnInit {
   form!: FormGroup;
-  created: boolean = false;
-  error: boolean = false;
-  errorMessage!: string;
   isEditing: boolean = false;
   center!: Center;
 
   constructor(
     private centerService: CenterService,
     private formBuilder: FormBuilder,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private messageService: MessageService
   ) {
     this.form = this.formBuilder.group({
       cif: ['', Validators.required],
@@ -57,14 +56,19 @@ export class CenterFormComponent implements OnInit {
     this.centerService.createCenter(this.form.value).subscribe({
       next: (res: IResponse) => {
         if (res.code === 200) {
-          this.created = true;
-          this.error = false;
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Creado',
+            detail: 'Creado correctamente',
+          });
         }
       },
-      error: (error: any) => {
-        this.created = false;
-        this.error = true;
-        this.errorMessage = error.error.message;
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Ha ocurrido un error al crear el centro',
+        });
       },
     });
   }
@@ -73,14 +77,19 @@ export class CenterFormComponent implements OnInit {
     this.centerService.editCenter(this.form.value).subscribe({
       next: (res: any) => {
         if (res.code === 200) {
-          this.created = true;
-          this.error = false;
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Editado',
+            detail: 'Editado correctamente',
+          });
         }
       },
-      error: (error) => {
-        this.created = false;
-        this.error = true;
-        this.errorMessage = error.error.message;
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Ha ocurrido un error al editar el centro',
+        });
       },
     });
   }

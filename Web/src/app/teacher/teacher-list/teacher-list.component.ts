@@ -1,5 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
+import { MessageService } from 'primeng/api';
 import { Table } from 'primeng/table';
 import { Observable, forkJoin, map } from 'rxjs';
 import { IResponse } from 'src/interfaces/response';
@@ -17,15 +18,14 @@ export class TeacherListComponent {
   @ViewChild('dt1') dt1: Table | undefined;
   teachers: Teacher[] = [];
   error: boolean = false;
-  deleted: boolean = false;
-  deletedError: boolean = false;
   isLoading: boolean = false;
 
   constructor(
     private teacherService: TeacherService,
     private router: Router,
     private centerService: CenterService,
-    private roleService: RoleService
+    private roleService: RoleService,
+    private messageService: MessageService
   ) {}
 
   ngOnInit(): void {
@@ -58,12 +58,24 @@ export class TeacherListComponent {
             this.isLoading = false;
           },
           error: () => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Error al recuperar los datos',
+            });
+
             this.error = true;
             this.isLoading = false;
           },
         });
       },
       error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al recuperar los profesores',
+        });
+
         this.error = true;
         this.isLoading = false;
       },
@@ -93,22 +105,31 @@ export class TeacherListComponent {
   delete(dni: string) {
     this.isLoading = true;
 
-    this.teacherService.deleteTeacher(dni).subscribe((res) => {
-      if (res.code === 200) {
-        this.deleted = true;
-        this.deletedError = false;
-        this.getAllTeachers();
-        setTimeout(() => {
-          this.deleted = false;
-        }, 3000);
-      } else {
-        this.deleted = false;
-        this.deletedError = true;
-        this.isLoading = false;
-        setTimeout(() => {
-          this.deletedError = false;
-        }, 3000);
-      }
+    this.teacherService.deleteTeacher(dni).subscribe({
+      next: (res: IResponse) => {
+        if (res.code === 200) {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Eliminado',
+            detail: 'Profesor eliminado correctamente',
+          });
+          this.getAllTeachers();
+        } else {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Error al eliminar el profesor',
+          });
+          this.isLoading = false;
+        }
+      },
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al eliminar el profesor',
+        });
+      },
     });
   }
 

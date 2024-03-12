@@ -1,3 +1,5 @@
+<p-toast></p-toast>
+
 <h1>Listado de profesores</h1>
 
 <div class="new-button">
@@ -161,12 +163,4 @@
 
 <div *ngIf="!teachers.length || error">
   <p>No hay profesores para mostrar</p>
-</div>
-
-<div *ngIf="deleted">
-  <p>Profesor eliminado correctamente</p>
-</div>
-
-<div *ngIf="deletedError">
-  <p>No se ha podido eliminar el profesor</p>
 </div>

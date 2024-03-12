@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
+import { MessageService } from 'primeng/api';
 import { Table } from 'primeng/table';
 import { forkJoin, map, of } from 'rxjs';
 import { Reserve } from 'src/interfaces/reserve';
@@ -17,8 +18,6 @@ export class ReservationListComponent implements OnInit {
   @ViewChild('dt1') dt1: Table | undefined;
   reservations: Reserve[] = [];
   error: boolean = false;
-  deleted: boolean = false;
-  deletedError: boolean = false;
   isLoading: boolean = false;
   email!: string;
 
@@ -26,7 +25,8 @@ export class ReservationListComponent implements OnInit {
     private router: Router,
     private reservationService: ReservationService,
     private roomService: RoomService,
-    private seatService: SeatService
+    private seatService: SeatService,
+    private messageService: MessageService
   ) {}
 
   ngOnInit(): void {
@@ -61,12 +61,24 @@ export class ReservationListComponent implements OnInit {
             this.isLoading = false;
           },
           error: () => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Error al recuperar las reservas',
+            });
+
             this.error = true;
             this.isLoading = false;
           },
         });
       },
-      error: (error) => {
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al recuperar las reservas',
+        });
+
         this.error = true;
         this.isLoading = false;
       },
@@ -92,19 +104,21 @@ export class ReservationListComponent implements OnInit {
 
     this.reservationService.deleteReserve(id).subscribe((res) => {
       if (res.code === 200) {
-        this.deleted = true;
-        this.deletedError = false;
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Eliminada',
+          detail: 'Reserva eliminada correctamente',
+        });
+
         this.getAllReservesByTeacherEmail();
-        setTimeout(() => {
-          this.deleted = false;
-        }, 3000);
       } else {
-        this.deleted = false;
-        this.deletedError = true;
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al eliminar la reserva',
+        });
+
         this.isLoading = false;
-        setTimeout(() => {
-          this.deletedError = false;
-        }, 3000);
       }
     });
   }

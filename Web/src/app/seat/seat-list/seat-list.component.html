@@ -1,3 +1,5 @@
+<p-toast></p-toast>
+
 <h1>Listado de puestos</h1>
 
 <div class="new-button" *ngIf="isAdmin">
@@ -107,12 +109,4 @@
 
 <div *ngIf="!seats.length || error">
   <p>No hay puestos para mostrar</p>
-</div>
-
-<div *ngIf="deleted">
-  <p>Puesto eliminado correctamente</p>
-</div>
-
-<div *ngIf="deletedError">
-  <p>No se ha podido eliminar el puesto</p>
 </div>

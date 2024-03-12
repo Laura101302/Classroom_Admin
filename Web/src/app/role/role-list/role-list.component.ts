@@ -1,5 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
+import { MessageService } from 'primeng/api';
 import { Table } from 'primeng/table';
 import { IResponse } from 'src/interfaces/response';
 import { Role } from 'src/interfaces/role';
@@ -16,7 +17,11 @@ export class RoleListComponent {
   error: boolean = false;
   isLoading: boolean = false;
 
-  constructor(private roleService: RoleService, private router: Router) {}
+  constructor(
+    private roleService: RoleService,
+    private router: Router,
+    private messageService: MessageService
+  ) {}
 
   ngOnInit(): void {
     this.getAllRoles();
@@ -31,6 +36,12 @@ export class RoleListComponent {
         this.isLoading = false;
       },
       error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al recuperar los roles',
+        });
+
         this.error = true;
         this.isLoading = false;
       },

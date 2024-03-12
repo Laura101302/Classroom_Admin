@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { IResponse } from 'src/interfaces/response';
+import { MessageService } from 'primeng/api';
 import { UserService } from 'src/services/user.service';
 
 @Component({
@@ -10,14 +10,12 @@ import { UserService } from 'src/services/user.service';
 })
 export class UpdatePassComponent implements OnInit {
   form!: FormGroup;
-  edited: boolean = false;
-  error: boolean = false;
-  errorMessage!: string;
   email!: string | null;
 
   constructor(
     private userService: UserService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private messageService: MessageService
   ) {
     this.form = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
@@ -43,12 +41,19 @@ export class UpdatePassComponent implements OnInit {
     };
 
     this.userService.updatePass(obj).subscribe({
-      next: (res: IResponse) => {
-        this.edited = true;
+      next: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Editada',
+          detail: 'Editada correctamente',
+        });
       },
-      error: (error) => {
-        this.error = true;
-        this.errorMessage = error.error.message;
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al editar la contraseña',
+        });
       },
     });
   }

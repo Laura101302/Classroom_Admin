@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
+import { MessageService } from 'primeng/api';
 import { Table } from 'primeng/table';
 import { Observable, forkJoin, map, of } from 'rxjs';
 import { IResponse } from 'src/interfaces/response';
@@ -16,8 +17,6 @@ export class SeatListComponent implements OnInit {
   @ViewChild('dt1') dt1: Table | undefined;
   seats: Seat[] = [];
   error: boolean = false;
-  deleted: boolean = false;
-  deletedError: boolean = false;
   isLoading: boolean = false;
   center!: string;
   isAdmin: boolean = false;
@@ -25,7 +24,8 @@ export class SeatListComponent implements OnInit {
   constructor(
     private seatService: SeatService,
     private roomService: RoomService,
-    private router: Router
+    private router: Router,
+    private messageService: MessageService
   ) {}
 
   ngOnInit(): void {
@@ -62,12 +62,24 @@ export class SeatListComponent implements OnInit {
             this.isLoading = false;
           },
           error: () => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Error al recuperar los datos',
+            });
+
             this.error = true;
             this.isLoading = false;
           },
         });
       },
       error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al recuperar los puestos',
+        });
+
         this.error = true;
         this.isLoading = false;
       },
@@ -107,22 +119,32 @@ export class SeatListComponent implements OnInit {
   delete(id: number) {
     this.isLoading = true;
 
-    this.seatService.deleteSeat(id).subscribe((res) => {
-      if (res.code === 200) {
-        this.deleted = true;
-        this.deletedError = false;
-        this.getAllSeats();
-        setTimeout(() => {
-          this.deleted = false;
-        }, 3000);
-      } else {
-        this.deleted = false;
-        this.deletedError = true;
-        this.isLoading = false;
-        setTimeout(() => {
-          this.deletedError = false;
-        }, 3000);
-      }
+    this.seatService.deleteSeat(id).subscribe({
+      next: (res: IResponse) => {
+        if (res.code === 200) {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Eliminado',
+            detail: 'Puesto eliminado correctamente',
+          });
+
+          this.getAllSeats();
+        } else {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Error al eliminar el puesto',
+          });
+          this.isLoading = false;
+        }
+      },
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al eliminar el puesto',
+        });
+      },
     });
   }
 

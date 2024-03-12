@@ -1,3 +1,5 @@
+<p-toast></p-toast>
+
 <h1>Cambiar contraseña</h1>
 
 <form action="" method="post" [formGroup]="form" (ngSubmit)="updatePass()">
@@ -23,9 +25,3 @@
     <p-button type="button" label="Volver" routerLink="/"></p-button>
   </div>
 </form>
-
-<p *ngIf="edited">Editada correctamente</p>
-<p *ngIf="error">
-  Ha ocurrido un error al editar la contraseña:
-  {{ errorMessage }}
-</p>

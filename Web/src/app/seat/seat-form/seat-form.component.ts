@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { MessageService } from 'primeng/api';
 import { IResponse } from 'src/interfaces/response';
 import { Room } from 'src/interfaces/room';
 import { Seat } from 'src/interfaces/seat';
@@ -14,9 +15,6 @@ import { SeatService } from 'src/services/seat.service';
 })
 export class SeatFormComponent implements OnInit {
   form!: FormGroup;
-  created: boolean = false;
-  error: boolean = false;
-  errorMessage!: string;
   isEditing: boolean = false;
   seat!: Seat;
   rooms!: Room[];
@@ -26,7 +24,8 @@ export class SeatFormComponent implements OnInit {
     private seatService: SeatService,
     private roomService: RoomService,
     private formBuilder: FormBuilder,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private messageService: MessageService
   ) {
     this.form = this.formBuilder.group({
       id: [''],
@@ -43,20 +42,29 @@ export class SeatFormComponent implements OnInit {
 
     if (params['id']) {
       this.isEditing = true;
-      this.seatService.getSeatById(params['id']).subscribe((res) => {
-        this.seat = JSON.parse(res.response)[0];
+      this.seatService.getSeatById(params['id']).subscribe({
+        next: (res: IResponse) => {
+          this.seat = JSON.parse(res.response)[0];
 
-        if (this.rooms)
-          this.selectedRoom = this.rooms.find(
-            (room) => room.id === this.seat.room_id
-          );
+          if (this.rooms)
+            this.selectedRoom = this.rooms.find(
+              (room) => room.id === this.seat.room_id
+            );
 
-        this.form = this.formBuilder.group({
-          id: this.seat.id,
-          name: this.seat.name,
-          state: this.seat.state,
-          room_id: this.seat.room_id,
-        });
+          this.form = this.formBuilder.group({
+            id: this.seat.id,
+            name: this.seat.name,
+            state: this.seat.state,
+            room_id: this.seat.room_id,
+          });
+        },
+        error: () => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Error al recuperar el puesto',
+          });
+        },
       });
     }
   }
@@ -64,7 +72,13 @@ export class SeatFormComponent implements OnInit {
   getAllRooms() {
     this.roomService.getAllRooms().subscribe({
       next: (res) => (this.rooms = JSON.parse(res.response)),
-      error: (error) => console.log(error),
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al recuperar las salas',
+        });
+      },
     });
   }
 
@@ -78,14 +92,19 @@ export class SeatFormComponent implements OnInit {
     this.seatService.createSeat(form).subscribe({
       next: (res: IResponse) => {
         if (res.code === 200) {
-          this.created = true;
-          this.error = false;
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Creado',
+            detail: 'Creado correctamente',
+          });
         }
       },
-      error: (error) => {
-        this.created = false;
-        this.error = true;
-        this.errorMessage = error.error.message;
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al crear el puesto',
+        });
       },
     });
   }
@@ -99,14 +118,19 @@ export class SeatFormComponent implements OnInit {
     this.seatService.editSeat(form).subscribe({
       next: (res: IResponse) => {
         if (res.code === 200) {
-          this.created = true;
-          this.error = false;
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Editado',
+            detail: 'Editado correctamente',
+          });
         }
       },
-      error: (error) => {
-        this.created = false;
-        this.error = true;
-        this.errorMessage = error.error.message;
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al editar el puesto',
+        });
       },
     });
   }

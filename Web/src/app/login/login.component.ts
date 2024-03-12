@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { MessageService } from 'primeng/api';
 import { IResponse } from 'src/interfaces/response';
 import { AuthService } from 'src/services/auth.service';
 import { TeacherService } from 'src/services/teacher.service';
@@ -12,14 +13,13 @@ import { TeacherService } from 'src/services/teacher.service';
 })
 export class LoginComponent implements OnInit {
   form!: FormGroup;
-  error: boolean = false;
-  errorMessage!: string;
 
   constructor(
     private authService: AuthService,
     private formBuilder: FormBuilder,
     private router: Router,
-    private teacherService: TeacherService
+    private teacherService: TeacherService,
+    private messageService: MessageService
   ) {
     this.form = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
@@ -50,14 +50,22 @@ export class LoginComponent implements OnInit {
                   window.location.reload();
                 });
               },
-              error: (error) => {
-                console.log(error);
+              error: () => {
+                this.messageService.add({
+                  severity: 'error',
+                  summary: 'Error',
+                  detail: 'Error al recuperar los datos',
+                });
               },
             });
         }
       },
-      error: (error) => {
-        console.log(error);
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'El usuario o la contraseña son incorrectos',
+        });
       },
     });
   }

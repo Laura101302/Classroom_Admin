@@ -1,3 +1,5 @@
+<p-toast></p-toast>
+
 <h1>Editar rol</h1>
 
 <form action="" method="post" [formGroup]="form" (ngSubmit)="editRole()">
@@ -19,6 +21,3 @@
     <p-button type="button" label="Volver" routerLink="/roles"></p-button>
   </div>
 </form>
-
-<p *ngIf="created">Editado correctamente</p>
-<p *ngIf="error">Ha ocurrido un error al editar el rol: {{ errorMessage }}</p>

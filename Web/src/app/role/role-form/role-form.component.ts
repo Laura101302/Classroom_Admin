@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { MessageService } from 'primeng/api';
 import { IResponse } from 'src/interfaces/response';
 import { Role } from 'src/interfaces/role';
 import { RoleService } from 'src/services/role.service';
@@ -12,16 +13,14 @@ import { RoleService } from 'src/services/role.service';
 })
 export class RoleFormComponent implements OnInit {
   form!: FormGroup;
-  created: boolean = false;
-  error: boolean = false;
-  errorMessage!: string;
   role!: Role;
 
   constructor(
     private roleService: RoleService,
     private formBuilder: FormBuilder,
     private activatedRoute: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private messageService: MessageService
   ) {
     this.form = this.formBuilder.group({
       id: ['', Validators.required],
@@ -32,13 +31,22 @@ export class RoleFormComponent implements OnInit {
   ngOnInit(): void {
     const params = this.activatedRoute.snapshot.params;
     if (params['id']) {
-      this.roleService.getRoleById(params['id']).subscribe((res: IResponse) => {
-        this.role = JSON.parse(res.response)[0];
+      this.roleService.getRoleById(params['id']).subscribe({
+        next: (res: IResponse) => {
+          this.role = JSON.parse(res.response)[0];
 
-        this.form = this.formBuilder.group({
-          id: this.role.id,
-          name: this.role.name,
-        });
+          this.form = this.formBuilder.group({
+            id: this.role.id,
+            name: this.role.name,
+          });
+        },
+        error: () => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Error al recuperar los datos',
+          });
+        },
       });
     }
   }
@@ -47,14 +55,19 @@ export class RoleFormComponent implements OnInit {
     this.roleService.editRole(this.form.value).subscribe({
       next: (res: IResponse) => {
         if (res.code === 200) {
-          this.created = true;
-          this.error = false;
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Editado',
+            detail: 'Editado correctamente',
+          });
         }
       },
-      error: (error) => {
-        this.created = false;
-        this.error = true;
-        this.errorMessage = error.error.message;
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al editar el rol',
+        });
       },
     });
   }
