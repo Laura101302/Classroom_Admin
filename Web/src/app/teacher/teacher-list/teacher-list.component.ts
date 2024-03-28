@@ -1,6 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { Table } from 'primeng/table';
 import { Observable, forkJoin, map } from 'rxjs';
 import { IResponse } from 'src/interfaces/response';
@@ -25,7 +25,8 @@ export class TeacherListComponent {
     private router: Router,
     private centerService: CenterService,
     private roleService: RoleService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private confirmationService: ConfirmationService
   ) {}
 
   ngOnInit(): void {
@@ -100,6 +101,23 @@ export class TeacherListComponent {
 
   edit(dni: string) {
     this.router.navigate(['/teachers/edit-teacher', dni]);
+  }
+
+  warningDelete(teacher: Teacher) {
+    this.confirmationService.confirm({
+      target: event?.target as EventTarget,
+      message:
+        'Se eliminará el profesor: ' + teacher.name + ' ' + teacher.surnames,
+      header: 'Eliminar profesor',
+      icon: 'pi pi-info-circle',
+      acceptButtonStyleClass: 'p-button-danger p-button-text',
+      rejectButtonStyleClass: 'p-button-text',
+
+      accept: () => {
+        this.delete(teacher.dni);
+      },
+      reject: () => {},
+    });
   }
 
   delete(dni: string) {

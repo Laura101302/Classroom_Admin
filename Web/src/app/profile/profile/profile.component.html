@@ -21,7 +21,7 @@
   </div>
 
   <div class="buttons">
-    <button class="p-button log-out" type="button" (click)="logOut()">
+    <button class="p-button log-out" type="button" (click)="warningLogOut()">
       <span class="pi pi-sign-out"></span>
       Cerrar sesión
     </button>
@@ -42,8 +42,35 @@
         type="button"
         severity="danger"
         label="Eliminar cuenta"
-        (onClick)="deleteAccount(user.dni)"
+        (onClick)="warningDeleteAccount(user)"
       ></p-button>
     </div>
   </div>
 </div>
+
+<p-confirmDialog #cd>
+  <ng-template pTemplate="footer">
+    <button
+      type="button"
+      class="p-element p-ripple p-button-text p-confirm-dialog-reject p-button p-component ng-star-inserted"
+      ng-reflect-label="Cancelar"
+      ng-reflect-ng-class="p-confirm-dialog-reject"
+      (click)="cd.reject()"
+    >
+      <i class="none ng-star-inserted"></i>
+      <span class="p-button-label">Cancelar</span>
+    </button>
+    <button
+      type="button"
+      class="p-element p-ripple p-button-danger p-button-text p-confirm-dialog-accept p-button p-component ng-star-inserted"
+      ng-reflect-label="Aceptar"
+      ng-reflect-ng-class="p-confirm-dialog-accept"
+      (click)="cd.accept()"
+    >
+      <i class="none ng-star-inserted"></i>
+      <span class="p-button-label"
+        >{{ isLogOut ? "Cerrar sesión" : "Eliminar cuenta" }}
+      </span>
+    </button>
+  </ng-template>
+</p-confirmDialog>

@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { Table } from 'primeng/table';
 import { Observable, forkJoin, map, of } from 'rxjs';
 import { IResponse } from 'src/interfaces/response';
@@ -27,7 +27,8 @@ export class RoomListComponent implements OnInit {
     private router: Router,
     private roomTypeService: RoomTypeService,
     private centerService: CenterService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private confirmationService: ConfirmationService
   ) {}
 
   ngOnInit(): void {
@@ -147,6 +148,22 @@ export class RoomListComponent implements OnInit {
 
   edit(id: number) {
     this.router.navigate(['rooms/edit-room', id]);
+  }
+
+  warningDelete(room: Room) {
+    this.confirmationService.confirm({
+      target: event?.target as EventTarget,
+      message: 'Se eliminará la sala: ' + room.name,
+      header: 'Eliminar sala',
+      icon: 'pi pi-info-circle',
+      acceptButtonStyleClass: 'p-button-danger p-button-text',
+      rejectButtonStyleClass: 'p-button-text',
+
+      accept: () => {
+        this.delete(room.id);
+      },
+      reject: () => {},
+    });
   }
 
   delete(id: number) {

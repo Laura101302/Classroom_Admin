@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { IResponse } from 'src/interfaces/response';
 import { Teacher } from 'src/interfaces/teacher';
 import { CenterService } from 'src/services/center.service';
@@ -14,12 +14,14 @@ import { TeacherService } from 'src/services/teacher.service';
 export class ProfileComponent implements OnInit {
   user!: Teacher;
   userEmail!: string | null;
+  isLogOut: boolean = false;
 
   constructor(
     private teacherService: TeacherService,
     private centerService: CenterService,
     private roleService: RoleService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private confirmationService: ConfirmationService
   ) {}
 
   ngOnInit(): void {
@@ -79,6 +81,22 @@ export class ProfileComponent implements OnInit {
     });
   }
 
+  warningDeleteAccount(user: Teacher) {
+    this.confirmationService.confirm({
+      target: event?.target as EventTarget,
+      message: '¿Estás seguro? Se eliminará la cuenta de usuario',
+      header: 'Eliminar cuenta',
+      icon: 'pi pi-exclamation-triangle',
+      acceptButtonStyleClass: 'p-button-danger p-button-text',
+      rejectButtonStyleClass: 'p-button-text',
+
+      accept: () => {
+        this.deleteAccount(user.dni);
+      },
+      reject: () => {},
+    });
+  }
+
   deleteAccount(dni: string) {
     this.teacherService.deleteTeacher(dni).subscribe({
       next: () => {
@@ -90,6 +108,27 @@ export class ProfileComponent implements OnInit {
           summary: 'Error',
           detail: 'Error al eliminar la cuenta',
         });
+      },
+    });
+  }
+
+  warningLogOut() {
+    this.isLogOut = true;
+
+    this.confirmationService.confirm({
+      target: event?.target as EventTarget,
+      message: '¿Estás seguro? Tendrás que volver a iniciar sesión',
+      header: 'Cerrar sesión',
+      icon: 'pi pi-exclamation-triangle',
+      acceptButtonStyleClass: 'p-button-danger p-button-text',
+      rejectButtonStyleClass: 'p-button-text',
+
+      accept: () => {
+        this.isLogOut = false;
+        this.logOut();
+      },
+      reject: () => {
+        this.isLogOut = false;
       },
     });
   }

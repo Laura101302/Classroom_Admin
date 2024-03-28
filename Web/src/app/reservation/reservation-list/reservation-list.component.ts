@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { Table } from 'primeng/table';
 import { forkJoin, map, of } from 'rxjs';
 import { Reserve } from 'src/interfaces/reserve';
@@ -26,7 +26,8 @@ export class ReservationListComponent implements OnInit {
     private reservationService: ReservationService,
     private roomService: RoomService,
     private seatService: SeatService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private confirmationService: ConfirmationService
   ) {}
 
   ngOnInit(): void {
@@ -97,6 +98,26 @@ export class ReservationListComponent implements OnInit {
         .getSeatById(id)
         .pipe(map((res: IResponse) => JSON.parse(res.response)[0].name));
     else return of('Sala entera');
+  }
+
+  warningDelete(reserve: Reserve) {
+    this.confirmationService.confirm({
+      target: event?.target as EventTarget,
+      message:
+        'Se eliminará la reserva del puesto: ' +
+        reserve.seat_id +
+        ', ' +
+        reserve.room_id,
+      header: 'Eliminar reserva',
+      icon: 'pi pi-info-circle',
+      acceptButtonStyleClass: 'p-button-danger p-button-text',
+      rejectButtonStyleClass: 'p-button-text',
+
+      accept: () => {
+        this.delete(reserve.id);
+      },
+      reject: () => {},
+    });
   }
 
   delete(id: number) {

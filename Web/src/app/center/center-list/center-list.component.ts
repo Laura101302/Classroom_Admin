@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { Table } from 'primeng/table';
 import { Center } from 'src/interfaces/center';
 import { IResponse } from 'src/interfaces/response';
@@ -20,7 +20,8 @@ export class CenterListComponent implements OnInit {
   constructor(
     private centerService: CenterService,
     private router: Router,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private confirmationService: ConfirmationService
   ) {}
 
   ngOnInit(): void {
@@ -53,6 +54,22 @@ export class CenterListComponent implements OnInit {
 
   edit(cif: string) {
     this.router.navigate(['/centers/edit-center', cif]);
+  }
+
+  warningDelete(center: Center) {
+    this.confirmationService.confirm({
+      target: event?.target as EventTarget,
+      message: 'Se eliminará el centro: ' + center.name,
+      header: 'Eliminar centro',
+      icon: 'pi pi-info-circle',
+      acceptButtonStyleClass: 'p-button-danger p-button-text',
+      rejectButtonStyleClass: 'p-button-text',
+
+      accept: () => {
+        this.delete(center.cif);
+      },
+      reject: () => {},
+    });
   }
 
   delete(cif: string) {
