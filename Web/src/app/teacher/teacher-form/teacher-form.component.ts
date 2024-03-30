@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { Center } from 'src/interfaces/center';
 import { IResponse } from 'src/interfaces/response';
@@ -30,7 +30,8 @@ export class TeacherFormComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private centerService: CenterService,
     private roleService: RoleService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private router: Router
   ) {
     this.form = this.formBuilder.group({
       dni: ['', Validators.required],
@@ -131,6 +132,10 @@ export class TeacherFormComponent implements OnInit {
             summary: 'Creado',
             detail: 'Creado correctamente',
           });
+
+          setTimeout(() => {
+            this.router.navigate(['teachers']);
+          }, 2000);
         }
       },
       error: () => {
@@ -158,6 +163,10 @@ export class TeacherFormComponent implements OnInit {
             summary: 'Editado',
             detail: 'Editado correctamente',
           });
+
+          setTimeout(() => {
+            this.router.navigate(['teachers']);
+          }, 2000);
         }
       },
       error: () => {

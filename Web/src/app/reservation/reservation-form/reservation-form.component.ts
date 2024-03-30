@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { MessageService } from 'primeng/api';
 import { Reserve } from 'src/interfaces/reserve';
 import { IResponse } from 'src/interfaces/response';
 import { Seat } from 'src/interfaces/seat';
@@ -17,9 +18,6 @@ import { SeatService } from 'src/services/seat.service';
 export class ReservationFormComponent implements OnInit {
   params!: any;
   form!: FormGroup;
-  created: boolean = false;
-  error: boolean = false;
-  errorMessage!: string;
   email!: string | null;
   center!: string | null;
   seats!: Seat[];
@@ -34,7 +32,8 @@ export class ReservationFormComponent implements OnInit {
     private centerService: CenterService,
     private reservationService: ReservationService,
     private router: Router,
-    private seatService: SeatService
+    private seatService: SeatService,
+    private messageService: MessageService
   ) {
     this.form = this.formBuilder.group({
       id: [''],
@@ -77,16 +76,28 @@ export class ReservationFormComponent implements OnInit {
           this.seatService
             .updateState(this.selectedSeat.id, 0)
             .subscribe((res: IResponse) => {
-              const availableSeats = this.getAvailableSeatsByRoomId(
-                this.params['id']
-              );
+              if (res.code === 200) {
+                this.getAvailableSeatsByRoomId(this.params['id']);
+
+                this.messageService.add({
+                  severity: 'success',
+                  summary: 'Reservada',
+                  detail: 'Reservada correctamente',
+                });
+
+                setTimeout(() => {
+                  this.router.navigate(['my-reserves']);
+                }, 2000);
+              }
             });
-        } else this.updateRoomState();
+        } else this.updateRoomState(true);
       },
-      error: (error) => {
-        this.created = false;
-        this.error = true;
-        this.errorMessage = error.error.message;
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al crear la reserva',
+        });
       },
     });
   }
@@ -119,7 +130,13 @@ export class ReservationFormComponent implements OnInit {
 
           this.form.patchValue({ room: response.name });
         },
-        error: () => (this.error = true),
+        error: () => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Error al recuperar los datos',
+          });
+        },
       });
     }, 0);
   }
@@ -128,9 +145,16 @@ export class ReservationFormComponent implements OnInit {
     this.seatService.getAvailableSeatsByRoomId(room_id).subscribe({
       next: (res: IResponse) => {
         this.seats = JSON.parse(res.response);
+        if (this.seats.length === 0) this.updateRoomState(false);
         return this.seats;
       },
-      error: (error) => console.log(error),
+      error: (error) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al recuperar los puestos',
+        });
+      },
     });
   }
 
@@ -138,27 +162,48 @@ export class ReservationFormComponent implements OnInit {
     this.centerService.getCenterByCif(centerCif).subscribe({
       next: (res: IResponse) =>
         this.form.patchValue({ center: JSON.parse(res.response)[0].name }),
-      error: () => (this.error = true),
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al recuperar los datos',
+        });
+      },
     });
   }
 
-  updateRoomState() {
+  updateRoomState(fullRoom: boolean) {
     this.roomService.updateState(this.params['id'], 0).subscribe({
       next: (res) => {
         if (res.code === 200) {
-          this.created = true;
-          this.error = false;
+          if (fullRoom)
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Reservada',
+              detail: 'Reservada correctamente',
+            });
 
           setTimeout(() => {
             this.router.navigate(['my-reserves']);
           }, 2000);
         }
       },
-      error: (error) => {
-        this.created = false;
-        this.error = true;
-        this.errorMessage = error.error.message;
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al crear la reserva',
+        });
       },
     });
+  }
+
+  checkbox(event: any) {
+    this.isChecked = event.checked;
+
+    if (this.isChecked) {
+      this.form.get('seat_id')?.setValue('');
+      this.form.get('seat_id')?.disable();
+    } else this.form.get('seat_id')?.enable();
   }
 }

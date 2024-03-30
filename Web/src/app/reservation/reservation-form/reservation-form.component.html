@@ -1,3 +1,5 @@
+<p-toast></p-toast>
+
 <h1>Reservar</h1>
 
 <form action="" method="post" [formGroup]="form" (ngSubmit)="createReserve()">
@@ -42,6 +44,7 @@
         [(ngModel)]="isChecked"
         [binary]="true"
         [disabled]="isDisabled"
+        (onChange)="checkbox($event)"
       ></p-checkbox>
       <label for="whole_room">Reservar toda la sala</label>
     </div>
@@ -57,9 +60,3 @@
     <p-button type="button" label="Volver" routerLink="/rooms"></p-button>
   </div>
 </form>
-
-<p *ngIf="created">Reservada correctamente</p>
-<p *ngIf="error">
-  Ha ocurrido un error al crear la reserva:
-  {{ errorMessage }}
-</p>

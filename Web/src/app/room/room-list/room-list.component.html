@@ -144,6 +144,9 @@
             class="pi pi-calendar showDetails"
             (click)="reserve(room.id)"
             [disabled]="room.state !== 'Disponible'"
+            [ngStyle]="{
+              cursor: room.state === 'Disponible' ? 'pointer' : 'default'
+            }"
           ></button>
           <button
             class="pi pi-file-edit showDetails"
