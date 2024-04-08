@@ -1,12 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { Center } from 'src/interfaces/center';
 import { IResponse } from 'src/interfaces/response';
+import { Role } from 'src/interfaces/role';
 import { Room } from 'src/interfaces/room';
 import { RoomType } from 'src/interfaces/room-type';
 import { CenterService } from 'src/services/center.service';
+import { RoleService } from 'src/services/role.service';
 import { RoomTypeService } from 'src/services/room-type.service';
 import { RoomService } from 'src/services/room.service';
 
@@ -42,6 +44,8 @@ export class RoomFormComponent implements OnInit {
   ];
   centers!: Center[];
   selectedCenter!: Center | undefined;
+  roles!: Role[];
+  selectedRoles!: Role[];
 
   constructor(
     private roomService: RoomService,
@@ -49,7 +53,9 @@ export class RoomFormComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private roomTypeService: RoomTypeService,
     private centerService: CenterService,
-    private messageService: MessageService
+    private roleService: RoleService,
+    private messageService: MessageService,
+    private router: Router
   ) {
     this.form = this.formBuilder.group({
       id: [''],
@@ -59,6 +65,7 @@ export class RoomFormComponent implements OnInit {
       reservation_type: ['', Validators.required],
       room_type_id: ['', Validators.required],
       center_cif: ['', Validators.required],
+      allowed_roles_ids: ['', Validators.required],
     });
   }
 
@@ -67,6 +74,7 @@ export class RoomFormComponent implements OnInit {
 
     this.getAllCenters();
     this.getAllRoomTypes();
+    this.getAllRoles();
 
     if (params['id']) {
       this.isEditing = true;
@@ -88,6 +96,17 @@ export class RoomFormComponent implements OnInit {
             (center) => center.cif === this.room.center_cif
           );
 
+        if (this.roles) {
+          this.selectedRoles = [];
+
+          this.room.allowed_roles_ids.split(',').map((allowedRoleId) => {
+            this.roles.map((role) => {
+              if (parseInt(allowedRoleId) === role.id)
+                this.selectedRoles.push(role);
+            });
+          });
+        }
+
         this.form = this.formBuilder.group({
           id: this.room.id,
           name: this.room.name,
@@ -96,6 +115,7 @@ export class RoomFormComponent implements OnInit {
           reservation_type: this.room.reservation_type,
           room_type_id: this.room.room_type_id,
           center_cif: this.room.center_cif,
+          allowed_roles_ids: this.room.allowed_roles_ids,
         });
       });
     }
@@ -103,7 +123,7 @@ export class RoomFormComponent implements OnInit {
 
   getAllCenters() {
     this.centerService.getAllCenters().subscribe({
-      next: (res) => (this.centers = JSON.parse(res.response)),
+      next: (res: IResponse) => (this.centers = JSON.parse(res.response)),
       error: () => {
         this.messageService.add({
           severity: 'error',
@@ -116,7 +136,7 @@ export class RoomFormComponent implements OnInit {
 
   getAllRoomTypes() {
     this.roomTypeService.getAllRoomTypes().subscribe({
-      next: (res) => (this.roomTypes = JSON.parse(res.response)),
+      next: (res: IResponse) => (this.roomTypes = JSON.parse(res.response)),
       error: () => {
         this.messageService.add({
           severity: 'error',
@@ -127,13 +147,31 @@ export class RoomFormComponent implements OnInit {
     });
   }
 
+  getAllRoles() {
+    this.roleService.getAllRoles().subscribe({
+      next: (res: IResponse) => (this.roles = JSON.parse(res.response)),
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al recuperar los roles',
+        });
+      },
+    });
+  }
+
   createRoom() {
+    const roles_ids = this.form.value.allowed_roles_ids.map(
+      (role: Role) => role.id
+    );
+
     const form = {
       ...this.form.value,
       reservation_type: this.form.value.reservation_type.id,
       state: this.state[0].id,
       room_type_id: this.form.value.room_type_id.id,
       center_cif: this.form.value.center_cif.cif,
+      allowed_roles_ids: roles_ids,
     };
 
     this.roomService.createRoom(form).subscribe({
@@ -144,6 +182,10 @@ export class RoomFormComponent implements OnInit {
             summary: 'Creada',
             detail: 'Creada correctamente',
           });
+
+          setTimeout(() => {
+            this.router.navigate(['rooms']);
+          }, 2000);
         }
       },
       error: () => {
@@ -157,11 +199,17 @@ export class RoomFormComponent implements OnInit {
   }
 
   editRoom() {
+    const roles_ids = this.form.value.allowed_roles_ids.map(
+      (role: Role) => role.id
+    );
+
     const form = {
       ...this.form.value,
       reservation_type: this.form.value.reservation_type.id,
+      state: this.room.state,
       room_type_id: this.form.value.room_type_id.id,
       center_cif: this.form.value.center_cif.cif,
+      allowed_roles_ids: roles_ids,
     };
 
     this.roomService.editRoom(form).subscribe({
@@ -172,6 +220,10 @@ export class RoomFormComponent implements OnInit {
             summary: 'Editada',
             detail: 'Editada correctamente',
           });
+
+          setTimeout(() => {
+            this.router.navigate(['rooms']);
+          }, 2000);
         }
       },
       error: () => {

@@ -78,6 +78,20 @@
     </div>
   </div>
 
+  <div class="input_wrapper">
+    <div class="input">
+      <label for="allowed_roles_ids">Reserva permitida</label>
+      <p-multiSelect
+        [options]="roles"
+        [(ngModel)]="selectedRoles"
+        optionLabel="name"
+        placeholder="Selecciona los roles"
+        id="allowed_roles_ids"
+        formControlName="allowed_roles_ids"
+      ></p-multiSelect>
+    </div>
+  </div>
+
   <div class="buttons">
     <p-button
       type="submit"

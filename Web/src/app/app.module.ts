@@ -35,6 +35,7 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { ToastModule } from 'primeng/toast';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { MultiSelectModule } from 'primeng/multiselect';
 
 @NgModule({
   declarations: [
@@ -74,6 +75,7 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
     CheckboxModule,
     ToastModule,
     ConfirmDialogModule,
+    MultiSelectModule,
   ],
   providers: [MessageService, ConfirmationService],
   bootstrap: [AppComponent],

@@ -49,6 +49,7 @@ CREATE TABLE ROOM(
   floor_number INT(2),
   reservation_type INT(2),
   state TINYINT(1),
+  allowed_roles_ids VARCHAR(10),
   room_type_id INT,
   center_cif VARCHAR(9) NOT NULL,
   CONSTRAINT room_room_type_id_fk FOREIGN KEY (room_type_id) REFERENCES ROOM_TYPE(id) ON UPDATE CASCADE ON DELETE CASCADE,
