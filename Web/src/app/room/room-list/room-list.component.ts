@@ -21,6 +21,7 @@ export class RoomListComponent implements OnInit {
   isLoading: boolean = false;
   center!: string;
   isAdmin: boolean = false;
+  role!: string | null;
 
   constructor(
     private roomService: RoomService,
@@ -33,14 +34,14 @@ export class RoomListComponent implements OnInit {
 
   ngOnInit(): void {
     const center = localStorage.getItem('center');
-    const role = localStorage.getItem('role');
+    this.role = localStorage.getItem('role');
 
     if (center) {
       this.center = center;
       this.getAllRoomsByCif();
     }
 
-    if (role && role === '1') this.isAdmin = true;
+    if (this.role && this.role === '1') this.isAdmin = true;
   }
 
   getAllRoomsByCif() {
@@ -70,8 +71,16 @@ export class RoomListComponent implements OnInit {
         });
 
         forkJoin(observablesArray).subscribe({
-          next: (res) => {
-            this.rooms = res as Room[];
+          next: (res: any) => {
+            if (this.role === '1') this.rooms = res;
+            else {
+              res.map((room: Room) => {
+                if (room.allowed_roles_ids.split(',').includes(this.role!)) {
+                  this.rooms.push(room);
+                }
+              });
+            }
+
             this.isLoading = false;
           },
           error: () => {
