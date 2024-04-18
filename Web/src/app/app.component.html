@@ -1,4 +1,4 @@
-<div class="layout-wrapper">
+<div [ngClass]="isLogged ? 'layout-wrapper' : ''">
   <div>
     <div class="layout-sidebar" *ngIf="isLogged">
       <app-menu></app-menu>
@@ -7,5 +7,5 @@
       <router-outlet></router-outlet>
     </div>
   </div>
-  <app-footer></app-footer>
+  <app-footer *ngIf="isLogged"></app-footer>
 </div>
