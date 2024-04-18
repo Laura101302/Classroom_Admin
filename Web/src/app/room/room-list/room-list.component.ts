@@ -2,10 +2,9 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Table } from 'primeng/table';
-import { Observable, forkJoin, map, of } from 'rxjs';
+import { forkJoin, map, of } from 'rxjs';
 import { IResponse } from 'src/interfaces/response';
 import { Room } from 'src/interfaces/room';
-import { CenterService } from 'src/services/center.service';
 import { RoomTypeService } from 'src/services/room-type.service';
 import { RoomService } from 'src/services/room.service';
 
@@ -27,7 +26,6 @@ export class RoomListComponent implements OnInit {
     private roomService: RoomService,
     private router: Router,
     private roomTypeService: RoomTypeService,
-    private centerService: CenterService,
     private messageService: MessageService,
     private confirmationService: ConfirmationService
   ) {}
@@ -58,14 +56,12 @@ export class RoomListComponent implements OnInit {
             ),
             state: of(this.getState(room.state)),
             room_type: this.getRoomTypeById(room.room_type_id),
-            center: this.getCenterByCif(room.center_cif),
           }).pipe(
             map((data) => ({
               ...room,
               reservation_type: data.reservation_type,
               state: data.state,
               room_type_id: data.room_type.name,
-              center_cif: data.center.name,
             }))
           );
         });
@@ -141,12 +137,6 @@ export class RoomListComponent implements OnInit {
       .pipe(map((res: IResponse) => JSON.parse(res.response)[0]));
   }
 
-  getCenterByCif(centerCif: string): Observable<any> {
-    return this.centerService
-      .getCenterByCif(centerCif)
-      .pipe(map((res: IResponse) => JSON.parse(res.response)[0]));
-  }
-
   create() {
     this.router.navigate(['rooms/create-room']);
   }
@@ -186,7 +176,10 @@ export class RoomListComponent implements OnInit {
             summary: 'Eliminada',
             detail: 'Sala eliminada correctamente',
           });
-          this.getAllRoomsByCif();
+
+          setTimeout(() => {
+            location.reload();
+          }, 2000);
         } else {
           this.messageService.add({
             severity: 'error',

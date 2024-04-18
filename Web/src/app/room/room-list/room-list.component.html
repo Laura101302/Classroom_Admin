@@ -29,8 +29,7 @@
       'floor_number',
       'reservation_type',
       'state',
-      'room_type_id',
-      'center_cif'
+      'room_type_id'
     ]"
     styleClass="p-datatable-striped"
     [tableStyle]="{ 'min-width': '50rem' }"
@@ -124,17 +123,6 @@
             ></p-columnFilter>
           </div>
         </th>
-        <th pSortableColumn="center_cif">
-          <div class="flex align-items-center">
-            Centro
-            <p-sortIcon field="center_cif"></p-sortIcon>
-            <p-columnFilter
-              type="text"
-              field="center_cif"
-              display="menu"
-            ></p-columnFilter>
-          </div>
-        </th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-room>
@@ -171,7 +159,6 @@
           {{ room.state }}
         </td>
         <td>{{ room.room_type_id }}</td>
-        <td>{{ room.center_cif }}</td>
       </tr>
     </ng-template>
   </p-table>
