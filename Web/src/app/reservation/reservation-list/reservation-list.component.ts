@@ -131,7 +131,9 @@ export class ReservationListComponent implements OnInit {
           detail: 'Reserva eliminada correctamente',
         });
 
-        this.getAllReservesByTeacherEmail();
+        setTimeout(() => {
+          location.reload();
+        }, 2000);
       } else {
         this.messageService.add({
           severity: 'error',

@@ -145,7 +145,9 @@ export class SeatListComponent implements OnInit {
             detail: 'Puesto eliminado correctamente',
           });
 
-          this.getAllSeats();
+          setTimeout(() => {
+            location.reload();
+          }, 2000);
         } else {
           this.messageService.add({
             severity: 'error',

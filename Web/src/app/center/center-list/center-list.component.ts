@@ -82,7 +82,10 @@ export class CenterListComponent implements OnInit {
           summary: 'Eliminado',
           detail: 'Centro eliminado correctamente',
         });
-        this.getAllCenters();
+
+        setTimeout(() => {
+          location.reload();
+        }, 2000);
       } else {
         this.messageService.add({
           severity: 'error',

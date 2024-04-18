@@ -131,7 +131,10 @@ export class TeacherListComponent {
             summary: 'Eliminado',
             detail: 'Profesor eliminado correctamente',
           });
-          this.getAllTeachers();
+
+          setTimeout(() => {
+            location.reload();
+          }, 2000);
         } else {
           this.messageService.add({
             severity: 'error',
