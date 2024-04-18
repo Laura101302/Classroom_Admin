@@ -1,9 +1,6 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, HostListener, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { AuthService } from 'src/services/auth.service';
-import { TeacherService } from 'src/services/teacher.service';
 
 @Component({
   selector: 'app-menu',
@@ -18,10 +15,7 @@ export class MenuComponent implements OnInit {
   isLogged: boolean = false;
   isAdmin: boolean = false;
 
-  constructor(
-    private authService: AuthService,
-    private teacherService: TeacherService
-  ) {}
+  constructor(private authService: AuthService) {}
 
   @HostListener('window:resize', ['$event'])
   onResize(): void {
@@ -169,5 +163,14 @@ export class MenuComponent implements OnInit {
   menuType() {
     if (this.screenSize <= 1024) this.isMobile = true;
     else this.isMobile = false;
+  }
+
+  logOut() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    localStorage.removeItem('center');
+    localStorage.removeItem('role');
+
+    window.location.reload();
   }
 }

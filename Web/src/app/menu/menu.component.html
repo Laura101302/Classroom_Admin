@@ -10,15 +10,23 @@
       />
     </ng-template>
     <ng-template pTemplate="end">
-      <button
-        pButton
-        type="button"
-        class="profile-button"
-        [routerLink]="isLogged ? '/' : '/login'"
-      >
-        <span class="pi pi-user"></span>
-        {{ isLogged ? "Mi perfil" : "Iniciar sesión" }}
-      </button>
+      <div class="buttons">
+        <p-button
+          icon="pi pi-user"
+          [rounded]="true"
+          [text]="true"
+          severity="secondary"
+          [routerLink]="'/'"
+        ></p-button>
+
+        <p-button
+          icon="pi pi-sign-out"
+          [rounded]="true"
+          [text]="true"
+          severity="secondary"
+          (click)="logOut()"
+        ></p-button>
+      </div>
     </ng-template>
   </p-menubar>
 
@@ -33,15 +41,23 @@
       />
     </ng-template>
     <ng-template pTemplate="end">
-      <button
-        pButton
-        type="button"
-        class="profile-button"
-        [routerLink]="isLogged ? '/' : '/login'"
-      >
-        <span class="pi pi-user"></span>
-        {{ isLogged ? "Mi perfil" : "Iniciar sesión" }}
-      </button>
+      <div class="buttons">
+        <p-button
+          icon="pi pi-user"
+          [rounded]="true"
+          [text]="true"
+          severity="secondary"
+          [routerLink]="'/'"
+        ></p-button>
+
+        <p-button
+          icon="pi pi-sign-out"
+          [rounded]="true"
+          [text]="true"
+          severity="secondary"
+          (click)="logOut()"
+        ></p-button>
+      </div>
     </ng-template>
   </p-menubar>
 </div>

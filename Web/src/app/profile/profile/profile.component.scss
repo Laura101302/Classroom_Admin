@@ -12,9 +12,5 @@
 .buttons {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-
-  .log-out {
-    gap: 1vw;
-  }
+  justify-content: flex-end;
 }

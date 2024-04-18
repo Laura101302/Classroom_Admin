@@ -22,6 +22,7 @@ import { ReservationFormComponent } from './reservation/reservation-form/reserva
 import { ReservationListComponent } from './reservation/reservation-list/reservation-list.component';
 import { SeatFormComponent } from './seat/seat-form/seat-form.component';
 import { SeatListComponent } from './seat/seat-list/seat-list.component';
+import { FooterComponent } from './layout/footer/footer.component';
 
 import { MenuModule } from 'primeng/menu';
 import { SidebarModule } from 'primeng/sidebar';
@@ -56,6 +57,7 @@ import { MultiSelectModule } from 'primeng/multiselect';
     ReservationListComponent,
     SeatFormComponent,
     SeatListComponent,
+    FooterComponent,
   ],
   imports: [
     BrowserModule,

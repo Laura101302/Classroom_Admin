@@ -21,10 +21,6 @@
   </div>
 
   <div class="buttons">
-    <button class="p-button log-out" type="button" (click)="warningLogOut()">
-      <span class="pi pi-sign-out"></span>
-      Cerrar sesión
-    </button>
     <div class="action-buttons">
       <p-button
         type="button"
@@ -71,9 +67,7 @@
       (click)="cd.accept()"
     >
       <i class="none ng-star-inserted"></i>
-      <span class="p-button-label"
-        >{{ isLogOut ? "Cerrar sesión" : "Eliminar cuenta" }}
-      </span>
+      <span class="p-button-label">Eliminar cuenta </span>
     </button>
   </ng-template>
 </p-confirmDialog>

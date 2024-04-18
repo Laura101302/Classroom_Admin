@@ -14,7 +14,6 @@ import { TeacherService } from 'src/services/teacher.service';
 export class ProfileComponent implements OnInit {
   user!: Teacher;
   userEmail!: string | null;
-  isLogOut: boolean = false;
 
   constructor(
     private teacherService: TeacherService,
@@ -108,27 +107,6 @@ export class ProfileComponent implements OnInit {
           summary: 'Error',
           detail: 'Error al eliminar la cuenta',
         });
-      },
-    });
-  }
-
-  warningLogOut() {
-    this.isLogOut = true;
-
-    this.confirmationService.confirm({
-      target: event?.target as EventTarget,
-      message: '¿Estás seguro? Tendrás que volver a iniciar sesión',
-      header: 'Cerrar sesión',
-      icon: 'pi pi-exclamation-triangle',
-      acceptButtonStyleClass: 'p-button-danger p-button-text',
-      rejectButtonStyleClass: 'p-button-text',
-
-      accept: () => {
-        this.isLogOut = false;
-        this.logOut();
-      },
-      reject: () => {
-        this.isLogOut = false;
       },
     });
   }
