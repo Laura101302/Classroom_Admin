@@ -12,7 +12,7 @@ import { CenterListComponent } from './center/center-list/center-list.component'
 import { CenterFormComponent } from './center/center-form/center-form.component';
 import { RoleFormComponent } from './role/role-form/role-form.component';
 import { RoleListComponent } from './role/role-list/role-list.component';
-import { MenuComponent } from './menu/menu.component';
+import { MenuComponent } from './layout/menu/menu.component';
 import { RoomListComponent } from './room/room-list/room-list.component';
 import { RoomFormComponent } from './room/room-form/room-form.component';
 import { LoginComponent } from './login/login.component';
