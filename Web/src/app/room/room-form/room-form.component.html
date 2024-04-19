@@ -65,21 +65,6 @@
     </div>
 
     <div class="input">
-      <label for="center_cif">Centro</label>
-      <p-dropdown
-        [options]="centers"
-        [(ngModel)]="selectedCenter"
-        optionLabel="name"
-        [showClear]="false"
-        placeholder="Selecciona un centro"
-        id="center_cif"
-        formControlName="center_cif"
-      ></p-dropdown>
-    </div>
-  </div>
-
-  <div class="input_wrapper">
-    <div class="input">
       <label for="allowed_roles_ids">Reserva permitida</label>
       <p-multiSelect
         [options]="roles"

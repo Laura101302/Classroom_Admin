@@ -46,6 +46,7 @@ export class RoomFormComponent implements OnInit {
   selectedCenter!: Center | undefined;
   roles!: Role[];
   selectedRoles!: Role[];
+  center!: string;
 
   constructor(
     private roomService: RoomService,
@@ -64,17 +65,20 @@ export class RoomFormComponent implements OnInit {
       floor_number: ['', Validators.required],
       reservation_type: ['', Validators.required],
       room_type_id: ['', Validators.required],
-      center_cif: ['', Validators.required],
       allowed_roles_ids: ['', Validators.required],
     });
   }
 
   ngOnInit(): void {
     const params = this.activatedRoute.snapshot.params;
+    const center = localStorage.getItem('center');
 
-    this.getAllCenters();
-    this.getAllRoomTypes();
-    this.getAllRoles();
+    if (center) {
+      this.center = center;
+
+      this.getAllRoomTypes();
+      this.getAllRoles();
+    }
 
     if (params['id']) {
       this.isEditing = true;
@@ -121,19 +125,6 @@ export class RoomFormComponent implements OnInit {
     }
   }
 
-  getAllCenters() {
-    this.centerService.getAllCenters().subscribe({
-      next: (res: IResponse) => (this.centers = JSON.parse(res.response)),
-      error: () => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Error al recuperar los centros',
-        });
-      },
-    });
-  }
-
   getAllRoomTypes() {
     this.roomTypeService.getAllRoomTypes().subscribe({
       next: (res: IResponse) => (this.roomTypes = JSON.parse(res.response)),
@@ -170,7 +161,7 @@ export class RoomFormComponent implements OnInit {
       reservation_type: this.form.value.reservation_type.id,
       state: this.state[0].id,
       room_type_id: this.form.value.room_type_id.id,
-      center_cif: this.form.value.center_cif.cif,
+      center_cif: this.center,
       allowed_roles_ids: roles_ids,
     };
 
