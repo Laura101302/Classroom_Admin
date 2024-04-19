@@ -30,9 +30,13 @@ export class SeatListComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    const center = localStorage.getItem('center');
     const role = localStorage.getItem('role');
 
-    this.getAllSeats();
+    if (center) {
+      this.center = center;
+      this.getAllSeats();
+    }
 
     if (role && role === '1') this.isAdmin = true;
   }
@@ -53,13 +57,17 @@ export class SeatListComponent implements OnInit {
               ...seat,
               state: data.state,
               room_id: data.room.name,
+              center_cif: data.room.center_cif,
             }))
           );
         });
 
         forkJoin(observablesArray).subscribe({
           next: (res) => {
-            this.seats = res as Seat[];
+            this.seats = (res as Seat[]).filter(
+              (seat) => seat.center_cif === this.center
+            );
+
             this.isLoading = false;
           },
           error: () => {

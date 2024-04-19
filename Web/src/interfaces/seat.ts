@@ -3,4 +3,5 @@ export interface Seat {
   name: string;
   state: number;
   room_id: number;
+  center_cif?: string;
 }
