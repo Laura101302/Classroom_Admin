@@ -24,6 +24,8 @@
                 sendCode(SUCCESS_CODE, 'Data recovered successfully', json_encode(getTeacherByDni($_GET['dni'])));
             }else if(isset($_GET['email'])){
                 sendCode(SUCCESS_CODE, 'Data recovered successfully', json_encode(getTeacherByEmail($_GET['email'])));
+            }else if(isset($_GET['cif'])){
+                sendCode(SUCCESS_CODE, 'Data recovered successfully', json_encode(getAllTeachersByCif($_GET['cif'])));
             }else{
                 sendCode(SUCCESS_CODE, 'Data recovered successfully', json_encode(getAllTeachers()));
             }

@@ -19,6 +19,7 @@ export class TeacherListComponent {
   teachers: Teacher[] = [];
   error: boolean = false;
   isLoading: boolean = false;
+  center!: string;
 
   constructor(
     private teacherService: TeacherService,
@@ -30,13 +31,71 @@ export class TeacherListComponent {
   ) {}
 
   ngOnInit(): void {
-    this.getAllTeachers();
+    const center = localStorage.getItem('center');
+    const role = localStorage.getItem('role');
+
+    if (center) {
+      this.center = center;
+
+      if (role && role === '0') this.getAllTeachers();
+      else this.getAllTeachersByCif();
+    }
   }
 
   getAllTeachers() {
     this.isLoading = true;
 
     this.teacherService.getAllTeachers().subscribe({
+      next: (res: IResponse) => {
+        const teacherArray = JSON.parse(res.response);
+
+        const observablesArray = teacherArray.map((teacher: Teacher) => {
+          return forkJoin({
+            center: this.getCenterByCif(teacher.center_cif),
+            role: this.getRoleById(teacher.role_id),
+          }).pipe(
+            map((data) => ({
+              ...teacher,
+              center_cif: data.center.name,
+              role_id: data.role.name,
+            }))
+          );
+        });
+
+        forkJoin(observablesArray).subscribe({
+          next: (res) => {
+            this.teachers = res as Teacher[];
+            this.isLoading = false;
+          },
+          error: () => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Error al recuperar los datos',
+            });
+
+            this.error = true;
+            this.isLoading = false;
+          },
+        });
+      },
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al recuperar los profesores',
+        });
+
+        this.error = true;
+        this.isLoading = false;
+      },
+    });
+  }
+
+  getAllTeachersByCif() {
+    this.isLoading = true;
+
+    this.teacherService.getAllTeachersByCif(this.center).subscribe({
       next: (res: IResponse) => {
         const teacherArray = JSON.parse(res.response);
 

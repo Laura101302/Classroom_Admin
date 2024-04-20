@@ -56,6 +56,13 @@
         return $sql->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    function getAllTeachersByCif($cif){
+        $db = getDatabase();
+        $sql = $db->prepare("SELECT * FROM TEACHER WHERE center_cif = ?");
+        $sql->execute([$cif]);
+        return $sql->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     function getAllTeachers() {
         $db = getDatabase();
         $sql = $db->prepare("SELECT * FROM TEACHER;");
