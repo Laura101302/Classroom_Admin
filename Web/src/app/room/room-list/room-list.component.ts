@@ -2,9 +2,10 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Table } from 'primeng/table';
-import { forkJoin, map, of } from 'rxjs';
+import { forkJoin, map, Observable, of } from 'rxjs';
 import { IResponse } from 'src/interfaces/response';
 import { Room } from 'src/interfaces/room';
+import { CenterService } from 'src/services/center.service';
 import { RoomTypeService } from 'src/services/room-type.service';
 import { RoomService } from 'src/services/room.service';
 
@@ -19,6 +20,7 @@ export class RoomListComponent implements OnInit {
   error: boolean = false;
   isLoading: boolean = false;
   center!: string;
+  isGlobalAdmin: boolean = false;
   isAdmin: boolean = false;
   role!: string | null;
 
@@ -26,6 +28,7 @@ export class RoomListComponent implements OnInit {
     private roomService: RoomService,
     private router: Router,
     private roomTypeService: RoomTypeService,
+    private centerService: CenterService,
     private messageService: MessageService,
     private confirmationService: ConfirmationService
   ) {}
@@ -36,10 +39,72 @@ export class RoomListComponent implements OnInit {
 
     if (center) {
       this.center = center;
-      this.getAllRoomsByCif();
+
+      if (this.role && this.role === '0') {
+        this.isGlobalAdmin = true;
+        this.getAllRooms();
+      } else this.getAllRoomsByCif();
     }
 
     if (this.role && this.role === '1') this.isAdmin = true;
+  }
+
+  getAllRooms() {
+    this.isLoading = true;
+
+    this.roomService.getAllRooms().subscribe({
+      next: (res: IResponse) => {
+        const roomArray = JSON.parse(res.response);
+
+        const observablesArray = roomArray.map((room: Room) => {
+          return forkJoin({
+            reservation_type: of(
+              this.getReserveTypeById(room.reservation_type)
+            ),
+            state: of(this.getState(room.state)),
+            room_type: this.getRoomTypeById(room.room_type_id),
+            center: this.getCenterByCif(room.center_cif),
+          }).pipe(
+            map((data) => ({
+              ...room,
+              reservation_type: data.reservation_type,
+              state: data.state,
+              room_type_id: data.room_type.name,
+              center_cif: data.center.name,
+            }))
+          );
+        });
+
+        forkJoin(observablesArray).subscribe({
+          next: (res: any) => {
+            if (this.role === '0' || this.role === '1') this.rooms = res;
+            else {
+              res.map((room: Room) => {
+                if (room.allowed_roles_ids.split(',').includes(this.role!)) {
+                  this.rooms.push(room);
+                }
+              });
+            }
+
+            this.isLoading = false;
+          },
+          error: () => {
+            this.error = true;
+            this.isLoading = false;
+          },
+        });
+      },
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al recuperar las salas',
+        });
+
+        this.error = true;
+        this.isLoading = false;
+      },
+    });
   }
 
   getAllRoomsByCif() {
@@ -134,6 +199,12 @@ export class RoomListComponent implements OnInit {
   getRoomTypeById(roomTypeId: number) {
     return this.roomTypeService
       .getRoomTypeById(roomTypeId)
+      .pipe(map((res: IResponse) => JSON.parse(res.response)[0]));
+  }
+
+  getCenterByCif(centerCif: string): Observable<any> {
+    return this.centerService
+      .getCenterByCif(centerCif)
       .pipe(map((res: IResponse) => JSON.parse(res.response)[0]));
   }
 

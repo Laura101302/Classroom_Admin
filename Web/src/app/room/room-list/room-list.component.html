@@ -2,11 +2,11 @@
 
 <h1>Listado de salas</h1>
 
-<div class="new-button" *ngIf="isAdmin">
+<div class="new-button" *ngIf="isGlobalAdmin || isAdmin">
   <p-button (click)="create()">Nueva sala</p-button>
 </div>
 
-<p *ngIf="rooms.length" class="advise">
+<p *ngIf="rooms.length && !isGlobalAdmin" class="advise">
   Pulse sobre "<span class="pi pi-calendar"></span>" para ver la disponibilidad
   de la sala
 </p>
@@ -22,15 +22,28 @@
     [loading]="isLoading"
     [paginator]="true"
     currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} salas"
-    [globalFilterFields]="[
-      '',
-      'name',
-      'seats_number',
-      'floor_number',
-      'reservation_type',
-      'state',
-      'room_type_id'
-    ]"
+    [globalFilterFields]="
+      isGlobalAdmin
+        ? [
+            '',
+            'name',
+            'seats_number',
+            'floor_number',
+            'reservation_type',
+            'state',
+            'room_type_id',
+            'center_cif'
+          ]
+        : [
+            '',
+            'name',
+            'seats_number',
+            'floor_number',
+            'reservation_type',
+            'state',
+            'room_type_id'
+          ]
+    "
     styleClass="p-datatable-striped"
     [tableStyle]="{ 'min-width': '50rem' }"
   >
@@ -123,12 +136,24 @@
             ></p-columnFilter>
           </div>
         </th>
+        <th pSortableColumn="center_cif" *ngIf="isGlobalAdmin">
+          <div class="flex align-items-center">
+            Centro
+            <p-sortIcon field="center_cif"></p-sortIcon>
+            <p-columnFilter
+              type="text"
+              field="center_cif"
+              display="menu"
+            ></p-columnFilter>
+          </div>
+        </th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-room>
       <tr>
         <td class="action-buttons">
           <button
+            *ngIf="!isGlobalAdmin"
             class="pi pi-calendar showDetails"
             (click)="reserve(room.id)"
             [disabled]="room.state !== 'Disponible'"
@@ -139,12 +164,12 @@
           <button
             class="pi pi-file-edit showDetails"
             (click)="edit(room.id)"
-            *ngIf="isAdmin"
+            *ngIf="isGlobalAdmin || isAdmin"
           ></button>
           <button
             class="pi pi-trash showDetails"
             (click)="warningDelete(room)"
-            *ngIf="isAdmin"
+            *ngIf="isGlobalAdmin || isAdmin"
           ></button>
         </td>
         <td>{{ room.name }}</td>
@@ -159,6 +184,7 @@
           {{ room.state }}
         </td>
         <td>{{ room.room_type_id }}</td>
+        <td *ngIf="isGlobalAdmin">{{ room.center_cif }}</td>
       </tr>
     </ng-template>
   </p-table>
