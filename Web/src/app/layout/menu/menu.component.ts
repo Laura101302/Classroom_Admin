@@ -8,11 +8,13 @@ import { AuthService } from 'src/services/auth.service';
   styleUrls: ['./menu.component.scss'],
 })
 export class MenuComponent implements OnInit {
+  globalAdminMenuItems: MenuItem[] = [];
   adminMenuItems: MenuItem[] = [];
   menuItems: MenuItem[] = [];
   screenSize: number = window.innerWidth;
   isMobile!: boolean;
   isLogged: boolean = false;
+  isGlobalAdmin: boolean = false;
   isAdmin: boolean = false;
 
   constructor(private authService: AuthService) {}
@@ -28,7 +30,7 @@ export class MenuComponent implements OnInit {
     this.roleType();
     this.menuType();
 
-    this.adminMenuItems = [
+    this.globalAdminMenuItems = [
       {
         label: 'Centros',
         items: [
@@ -44,6 +46,81 @@ export class MenuComponent implements OnInit {
           },
         ],
       },
+      {
+        label: 'Profesores',
+        items: [
+          {
+            label: 'Lista de profesores',
+            icon: 'pi pi-fw pi-user',
+            routerLink: ['teachers'],
+          },
+          {
+            label: 'Nuevo profesor',
+            icon: 'pi pi-fw pi-user-plus',
+            routerLink: ['teachers/create-teacher'],
+          },
+        ],
+      },
+      {
+        label: 'Roles',
+        items: [
+          {
+            label: 'Lista de roles',
+            icon: 'pi pi-fw pi-list',
+            routerLink: ['roles'],
+          },
+        ],
+      },
+      {
+        label: 'Salas',
+        items: [
+          {
+            label: 'Lista de salas',
+            icon: 'pi pi-fw pi-building',
+            routerLink: ['rooms'],
+          },
+          {
+            label: 'Nueva sala',
+            icon: 'pi pi-fw pi-plus',
+            routerLink: ['rooms/create-room'],
+          },
+        ],
+      },
+
+      {
+        label: 'Puestos',
+        items: [
+          {
+            label: 'Lista de puestos',
+            icon: 'pi pi-fw pi-building',
+            routerLink: ['seats'],
+          },
+          {
+            label: 'Nuevo puesto',
+            icon: 'pi pi-fw pi-plus',
+            routerLink: ['seats/create-seat'],
+          },
+        ],
+      },
+
+      {
+        label: 'Reservas',
+        items: [
+          {
+            label: 'Mis reservas',
+            icon: 'pi pi-fw pi-calendar',
+            routerLink: ['my-reserves'],
+          },
+          {
+            label: 'Reservar',
+            icon: 'pi pi-fw pi-plus',
+            routerLink: ['rooms'],
+          },
+        ],
+      },
+    ];
+
+    this.adminMenuItems = [
       {
         label: 'Profesores',
         items: [
@@ -156,7 +233,8 @@ export class MenuComponent implements OnInit {
   roleType() {
     const role = localStorage.getItem('role');
 
-    if (role && role === '1') this.isAdmin = true;
+    if (role && role === '0') this.isGlobalAdmin = true;
+    else if (role && role === '1') this.isAdmin = true;
     else this.isAdmin = false;
   }
 

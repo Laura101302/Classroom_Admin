@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { Center } from 'src/interfaces/center';
 import { IResponse } from 'src/interfaces/response';
@@ -20,7 +20,8 @@ export class CenterFormComponent implements OnInit {
     private centerService: CenterService,
     private formBuilder: FormBuilder,
     private activatedRoute: ActivatedRoute,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private router: Router
   ) {
     this.form = this.formBuilder.group({
       cif: ['', Validators.required],
@@ -61,6 +62,10 @@ export class CenterFormComponent implements OnInit {
             summary: 'Creado',
             detail: 'Creado correctamente',
           });
+
+          setTimeout(() => {
+            this.router.navigate(['centers']);
+          }, 2000);
         }
       },
       error: () => {
@@ -82,6 +87,10 @@ export class CenterFormComponent implements OnInit {
             summary: 'Editado',
             detail: 'Editado correctamente',
           });
+
+          setTimeout(() => {
+            this.router.navigate(['centers']);
+          }, 2000);
         }
       },
       error: () => {
