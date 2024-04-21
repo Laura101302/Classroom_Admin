@@ -2,9 +2,10 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Table } from 'primeng/table';
-import { forkJoin, map, of } from 'rxjs';
+import { forkJoin, map, Observable, of, switchMap } from 'rxjs';
 import { Reserve } from 'src/interfaces/reserve';
 import { IResponse } from 'src/interfaces/response';
+import { CenterService } from 'src/services/center.service';
 import { ReservationService } from 'src/services/reservation.service';
 import { RoomService } from 'src/services/room.service';
 import { SeatService } from 'src/services/seat.service';
@@ -20,6 +21,8 @@ export class ReservationListComponent implements OnInit {
   error: boolean = false;
   isLoading: boolean = false;
   email!: string;
+  isGlobalAdmin: boolean = false;
+  role!: string;
 
   constructor(
     private router: Router,
@@ -27,13 +30,74 @@ export class ReservationListComponent implements OnInit {
     private roomService: RoomService,
     private seatService: SeatService,
     private messageService: MessageService,
-    private confirmationService: ConfirmationService
+    private confirmationService: ConfirmationService,
+    private centerService: CenterService
   ) {}
 
   ngOnInit(): void {
     const email = localStorage.getItem('user');
+    const role = localStorage.getItem('role');
+
     if (email) this.email = email;
-    this.getAllReservesByTeacherEmail();
+    if (role && role === '0') {
+      this.isGlobalAdmin = true;
+      this.getAllReserves();
+    } else this.getAllReservesByTeacherEmail();
+  }
+
+  getAllReserves() {
+    this.isLoading = true;
+
+    this.reservationService.getAllReserves().subscribe({
+      next: (res: IResponse) => {
+        const reservationArray = JSON.parse(res.response);
+
+        const observablesArray = reservationArray.map((r: Reserve) => {
+          return forkJoin({
+            room: this.getRoomById(r.room_id),
+            seat: this.getSeatById(r.seat_id),
+          }).pipe(
+            switchMap((data: any) => {
+              return this.getCenterByCif(data.room.center_cif).pipe(
+                map((center: any) => ({
+                  ...r,
+                  room_id: data.room.name,
+                  seat_id: data.seat,
+                  center_cif: center.name,
+                }))
+              );
+            })
+          );
+        });
+
+        forkJoin(observablesArray).subscribe({
+          next: (res) => {
+            this.reservations = res as Reserve[];
+            this.isLoading = false;
+          },
+          error: () => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Error al recuperar las reservas',
+            });
+
+            this.error = true;
+            this.isLoading = false;
+          },
+        });
+      },
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al recuperar las reservas',
+        });
+
+        this.error = true;
+        this.isLoading = false;
+      },
+    });
   }
 
   getAllReservesByTeacherEmail() {
@@ -50,7 +114,7 @@ export class ReservationListComponent implements OnInit {
           }).pipe(
             map((data: any) => ({
               ...r,
-              room_id: data.room,
+              room_id: data.room.name,
               seat_id: data.seat,
             }))
           );
@@ -89,7 +153,7 @@ export class ReservationListComponent implements OnInit {
   getRoomById(id: number) {
     return this.roomService
       .getRoomById(id)
-      .pipe(map((res: IResponse) => JSON.parse(res.response)[0].name));
+      .pipe(map((res: IResponse) => JSON.parse(res.response)[0]));
   }
 
   getSeatById(id: number | undefined) {
@@ -98,6 +162,12 @@ export class ReservationListComponent implements OnInit {
         .getSeatById(id)
         .pipe(map((res: IResponse) => JSON.parse(res.response)[0].name));
     else return of('Sala entera');
+  }
+
+  getCenterByCif(centerCif: string): Observable<any> {
+    return this.centerService
+      .getCenterByCif(centerCif)
+      .pipe(map((res: IResponse) => JSON.parse(res.response)[0]));
   }
 
   warningDelete(reserve: Reserve) {

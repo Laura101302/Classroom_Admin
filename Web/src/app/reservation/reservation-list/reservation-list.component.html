@@ -2,7 +2,7 @@
 
 <h1>Listado de reservas</h1>
 
-<div class="new-button">
+<div class="new-button" *ngIf="!isGlobalAdmin">
   <p-button routerLink="/rooms">Nueva reserva</p-button>
 </div>
 
@@ -17,7 +17,11 @@
     [loading]="isLoading"
     [paginator]="true"
     currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} salas"
-    [globalFilterFields]="['', 'room_id', 'seat_id']"
+    [globalFilterFields]="
+      isGlobalAdmin
+        ? ['', 'room_id', 'seat_id', 'teacher_email', 'center_cif']
+        : ['', 'room_id', 'seat_id']
+    "
     styleClass="p-datatable-striped"
     [tableStyle]="{ 'min-width': '50rem' }"
   >
@@ -66,6 +70,28 @@
             ></p-columnFilter>
           </div>
         </th>
+        <th pSortableColumn="teacher_email" *ngIf="isGlobalAdmin">
+          <div class="flex align-items-center">
+            Profesor
+            <p-sortIcon field="teacher_email"></p-sortIcon>
+            <p-columnFilter
+              type="text"
+              field="teacher_email"
+              display="menu"
+            ></p-columnFilter>
+          </div>
+        </th>
+        <th pSortableColumn="center_cif" *ngIf="isGlobalAdmin">
+          <div class="flex align-items-center">
+            Centro
+            <p-sortIcon field="center_cif"></p-sortIcon>
+            <p-columnFilter
+              type="text"
+              field="center_cif"
+              display="menu"
+            ></p-columnFilter>
+          </div>
+        </th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-room>
@@ -78,6 +104,8 @@
         </td>
         <td>{{ room.room_id }}</td>
         <td>{{ room.seat_id }}</td>
+        <td *ngIf="isGlobalAdmin">{{ room.teacher_email }}</td>
+        <td *ngIf="isGlobalAdmin">{{ room.center_cif }}</td>
       </tr>
     </ng-template>
   </p-table>

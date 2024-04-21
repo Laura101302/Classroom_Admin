@@ -107,14 +107,9 @@ export class MenuComponent implements OnInit {
         label: 'Reservas',
         items: [
           {
-            label: 'Mis reservas',
+            label: 'Todas las reservas',
             icon: 'pi pi-fw pi-calendar',
             routerLink: ['my-reserves'],
-          },
-          {
-            label: 'Reservar',
-            icon: 'pi pi-fw pi-plus',
-            routerLink: ['rooms'],
           },
         ],
       },
