@@ -2,9 +2,10 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Table } from 'primeng/table';
-import { Observable, forkJoin, map, of } from 'rxjs';
+import { Observable, forkJoin, map, of, switchMap } from 'rxjs';
 import { IResponse } from 'src/interfaces/response';
 import { Seat } from 'src/interfaces/seat';
+import { CenterService } from 'src/services/center.service';
 import { RoomService } from 'src/services/room.service';
 import { SeatService } from 'src/services/seat.service';
 
@@ -19,6 +20,7 @@ export class SeatListComponent implements OnInit {
   error: boolean = false;
   isLoading: boolean = false;
   center!: string;
+  isGlobalAdmin: boolean = false;
   isAdmin: boolean = false;
 
   constructor(
@@ -26,7 +28,8 @@ export class SeatListComponent implements OnInit {
     private roomService: RoomService,
     private router: Router,
     private messageService: MessageService,
-    private confirmationService: ConfirmationService
+    private confirmationService: ConfirmationService,
+    private centerService: CenterService
   ) {}
 
   ngOnInit(): void {
@@ -38,7 +41,10 @@ export class SeatListComponent implements OnInit {
       this.getAllSeats();
     }
 
-    if (role && role === '1') this.isAdmin = true;
+    if (role) {
+      if (role === '0') this.isGlobalAdmin = true;
+      else if (role === '1') this.isAdmin = true;
+    }
   }
 
   getAllSeats() {
@@ -53,20 +59,28 @@ export class SeatListComponent implements OnInit {
             state: of(this.getState(seat.state)),
             room: this.getRoomById(seat.room_id),
           }).pipe(
-            map((data) => ({
-              ...seat,
-              state: data.state,
-              room_id: data.room.name,
-              center_cif: data.room.center_cif,
-            }))
+            switchMap((data: any) => {
+              return this.getCenterByCif(data.room.center_cif).pipe(
+                map((center: any) => ({
+                  ...seat,
+                  state: data.state,
+                  room_id: data.room.name,
+                  center_cif: data.room.center_cif,
+                  center_name: center.name,
+                }))
+              );
+            })
           );
         });
 
         forkJoin(observablesArray).subscribe({
           next: (res) => {
-            this.seats = (res as Seat[]).filter(
-              (seat) => seat.center_cif === this.center
-            );
+            if (this.isGlobalAdmin) this.seats = res as Seat[];
+            else {
+              this.seats = (res as Seat[]).filter(
+                (seat) => seat.center_cif === this.center
+              );
+            }
 
             this.isLoading = false;
           },
@@ -110,6 +124,12 @@ export class SeatListComponent implements OnInit {
   getRoomById(roomId: number): Observable<any> {
     return this.roomService
       .getRoomById(roomId)
+      .pipe(map((res: IResponse) => JSON.parse(res.response)[0]));
+  }
+
+  getCenterByCif(centerCif: string): Observable<any> {
+    return this.centerService
+      .getCenterByCif(centerCif)
       .pipe(map((res: IResponse) => JSON.parse(res.response)[0]));
   }
 

@@ -19,6 +19,8 @@ export class SeatFormComponent implements OnInit {
   seat!: Seat;
   rooms!: Room[];
   selectedRoom!: Room | undefined;
+  center!: string;
+  isGlobalAdmin: boolean = false;
 
   constructor(
     private seatService: SeatService,
@@ -38,8 +40,14 @@ export class SeatFormComponent implements OnInit {
 
   ngOnInit(): void {
     const params = this.activatedRoute.snapshot.params;
+    const center = localStorage.getItem('center');
+    const role = localStorage.getItem('role');
 
-    this.getAllRooms();
+    if (center) this.center = center;
+    if (role && role === '0') {
+      this.isGlobalAdmin = true;
+      this.getAllRooms();
+    } else this.getAllRoomsByCif();
 
     if (params['id']) {
       this.isEditing = true;
@@ -72,6 +80,19 @@ export class SeatFormComponent implements OnInit {
 
   getAllRooms() {
     this.roomService.getAllRooms().subscribe({
+      next: (res) => (this.rooms = JSON.parse(res.response)),
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al recuperar las salas',
+        });
+      },
+    });
+  }
+
+  getAllRoomsByCif() {
+    this.roomService.getAllRoomsByCif(this.center).subscribe({
       next: (res) => (this.rooms = JSON.parse(res.response)),
       error: () => {
         this.messageService.add({

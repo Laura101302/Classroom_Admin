@@ -2,7 +2,7 @@
 
 <h1>Listado de puestos</h1>
 
-<div class="new-button" *ngIf="isAdmin">
+<div class="new-button" *ngIf="isGlobalAdmin || isAdmin">
   <p-button (click)="create()">Nuevo puesto</p-button>
 </div>
 
@@ -17,7 +17,11 @@
     [loading]="isLoading"
     [paginator]="true"
     currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} salas"
-    [globalFilterFields]="['', 'name', 'state', 'room_id']"
+    [globalFilterFields]="
+      isGlobalAdmin
+        ? ['', 'name', 'state', 'room_id', 'center_name']
+        : ['', 'name', 'state', 'room_id']
+    "
     styleClass="p-datatable-striped"
     [tableStyle]="{ 'min-width': '50rem' }"
   >
@@ -43,7 +47,7 @@
     </ng-template>
     <ng-template pTemplate="header">
       <tr>
-        <th></th>
+        <th *ngIf="isGlobalAdmin || isAdmin"></th>
         <th pSortableColumn="name">
           <div class="flex align-items-center">
             Nombre
@@ -77,6 +81,17 @@
             ></p-columnFilter>
           </div>
         </th>
+        <th pSortableColumn="center_name" *ngIf="isGlobalAdmin">
+          <div class="flex align-items-center">
+            Centro
+            <p-sortIcon field="center_name"></p-sortIcon>
+            <p-columnFilter
+              type="text"
+              field="center_name"
+              display="menu"
+            ></p-columnFilter>
+          </div>
+        </th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-seat>
@@ -85,12 +100,12 @@
           <button
             class="pi pi-file-edit showDetails"
             (click)="edit(seat.id)"
-            *ngIf="isAdmin"
+            *ngIf="isGlobalAdmin || isAdmin"
           ></button>
           <button
             class="pi pi-trash showDetails"
             (click)="warningDelete(seat)"
-            *ngIf="isAdmin"
+            *ngIf="isGlobalAdmin || isAdmin"
           ></button>
         </td>
         <td>{{ seat.name }}</td>
@@ -102,6 +117,7 @@
           {{ seat.state }}
         </td>
         <td>{{ seat.room_id }}</td>
+        <td *ngIf="isGlobalAdmin">{{ seat.center_name }}</td>
       </tr>
     </ng-template>
   </p-table>
