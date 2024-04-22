@@ -53,9 +53,10 @@
     <ng-template pTemplate="header">
       <tr>
         <th></th>
-        <th>
+        <th pSortableColumn="cif">
           <div class="flex align-items-center">
             CIF
+            <p-sortIcon field="cif"></p-sortIcon>
             <p-columnFilter
               type="text"
               field="cif"
@@ -63,9 +64,10 @@
             ></p-columnFilter>
           </div>
         </th>
-        <th>
+        <th pSortableColumn="name">
           <div class="flex align-items-center">
             Nombre
+            <p-sortIcon field="name"></p-sortIcon>
             <p-columnFilter
               type="text"
               field="name"
@@ -73,9 +75,10 @@
             ></p-columnFilter>
           </div>
         </th>
-        <th>
+        <th pSortableColumn="direction">
           <div class="flex align-items-center">
             Dirección
+            <p-sortIcon field="direction"></p-sortIcon>
             <p-columnFilter
               type="text"
               field="direction"
@@ -83,9 +86,10 @@
             ></p-columnFilter>
           </div>
         </th>
-        <th>
+        <th pSortableColumn="postal_code">
           <div class="flex align-items-center">
             Código postal
+            <p-sortIcon field="postal_code"></p-sortIcon>
             <p-columnFilter
               type="text"
               field="postal_code"
@@ -93,9 +97,10 @@
             ></p-columnFilter>
           </div>
         </th>
-        <th>
+        <th pSortableColumn="city">
           <div class="flex align-items-center">
             Ciudad
+            <p-sortIcon field="city"></p-sortIcon>
             <p-columnFilter
               type="text"
               field="city"
@@ -103,9 +108,10 @@
             ></p-columnFilter>
           </div>
         </th>
-        <th>
+        <th pSortableColumn="province">
           <div class="flex align-items-center">
             Provincia
+            <p-sortIcon field="province"></p-sortIcon>
             <p-columnFilter
               type="text"
               field="province"
