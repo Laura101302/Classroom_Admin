@@ -132,16 +132,6 @@ export class MenuComponent implements OnInit {
         ],
       },
       {
-        label: 'Roles',
-        items: [
-          {
-            label: 'Lista de roles',
-            icon: 'pi pi-fw pi-list',
-            routerLink: ['roles'],
-          },
-        ],
-      },
-      {
         label: 'Salas',
         items: [
           {

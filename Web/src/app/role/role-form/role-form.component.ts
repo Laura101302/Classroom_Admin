@@ -60,6 +60,10 @@ export class RoleFormComponent implements OnInit {
             summary: 'Editado',
             detail: 'Editado correctamente',
           });
+
+          setTimeout(() => {
+            this.router.navigate(['roles']);
+          }, 2000);
         }
       },
       error: () => {
