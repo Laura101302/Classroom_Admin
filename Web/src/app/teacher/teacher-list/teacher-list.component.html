@@ -17,17 +17,20 @@
     [loading]="isLoading"
     [paginator]="true"
     currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} profesores"
-    [globalFilterFields]="[
-      '',
-      'dni',
-      'name',
-      'surnames',
-      'phone',
-      'email',
-      'birthdate',
-      'center_cif',
-      'role_id'
-    ]"
+    [globalFilterFields]="
+      isGlobalAdmin
+        ? [
+            '',
+            'dni',
+            'name',
+            'surnames',
+            'phone',
+            'email',
+            'center_cif',
+            'role_id'
+          ]
+        : ['', 'dni', 'name', 'surnames', 'phone', 'email', 'role_id']
+    "
     styleClass="p-datatable-striped"
     [tableStyle]="{ 'min-width': '50rem' }"
   >
@@ -54,9 +57,10 @@
     <ng-template pTemplate="header">
       <tr>
         <th></th>
-        <th>
+        <th pSortableColumn="dni">
           <div class="flex align-items-center">
             DNI
+            <p-sortIcon field="dni"></p-sortIcon>
             <p-columnFilter
               type="text"
               field="dni"
@@ -64,9 +68,10 @@
             ></p-columnFilter>
           </div>
         </th>
-        <th>
+        <th pSortableColumn="name">
           <div class="flex align-items-center">
             Nombre
+            <p-sortIcon field="name"></p-sortIcon>
             <p-columnFilter
               type="text"
               field="name"
@@ -74,9 +79,10 @@
             ></p-columnFilter>
           </div>
         </th>
-        <th>
+        <th pSortableColumn="surnames">
           <div class="flex align-items-center">
             Apellidos
+            <p-sortIcon field="surnames"></p-sortIcon>
             <p-columnFilter
               type="text"
               field="surnames"
@@ -84,9 +90,10 @@
             ></p-columnFilter>
           </div>
         </th>
-        <th>
+        <th pSortableColumn="phone">
           <div class="flex align-items-center">
             Teléfono
+            <p-sortIcon field="phone"></p-sortIcon>
             <p-columnFilter
               type="text"
               field="phone"
@@ -94,9 +101,10 @@
             ></p-columnFilter>
           </div>
         </th>
-        <th>
+        <th pSortableColumn="email">
           <div class="flex align-items-center">
             Correo electrónico
+            <p-sortIcon field="email"></p-sortIcon>
             <p-columnFilter
               type="text"
               field="email"
@@ -104,19 +112,10 @@
             ></p-columnFilter>
           </div>
         </th>
-        <th>
-          <div class="flex align-items-center">
-            Fecha de nacimiento
-            <p-columnFilter
-              type="text"
-              field="birthdate"
-              display="menu"
-            ></p-columnFilter>
-          </div>
-        </th>
-        <th>
+        <th pSortableColumn="center_cif" *ngIf="isGlobalAdmin">
           <div class="flex align-items-center">
             Centro
+            <p-sortIcon field="center_cif"></p-sortIcon>
             <p-columnFilter
               type="text"
               field="center_cif"
@@ -124,9 +123,10 @@
             ></p-columnFilter>
           </div>
         </th>
-        <th>
+        <th pSortableColumn="role_id">
           <div class="flex align-items-center">
             Rol
+            <p-sortIcon field="role_id"></p-sortIcon>
             <p-columnFilter
               type="text"
               field="role_id"
@@ -153,8 +153,7 @@
         <td>{{ teacher.surnames }}</td>
         <td>{{ teacher.phone }}</td>
         <td>{{ teacher.email }}</td>
-        <td>{{ teacher.birthdate | date : "dd-MM-yyyy" }}</td>
-        <td>{{ teacher.center_cif }}</td>
+        <td *ngIf="isGlobalAdmin">{{ teacher.center_cif }}</td>
         <td>{{ teacher.role_id }}</td>
       </tr>
     </ng-template>

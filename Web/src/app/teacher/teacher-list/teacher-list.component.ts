@@ -20,6 +20,7 @@ export class TeacherListComponent {
   error: boolean = false;
   isLoading: boolean = false;
   center!: string;
+  isGlobalAdmin: boolean = false;
 
   constructor(
     private teacherService: TeacherService,
@@ -37,8 +38,10 @@ export class TeacherListComponent {
     if (center) {
       this.center = center;
 
-      if (role && role === '0') this.getAllTeachers();
-      else this.getAllTeachersByCif();
+      if (role && role === '0') {
+        this.isGlobalAdmin = true;
+        this.getAllTeachers();
+      } else this.getAllTeachersByCif();
     }
   }
 
