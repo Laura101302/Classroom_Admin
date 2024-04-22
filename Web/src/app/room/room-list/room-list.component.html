@@ -34,7 +34,8 @@
             'room_type_id',
             'center_cif'
           ]
-        : [
+        : isAdmin
+        ? [
             '',
             'name',
             'seats_number',
@@ -42,6 +43,14 @@
             'reservation_type',
             'state',
             'room_type_id'
+          ]
+        : [
+            '',
+            'name',
+            'seats_number',
+            'floor_number',
+            'reservation_type',
+            'state'
           ]
     "
     styleClass="p-datatable-striped"
@@ -125,7 +134,7 @@
             ></p-columnFilter>
           </div>
         </th>
-        <th pSortableColumn="room_type_id">
+        <th pSortableColumn="room_type_id" *ngIf="isGlobalAdmin || isAdmin">
           <div class="flex align-items-center">
             Tipo de sala
             <p-sortIcon field="room_type_id"></p-sortIcon>
@@ -183,7 +192,7 @@
         >
           {{ room.state }}
         </td>
-        <td>{{ room.room_type_id }}</td>
+        <td *ngIf="isGlobalAdmin || isAdmin">{{ room.room_type_id }}</td>
         <td *ngIf="isGlobalAdmin">{{ room.center_cif }}</td>
       </tr>
     </ng-template>
