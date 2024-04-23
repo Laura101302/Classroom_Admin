@@ -31,6 +31,7 @@ const routes: Routes = [
   { path: 'rooms/edit-room/:id', component: RoomFormComponent },
   { path: 'login', component: LoginComponent },
   { path: 'update-pass', component: UpdatePassComponent },
+  { path: 'all-reserves', component: ReservationListComponent },
   { path: 'my-reserves', component: ReservationListComponent },
   { path: 'reservation/:id', component: ReservationFormComponent },
   { path: 'seats', component: SeatListComponent },

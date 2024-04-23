@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Table } from 'primeng/table';
 import { forkJoin, map, Observable, of, switchMap } from 'rxjs';
@@ -22,7 +22,9 @@ export class ReservationListComponent implements OnInit {
   isLoading: boolean = false;
   email!: string;
   isGlobalAdmin: boolean = false;
+  center!: string;
   role!: string;
+  showAllByCif!: boolean;
 
   constructor(
     private router: Router,
@@ -31,18 +33,30 @@ export class ReservationListComponent implements OnInit {
     private seatService: SeatService,
     private messageService: MessageService,
     private confirmationService: ConfirmationService,
-    private centerService: CenterService
+    private centerService: CenterService,
+    private activatedRoute: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
     const email = localStorage.getItem('user');
+    const center = localStorage.getItem('center');
     const role = localStorage.getItem('role');
 
     if (email) this.email = email;
-    if (role && role === '0') {
-      this.isGlobalAdmin = true;
-      this.getAllReserves();
-    } else this.getAllReservesByTeacherEmail();
+    if (center) this.center = center;
+    if (role) {
+      if (role === '0') {
+        this.isGlobalAdmin = true;
+        this.getAllReserves();
+      } else if (role === '1') {
+        const path = this.activatedRoute.snapshot.routeConfig?.path;
+
+        if (path && path === 'all-reserves') {
+          this.showAllByCif = true;
+          this.getAllReserves();
+        } else this.getAllReservesByTeacherEmail();
+      } else this.getAllReservesByTeacherEmail();
+    }
   }
 
   getAllReserves() {
@@ -63,7 +77,7 @@ export class ReservationListComponent implements OnInit {
                   ...r,
                   room_id: data.room.name,
                   seat_id: data.seat,
-                  center_cif: center.name,
+                  center: center,
                 }))
               );
             })
@@ -72,7 +86,11 @@ export class ReservationListComponent implements OnInit {
 
         forkJoin(observablesArray).subscribe({
           next: (res) => {
-            this.reservations = res as Reserve[];
+            if (this.showAllByCif) {
+              this.reservations = (res as Reserve[]).filter(
+                (reservation) => reservation.center?.cif === this.center
+              );
+            } else this.reservations = res as Reserve[];
             this.isLoading = false;
           },
           error: () => {
@@ -106,6 +124,7 @@ export class ReservationListComponent implements OnInit {
     this.reservationService.getAllReservesByTeacherEmail(this.email).subscribe({
       next: (res: IResponse) => {
         const reservationArray = JSON.parse(res.response);
+        console.log(reservationArray);
 
         const observablesArray = reservationArray.map((r: Reserve) => {
           return forkJoin({

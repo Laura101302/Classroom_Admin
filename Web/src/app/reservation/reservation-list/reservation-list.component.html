@@ -70,7 +70,10 @@
             ></p-columnFilter>
           </div>
         </th>
-        <th pSortableColumn="teacher_email" *ngIf="isGlobalAdmin">
+        <th
+          pSortableColumn="teacher_email"
+          *ngIf="isGlobalAdmin || showAllByCif"
+        >
           <div class="flex align-items-center">
             Profesor
             <p-sortIcon field="teacher_email"></p-sortIcon>
@@ -104,8 +107,8 @@
         </td>
         <td>{{ room.room_id }}</td>
         <td>{{ room.seat_id }}</td>
-        <td *ngIf="isGlobalAdmin">{{ room.teacher_email }}</td>
-        <td *ngIf="isGlobalAdmin">{{ room.center_cif }}</td>
+        <td *ngIf="isGlobalAdmin || showAllByCif">{{ room.teacher_email }}</td>
+        <td *ngIf="isGlobalAdmin">{{ room.center.name }}</td>
       </tr>
     </ng-template>
   </p-table>
