@@ -77,6 +77,21 @@
     </div>
   </div>
 
+  <div class="input_wrapper" *ngIf="isGlobalAdmin">
+    <div class="input">
+      <label for="center_cif">Centro</label>
+      <p-dropdown
+        [options]="centers"
+        [(ngModel)]="selectedCenter"
+        optionLabel="name"
+        [showClear]="false"
+        placeholder="Selecciona un centro"
+        id="center_cif"
+        formControlName="center_cif"
+      ></p-dropdown>
+    </div>
+  </div>
+
   <div class="buttons">
     <p-button
       type="submit"

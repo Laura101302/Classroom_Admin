@@ -45,9 +45,11 @@ export class ProfileComponent implements OnInit {
   getCenterName(user: Teacher) {
     this.centerService.getCenterByCif(user.center_cif).subscribe({
       next: (res: IResponse) => {
+        const center = JSON.parse(res.response);
+
         this.user = {
           ...user,
-          center_cif: JSON.parse(res.response)[0].name,
+          center_cif: center.length ? center[0].name : 'No establecido',
         };
 
         this.getRoleName(this.user);

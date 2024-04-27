@@ -59,7 +59,7 @@ export class TeacherListComponent {
           }).pipe(
             map((data) => ({
               ...teacher,
-              center_cif: data.center.name,
+              center_cif: data.center ? data.center.name : 'No establecido',
               role_id: data.role.name,
             }))
           );
