@@ -23,6 +23,7 @@ export class TeacherFormComponent implements OnInit {
   selectedCenter!: Center | undefined;
   roles!: Role[];
   selectedRole!: Role | undefined;
+  isGlobalAdmin: boolean = false;
 
   constructor(
     private teacherService: TeacherService,
@@ -48,7 +49,9 @@ export class TeacherFormComponent implements OnInit {
 
   ngOnInit(): void {
     const params = this.activatedRoute.snapshot.params;
+    const role = localStorage.getItem('role');
 
+    if (role && role === '0') this.isGlobalAdmin = true;
     this.getAllCenters();
     this.getAllRoles();
 
@@ -106,7 +109,10 @@ export class TeacherFormComponent implements OnInit {
 
   getAllRoles() {
     this.roleService.getAllRoles().subscribe({
-      next: (res) => (this.roles = JSON.parse(res.response)),
+      next: (res) => {
+        this.roles = JSON.parse(res.response);
+        if (!this.isGlobalAdmin) this.roles.shift();
+      },
       error: () => {
         this.messageService.add({
           severity: 'error',

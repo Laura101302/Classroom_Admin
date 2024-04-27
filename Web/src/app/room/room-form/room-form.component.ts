@@ -158,7 +158,10 @@ export class RoomFormComponent implements OnInit {
 
   getAllRoles() {
     this.roleService.getAllRoles().subscribe({
-      next: (res: IResponse) => (this.roles = JSON.parse(res.response)),
+      next: (res: IResponse) => {
+        this.roles = JSON.parse(res.response);
+        if (!this.isGlobalAdmin) this.roles.shift();
+      },
       error: () => {
         this.messageService.add({
           severity: 'error',
