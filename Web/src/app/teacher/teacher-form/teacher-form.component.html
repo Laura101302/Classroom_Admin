@@ -68,7 +68,7 @@
       <input pInputText type="password" id="pass" formControlName="pass" />
     </div>
 
-    <div class="input">
+    <div class="input" *ngIf="isGlobalAdmin">
       <label for="center_cif">Centro</label>
       <p-dropdown
         [options]="centers"

@@ -23,6 +23,7 @@ export class TeacherFormComponent implements OnInit {
   selectedCenter!: Center | undefined;
   roles!: Role[];
   selectedRole!: Role | undefined;
+  center!: string;
   isGlobalAdmin: boolean = false;
 
   constructor(
@@ -60,11 +61,16 @@ export class TeacherFormComponent implements OnInit {
 
   ngOnInit(): void {
     const params = this.activatedRoute.snapshot.params;
+    const center = localStorage.getItem('center');
     const role = localStorage.getItem('role');
 
-    if (role && role === '0') this.isGlobalAdmin = true;
+    if (center) this.center = center;
+    if (role && role === '0') {
+      this.isGlobalAdmin = true;
+      this.getAllCenters();
+    }
+
     this.getAllRoles();
-    this.getAllCenters();
 
     if (params['dni']) {
       this.isEditing = true;
@@ -91,7 +97,7 @@ export class TeacherFormComponent implements OnInit {
             birthdate: this.teacher.birthdate,
             role_id: this.selectedRole,
             pass: this.teacher.pass,
-            center_cif: this.selectedCenter,
+            center_cif: this.selectedCenter || this.center,
           });
         },
         error: () => {
@@ -102,6 +108,11 @@ export class TeacherFormComponent implements OnInit {
           });
         },
       });
+    } else {
+      if (!this.isGlobalAdmin)
+        this.form.patchValue({
+          center_cif: this.center,
+        });
     }
   }
 
@@ -138,7 +149,9 @@ export class TeacherFormComponent implements OnInit {
     const form = {
       ...this.form.value,
       role_id: this.form.value.role_id.id,
-      center_cif: this.form.value.center_cif.cif,
+      center_cif: this.isGlobalAdmin
+        ? this.form.value.center_cif.cif
+        : this.center,
     };
 
     this.teacherService.createTeacher(form).subscribe({
@@ -169,7 +182,9 @@ export class TeacherFormComponent implements OnInit {
     const form = {
       ...this.form.value,
       role_id: this.form.value.role_id.id,
-      center_cif: this.form.value.center_cif.cif,
+      center_cif: this.isGlobalAdmin
+        ? this.form.value.center_cif.cif
+        : this.center,
     };
 
     this.teacherService.editTeacher(form).subscribe({
