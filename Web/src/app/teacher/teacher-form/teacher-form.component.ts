@@ -34,17 +34,28 @@ export class TeacherFormComponent implements OnInit {
     private messageService: MessageService,
     private router: Router
   ) {
-    this.form = this.formBuilder.group({
-      dni: ['', Validators.required],
-      pass: ['', Validators.required],
-      name: ['', Validators.required],
-      surnames: ['', Validators.required],
-      phone: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
-      birthdate: ['', Validators.required],
-      center_cif: ['', Validators.required],
-      role_id: ['', Validators.required],
-    });
+    this.isEditing
+      ? (this.form = this.formBuilder.group({
+          dni: ['', Validators.required],
+          name: ['', Validators.required],
+          surnames: ['', Validators.required],
+          phone: ['', Validators.required],
+          email: ['', [Validators.required, Validators.email]],
+          birthdate: ['', Validators.required],
+          role_id: ['', Validators.required],
+          center_cif: ['', Validators.required],
+        }))
+      : (this.form = this.formBuilder.group({
+          dni: ['', Validators.required],
+          name: ['', Validators.required],
+          surnames: ['', Validators.required],
+          phone: ['', Validators.required],
+          email: ['', [Validators.required, Validators.email]],
+          birthdate: ['', Validators.required],
+          role_id: ['', Validators.required],
+          pass: ['', Validators.required],
+          center_cif: ['', Validators.required],
+        }));
   }
 
   ngOnInit(): void {
@@ -52,35 +63,35 @@ export class TeacherFormComponent implements OnInit {
     const role = localStorage.getItem('role');
 
     if (role && role === '0') this.isGlobalAdmin = true;
-    this.getAllCenters();
     this.getAllRoles();
+    this.getAllCenters();
 
     if (params['dni']) {
       this.isEditing = true;
-      this.teacherService.getTeacherByDni(params['dni']).subscribe({
+      this.teacherService.getTeacherByDni(params['dni'], false).subscribe({
         next: (res: IResponse) => {
           this.teacher = JSON.parse(res.response)[0];
-
-          if (this.centers)
-            this.selectedCenter = this.centers.find(
-              (center) => center.cif === this.teacher.center_cif
-            );
 
           if (this.roles)
             this.selectedRole = this.roles.find(
               (role) => role.id === this.teacher.role_id
             );
 
+          if (this.centers)
+            this.selectedCenter = this.centers.find(
+              (center) => center.cif === this.teacher.center_cif
+            );
+
           this.form = this.formBuilder.group({
             dni: this.teacher.dni,
-            pass: this.teacher.pass,
             name: this.teacher.name,
             surnames: this.teacher.surnames,
             phone: this.teacher.phone,
             email: this.teacher.email,
             birthdate: this.teacher.birthdate,
-            center_cif: this.selectedCenter,
             role_id: this.selectedRole,
+            pass: this.teacher.pass,
+            center_cif: this.selectedCenter,
           });
         },
         error: () => {
@@ -92,19 +103,6 @@ export class TeacherFormComponent implements OnInit {
         },
       });
     }
-  }
-
-  getAllCenters() {
-    this.centerService.getAllCenters().subscribe({
-      next: (res) => (this.centers = JSON.parse(res.response)),
-      error: () => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Error al recuperar los centros',
-        });
-      },
-    });
   }
 
   getAllRoles() {
@@ -123,11 +121,24 @@ export class TeacherFormComponent implements OnInit {
     });
   }
 
+  getAllCenters() {
+    this.centerService.getAllCenters().subscribe({
+      next: (res) => (this.centers = JSON.parse(res.response)),
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al recuperar los centros',
+        });
+      },
+    });
+  }
+
   createTeacher() {
     const form = {
       ...this.form.value,
-      center_cif: this.form.value.center_cif.cif,
       role_id: this.form.value.role_id.id,
+      center_cif: this.form.value.center_cif.cif,
     };
 
     this.teacherService.createTeacher(form).subscribe({
@@ -157,8 +168,8 @@ export class TeacherFormComponent implements OnInit {
   editTeacher() {
     const form = {
       ...this.form.value,
-      center_cif: this.form.value.center_cif.cif,
       role_id: this.form.value.role_id.id,
+      center_cif: this.form.value.center_cif.cif,
     };
 
     this.teacherService.editTeacher(form).subscribe({

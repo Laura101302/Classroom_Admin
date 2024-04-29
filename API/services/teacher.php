@@ -42,10 +42,12 @@
         return $sql->execute([$dni]);
     }
 
-    function getTeacherByDni($dni) {
+    function getTeacherByDni($dni, $getPass = true) {
         $db = getDatabase();
-        $sql = $db->prepare("SELECT * FROM TEACHER WHERE dni = ? LIMIT 1;");
-        $sql->execute([$dni]);
+        $sql = $getPass === true
+            ? $db->prepare("SELECT * FROM TEACHER WHERE dni = ? LIMIT 1;")
+            : $db->prepare("SELECT dni, name, surnames, phone, email, birthdate, center_cif, role_id, email FROM TEACHER WHERE dni = ? LIMIT 1;");
+            $sql->execute([$dni]);
         return $sql->fetchAll(PDO::FETCH_ASSOC);
     }
 
