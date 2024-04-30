@@ -112,7 +112,11 @@ export class RoomListComponent implements OnInit {
 
     this.roomService.getAllRoomsByCif(this.center).subscribe({
       next: (res: IResponse) => {
-        const roomArray = JSON.parse(res.response);
+        let roomArray = JSON.parse(res.response);
+
+        roomArray = roomArray.filter((room: any) =>
+          room.allowed_roles_ids.includes(this.role)
+        );
 
         const observablesArray = roomArray.map((room: Room) => {
           return forkJoin({
