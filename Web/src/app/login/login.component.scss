@@ -24,15 +24,12 @@
   display: flex;
 }
 
-.input_wrapper {
+.input-wrapper-login {
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
+  flex-wrap: wrap;
   gap: 1vh;
-
-  @media screen and (max-width: 610px) {
-    align-items: unset;
-  }
 
   .input {
     display: flex;

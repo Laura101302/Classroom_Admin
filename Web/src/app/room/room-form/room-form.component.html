@@ -8,7 +8,7 @@
   [formGroup]="form"
   (ngSubmit)="isEditing ? editRoom() : createRoom()"
 >
-  <div class="input_wrapper">
+  <div class="input-wrapper">
     <div class="input">
       <label for="name">Nombre</label>
       <input pInputText type="text" id="name" formControlName="name" />
@@ -25,7 +25,7 @@
     </div>
   </div>
 
-  <div class="input_wrapper">
+  <div class="input-wrapper">
     <div class="input">
       <label for="floor_number">Planta</label>
       <input
@@ -50,7 +50,7 @@
     </div>
   </div>
 
-  <div class="input_wrapper">
+  <div class="input-wrapper">
     <div class="input">
       <label for="room_type_id">Tipo de sala</label>
       <p-dropdown
@@ -77,7 +77,7 @@
     </div>
   </div>
 
-  <div class="input_wrapper" *ngIf="isGlobalAdmin">
+  <div class="input-wrapper" *ngIf="isGlobalAdmin">
     <div class="input">
       <label for="center_cif">Centro</label>
       <p-dropdown

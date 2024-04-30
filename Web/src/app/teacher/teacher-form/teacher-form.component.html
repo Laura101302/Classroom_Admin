@@ -8,7 +8,7 @@
   [formGroup]="form"
   (ngSubmit)="isEditing ? editTeacher() : createTeacher()"
 >
-  <div class="input_wrapper">
+  <div class="input-wrapper">
     <div class="input">
       <label for="dni">DNI</label>
       <input pInputText type="text" id="dni" formControlName="dni" />
@@ -20,7 +20,7 @@
     </div>
   </div>
 
-  <div class="input_wrapper">
+  <div class="input-wrapper">
     <div class="input">
       <label for="surnames">Apellidos</label>
       <input pInputText type="text" id="surnames" formControlName="surnames" />
@@ -32,7 +32,7 @@
     </div>
   </div>
 
-  <div class="input_wrapper">
+  <div class="input-wrapper">
     <div class="input">
       <label for="email">Correo electrónico</label>
       <input pInputText type="email" id="email" formControlName="email" />
@@ -49,7 +49,7 @@
     </div>
   </div>
 
-  <div class="input_wrapper">
+  <div class="input-wrapper">
     <div class="input">
       <label for="role_id">Rol</label>
       <p-dropdown

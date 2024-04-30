@@ -3,7 +3,7 @@
 <h1>Reservar</h1>
 
 <form action="" method="post" [formGroup]="form" (ngSubmit)="createReserve()">
-  <div class="input_wrapper">
+  <div class="input-wrapper">
     <div class="input">
       <label for="email">Correo electrónico</label>
       <input pInputText type="email" id="email" formControlName="email" />
@@ -15,7 +15,7 @@
     </div>
   </div>
 
-  <div class="input_wrapper">
+  <div class="input-wrapper">
     <div class="input">
       <label for="room">Sala</label>
       <input pInputText type="text" id="room" formControlName="room" />
@@ -35,7 +35,7 @@
     </div>
   </div>
 
-  <div class="input_wrapper">
+  <div class="input-wrapper">
     <div class="input checkbox">
       <p-checkbox
         formControlName="whole_room"
