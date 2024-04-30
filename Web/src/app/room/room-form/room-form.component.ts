@@ -127,6 +127,11 @@ export class RoomFormComponent implements OnInit {
           allowed_roles_ids: this.room.allowed_roles_ids,
         });
       });
+    } else {
+      if (!this.isGlobalAdmin)
+        this.form.patchValue({
+          center_cif: this.center,
+        });
     }
   }
 
