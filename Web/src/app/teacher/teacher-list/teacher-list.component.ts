@@ -18,7 +18,6 @@ export class TeacherListComponent {
   @ViewChild('dt1') dt1: Table | undefined;
   teachers: Teacher[] = [];
   error: boolean = false;
-  isLoading: boolean = false;
   center!: string;
   isGlobalAdmin: boolean = false;
 
@@ -46,8 +45,6 @@ export class TeacherListComponent {
   }
 
   getAllTeachers() {
-    this.isLoading = true;
-
     this.teacherService.getAllTeachers().subscribe({
       next: (res: IResponse) => {
         const teacherArray = JSON.parse(res.response);
@@ -68,7 +65,6 @@ export class TeacherListComponent {
         forkJoin(observablesArray).subscribe({
           next: (res) => {
             this.teachers = res as Teacher[];
-            this.isLoading = false;
           },
           error: () => {
             this.messageService.add({
@@ -78,7 +74,6 @@ export class TeacherListComponent {
             });
 
             this.error = true;
-            this.isLoading = false;
           },
         });
       },
@@ -90,14 +85,11 @@ export class TeacherListComponent {
         });
 
         this.error = true;
-        this.isLoading = false;
       },
     });
   }
 
   getAllTeachersByCif() {
-    this.isLoading = true;
-
     this.teacherService.getAllTeachersByCif(this.center).subscribe({
       next: (res: IResponse) => {
         const teacherArray = JSON.parse(res.response);
@@ -118,7 +110,6 @@ export class TeacherListComponent {
         forkJoin(observablesArray).subscribe({
           next: (res) => {
             this.teachers = res as Teacher[];
-            this.isLoading = false;
           },
           error: () => {
             this.messageService.add({
@@ -128,7 +119,6 @@ export class TeacherListComponent {
             });
 
             this.error = true;
-            this.isLoading = false;
           },
         });
       },
@@ -140,7 +130,6 @@ export class TeacherListComponent {
         });
 
         this.error = true;
-        this.isLoading = false;
       },
     });
   }
@@ -183,8 +172,6 @@ export class TeacherListComponent {
   }
 
   delete(dni: string) {
-    this.isLoading = true;
-
     this.teacherService.deleteTeacher(dni).subscribe({
       next: (res: IResponse) => {
         if (res.code === 200) {
@@ -203,7 +190,6 @@ export class TeacherListComponent {
             summary: 'Error',
             detail: 'Error al eliminar el profesor',
           });
-          this.isLoading = false;
         }
       },
       error: () => {

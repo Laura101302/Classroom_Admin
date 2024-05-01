@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/services/auth.service';
+import { SpinnerService } from 'src/services/spinner.service';
 
 @Component({
   selector: 'app-root',
@@ -10,8 +11,13 @@ import { AuthService } from 'src/services/auth.service';
 export class AppComponent implements OnInit {
   title = 'Classroom_Admin';
   isLogged: boolean = false;
+  showSpinner = this.spinnerService.show;
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private spinnerService: SpinnerService
+  ) {}
 
   ngOnInit(): void {
     this.isAuthenticated();

@@ -18,7 +18,6 @@ export class RoomListComponent implements OnInit {
   @ViewChild('dt1') dt1: Table | undefined;
   rooms: Room[] = [];
   error: boolean = false;
-  isLoading: boolean = false;
   center!: string;
   isGlobalAdmin: boolean = false;
   isAdmin: boolean = false;
@@ -68,8 +67,6 @@ export class RoomListComponent implements OnInit {
   }
 
   getAllRooms() {
-    this.isLoading = true;
-
     this.roomService.getAllRooms().subscribe({
       next: (res: IResponse) => {
         const roomArray = JSON.parse(res.response);
@@ -103,12 +100,9 @@ export class RoomListComponent implements OnInit {
                 }
               });
             }
-
-            this.isLoading = false;
           },
           error: () => {
             this.error = true;
-            this.isLoading = false;
           },
         });
       },
@@ -120,14 +114,11 @@ export class RoomListComponent implements OnInit {
         });
 
         this.error = true;
-        this.isLoading = false;
       },
     });
   }
 
   getAllRoomsByCif() {
-    this.isLoading = true;
-
     this.roomService.getAllRoomsByCif(this.center).subscribe({
       next: (res: IResponse) => {
         let roomArray = JSON.parse(res.response);
@@ -163,12 +154,9 @@ export class RoomListComponent implements OnInit {
                 }
               });
             }
-
-            this.isLoading = false;
           },
           error: () => {
             this.error = true;
-            this.isLoading = false;
           },
         });
       },
@@ -180,7 +168,6 @@ export class RoomListComponent implements OnInit {
         });
 
         this.error = true;
-        this.isLoading = false;
       },
     });
   }
@@ -259,8 +246,6 @@ export class RoomListComponent implements OnInit {
   }
 
   delete(id: number) {
-    this.isLoading = true;
-
     this.roomService.deleteRoom(id).subscribe({
       next: (res: IResponse) => {
         if (res.code === 200) {
@@ -279,7 +264,6 @@ export class RoomListComponent implements OnInit {
             summary: 'Error',
             detail: 'Error al eliminar la sala',
           });
-          this.isLoading = false;
         }
       },
       error: () => {

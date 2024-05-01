@@ -18,7 +18,6 @@ export class SeatListComponent implements OnInit {
   @ViewChild('dt1') dt1: Table | undefined;
   seats: Seat[] = [];
   error: boolean = false;
-  isLoading: boolean = false;
   center!: string;
   isGlobalAdmin: boolean = false;
   isAdmin: boolean = false;
@@ -48,8 +47,6 @@ export class SeatListComponent implements OnInit {
   }
 
   getAllSeats() {
-    this.isLoading = true;
-
     this.seatService.getAllSeats().subscribe({
       next: (res: IResponse) => {
         const seatArray = JSON.parse(res.response);
@@ -81,8 +78,6 @@ export class SeatListComponent implements OnInit {
                 (seat) => seat.center_cif === this.center
               );
             }
-
-            this.isLoading = false;
           },
           error: () => {
             this.messageService.add({
@@ -92,7 +87,6 @@ export class SeatListComponent implements OnInit {
             });
 
             this.error = true;
-            this.isLoading = false;
           },
         });
       },
@@ -104,7 +98,6 @@ export class SeatListComponent implements OnInit {
         });
 
         this.error = true;
-        this.isLoading = false;
       },
     });
   }
@@ -162,8 +155,6 @@ export class SeatListComponent implements OnInit {
   }
 
   delete(id: number) {
-    this.isLoading = true;
-
     this.seatService.deleteSeat(id).subscribe({
       next: (res: IResponse) => {
         if (res.code === 200) {
@@ -182,7 +173,6 @@ export class SeatListComponent implements OnInit {
             summary: 'Error',
             detail: 'Error al eliminar el puesto',
           });
-          this.isLoading = false;
         }
       },
       error: () => {

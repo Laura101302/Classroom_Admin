@@ -15,7 +15,6 @@ export class RoleListComponent {
   @ViewChild('dt1') dt1: Table | undefined;
   roles: Role[] = [];
   error: boolean = false;
-  isLoading: boolean = false;
 
   constructor(
     private roleService: RoleService,
@@ -28,12 +27,9 @@ export class RoleListComponent {
   }
 
   getAllRoles() {
-    this.isLoading = true;
-
     this.roleService.getAllRoles().subscribe({
       next: (res: IResponse) => {
         this.roles = JSON.parse(res.response);
-        this.isLoading = false;
       },
       error: () => {
         this.messageService.add({
@@ -43,7 +39,6 @@ export class RoleListComponent {
         });
 
         this.error = true;
-        this.isLoading = false;
       },
     });
   }
