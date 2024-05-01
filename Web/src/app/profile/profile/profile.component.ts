@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { IResponse } from 'src/interfaces/response';
 import { Teacher } from 'src/interfaces/teacher';
 import { CenterService } from 'src/services/center.service';
@@ -17,7 +18,9 @@ export class ProfileComponent implements OnInit {
   constructor(
     private teacherService: TeacherService,
     private centerService: CenterService,
-    private roleService: RoleService
+    private roleService: RoleService,
+    private messageService: MessageService,
+    private confirmationService: ConfirmationService
   ) {}
 
   ngOnInit(): void {
@@ -29,8 +32,12 @@ export class ProfileComponent implements OnInit {
           const user = JSON.parse(res.response)[0];
           this.getCenterName(user);
         },
-        error: (error) => {
-          console.log(error);
+        error: () => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Error al recuperar los datos',
+          });
         },
       });
   }
@@ -38,15 +45,21 @@ export class ProfileComponent implements OnInit {
   getCenterName(user: Teacher) {
     this.centerService.getCenterByCif(user.center_cif).subscribe({
       next: (res: IResponse) => {
+        const center = JSON.parse(res.response);
+
         this.user = {
           ...user,
-          center_cif: JSON.parse(res.response)[0].name,
+          center_cif: center.length ? center[0].name : 'No establecido',
         };
 
         this.getRoleName(this.user);
       },
-      error: (error) => {
-        console.log(error);
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al recuperar los datos',
+        });
       },
     });
   }
@@ -59,19 +72,43 @@ export class ProfileComponent implements OnInit {
           role_id: JSON.parse(res.response)[0].name,
         };
       },
-      error: (error) => {
-        console.log(error);
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al recuperar los datos',
+        });
       },
+    });
+  }
+
+  warningDeleteAccount(user: Teacher) {
+    this.confirmationService.confirm({
+      target: event?.target as EventTarget,
+      message: '¿Estás seguro? Se eliminará la cuenta de usuario',
+      header: 'Eliminar cuenta',
+      icon: 'pi pi-exclamation-triangle',
+      acceptButtonStyleClass: 'p-button-danger p-button-text',
+      rejectButtonStyleClass: 'p-button-text',
+
+      accept: () => {
+        this.deleteAccount(user.dni);
+      },
+      reject: () => {},
     });
   }
 
   deleteAccount(dni: string) {
     this.teacherService.deleteTeacher(dni).subscribe({
-      next: (res: IResponse) => {
+      next: () => {
         this.logOut();
       },
-      error: (error) => {
-        console.log(error);
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al eliminar la cuenta',
+        });
       },
     });
   }
@@ -79,6 +116,9 @@ export class ProfileComponent implements OnInit {
   logOut() {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
+    localStorage.removeItem('center');
+    localStorage.removeItem('role');
+
     window.location.reload();
   }
 }

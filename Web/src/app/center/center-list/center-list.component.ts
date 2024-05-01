@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { Table } from 'primeng/table';
 import { Center } from 'src/interfaces/center';
 import { IResponse } from 'src/interfaces/response';
@@ -14,11 +15,14 @@ export class CenterListComponent implements OnInit {
   @ViewChild('dt1') dt1: Table | undefined;
   centers: Center[] = [];
   error: boolean = false;
-  deleted: boolean = false;
-  deletedError: boolean = false;
   isLoading: boolean = false;
 
-  constructor(private centerService: CenterService, private router: Router) {}
+  constructor(
+    private centerService: CenterService,
+    private router: Router,
+    private messageService: MessageService,
+    private confirmationService: ConfirmationService
+  ) {}
 
   ngOnInit(): void {
     this.getAllCenters();
@@ -33,6 +37,11 @@ export class CenterListComponent implements OnInit {
         this.isLoading = false;
       },
       error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Ha ocurrido un error',
+        });
         this.error = true;
         this.isLoading = false;
       },
@@ -47,24 +56,43 @@ export class CenterListComponent implements OnInit {
     this.router.navigate(['/centers/edit-center', cif]);
   }
 
+  warningDelete(center: Center) {
+    this.confirmationService.confirm({
+      target: event?.target as EventTarget,
+      message: 'Se eliminará el centro: ' + center.name,
+      header: 'Eliminar centro',
+      icon: 'pi pi-info-circle',
+      acceptButtonStyleClass: 'p-button-danger p-button-text',
+      rejectButtonStyleClass: 'p-button-text',
+
+      accept: () => {
+        this.delete(center.cif);
+      },
+      reject: () => {},
+    });
+  }
+
   delete(cif: string) {
     this.isLoading = true;
 
     this.centerService.deleteCenter(cif).subscribe((res: any) => {
       if (res.code === 200) {
-        this.deleted = true;
-        this.deletedError = false;
-        this.getAllCenters();
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Eliminado',
+          detail: 'Centro eliminado correctamente',
+        });
+
         setTimeout(() => {
-          this.deleted = false;
-        }, 3000);
+          location.reload();
+        }, 2000);
       } else {
-        this.deleted = false;
-        this.deletedError = true;
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'No se ha podido eliminar el centro',
+        });
         this.isLoading = false;
-        setTimeout(() => {
-          this.deletedError = false;
-        }, 3000);
       }
     });
   }

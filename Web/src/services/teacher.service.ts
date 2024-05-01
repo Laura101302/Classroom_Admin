@@ -15,8 +15,14 @@ export class TeacherService {
     return this.http.get<IResponse>(this.url);
   }
 
-  getTeacherByDni(dni: string) {
-    return this.http.get<IResponse>(this.url + `?dni=${dni}`);
+  getAllTeachersByCif(cif: string) {
+    return this.http.get<IResponse>(this.url + `?cif=${cif}`);
+  }
+
+  getTeacherByDni(dni: string, getPass: boolean = true) {
+    return this.http.get<IResponse>(
+      this.url + `?dni=${dni}&getPass=${getPass}`
+    );
   }
 
   getTeacherByEmail(email: string) {

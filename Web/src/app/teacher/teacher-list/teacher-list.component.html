@@ -1,3 +1,5 @@
+<p-toast></p-toast>
+
 <h1>Listado de profesores</h1>
 
 <div class="new-button">
@@ -15,17 +17,20 @@
     [loading]="isLoading"
     [paginator]="true"
     currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} profesores"
-    [globalFilterFields]="[
-      '',
-      'dni',
-      'name',
-      'surnames',
-      'phone',
-      'email',
-      'birthdate',
-      'center_cif',
-      'role_id'
-    ]"
+    [globalFilterFields]="
+      isGlobalAdmin
+        ? [
+            '',
+            'dni',
+            'name',
+            'surnames',
+            'phone',
+            'email',
+            'center_cif',
+            'role_id'
+          ]
+        : ['', 'dni', 'name', 'surnames', 'phone', 'email', 'role_id']
+    "
     styleClass="p-datatable-striped"
     [tableStyle]="{ 'min-width': '50rem' }"
   >
@@ -52,9 +57,10 @@
     <ng-template pTemplate="header">
       <tr>
         <th></th>
-        <th>
+        <th pSortableColumn="dni">
           <div class="flex align-items-center">
             DNI
+            <p-sortIcon field="dni"></p-sortIcon>
             <p-columnFilter
               type="text"
               field="dni"
@@ -62,9 +68,10 @@
             ></p-columnFilter>
           </div>
         </th>
-        <th>
+        <th pSortableColumn="name">
           <div class="flex align-items-center">
             Nombre
+            <p-sortIcon field="name"></p-sortIcon>
             <p-columnFilter
               type="text"
               field="name"
@@ -72,9 +79,10 @@
             ></p-columnFilter>
           </div>
         </th>
-        <th>
+        <th pSortableColumn="surnames">
           <div class="flex align-items-center">
             Apellidos
+            <p-sortIcon field="surnames"></p-sortIcon>
             <p-columnFilter
               type="text"
               field="surnames"
@@ -82,9 +90,10 @@
             ></p-columnFilter>
           </div>
         </th>
-        <th>
+        <th pSortableColumn="phone">
           <div class="flex align-items-center">
             Teléfono
+            <p-sortIcon field="phone"></p-sortIcon>
             <p-columnFilter
               type="text"
               field="phone"
@@ -92,9 +101,10 @@
             ></p-columnFilter>
           </div>
         </th>
-        <th>
+        <th pSortableColumn="email">
           <div class="flex align-items-center">
             Correo electrónico
+            <p-sortIcon field="email"></p-sortIcon>
             <p-columnFilter
               type="text"
               field="email"
@@ -102,19 +112,10 @@
             ></p-columnFilter>
           </div>
         </th>
-        <th>
-          <div class="flex align-items-center">
-            Fecha de nacimiento
-            <p-columnFilter
-              type="text"
-              field="birthdate"
-              display="menu"
-            ></p-columnFilter>
-          </div>
-        </th>
-        <th>
+        <th pSortableColumn="center_cif" *ngIf="isGlobalAdmin">
           <div class="flex align-items-center">
             Centro
+            <p-sortIcon field="center_cif"></p-sortIcon>
             <p-columnFilter
               type="text"
               field="center_cif"
@@ -122,9 +123,10 @@
             ></p-columnFilter>
           </div>
         </th>
-        <th>
+        <th pSortableColumn="role_id">
           <div class="flex align-items-center">
             Rol
+            <p-sortIcon field="role_id"></p-sortIcon>
             <p-columnFilter
               type="text"
               field="role_id"
@@ -143,7 +145,7 @@
           ></button>
           <button
             class="pi pi-trash showDetails"
-            (click)="delete(teacher.dni)"
+            (click)="warningDelete(teacher)"
           ></button>
         </td>
         <td>{{ teacher.dni }}</td>
@@ -151,8 +153,7 @@
         <td>{{ teacher.surnames }}</td>
         <td>{{ teacher.phone }}</td>
         <td>{{ teacher.email }}</td>
-        <td>{{ teacher.birthdate | date : "dd-MM-yyyy" }}</td>
-        <td>{{ teacher.center_cif }}</td>
+        <td *ngIf="isGlobalAdmin">{{ teacher.center_cif }}</td>
         <td>{{ teacher.role_id }}</td>
       </tr>
     </ng-template>
@@ -163,10 +164,27 @@
   <p>No hay profesores para mostrar</p>
 </div>
 
-<div *ngIf="deleted">
-  <p>Profesor eliminado correctamente</p>
-</div>
-
-<div *ngIf="deletedError">
-  <p>No se ha podido eliminar el profesor</p>
-</div>
+<p-confirmDialog #cd>
+  <ng-template pTemplate="footer">
+    <button
+      type="button"
+      class="p-element p-ripple p-button-text p-confirm-dialog-reject p-button p-component ng-star-inserted"
+      ng-reflect-label="Cancelar"
+      ng-reflect-ng-class="p-confirm-dialog-reject"
+      (click)="cd.reject()"
+    >
+      <i class="none ng-star-inserted"></i>
+      <span class="p-button-label">Cancelar</span>
+    </button>
+    <button
+      type="button"
+      class="p-element p-ripple p-button-danger p-button-text p-confirm-dialog-accept p-button p-component ng-star-inserted"
+      ng-reflect-label="Eliminar"
+      ng-reflect-ng-class="p-confirm-dialog-accept"
+      (click)="cd.accept()"
+    >
+      <i class="none ng-star-inserted"></i>
+      <span class="p-button-label">Eliminar</span>
+    </button>
+  </ng-template>
+</p-confirmDialog>

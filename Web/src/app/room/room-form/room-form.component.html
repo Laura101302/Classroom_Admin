@@ -1,3 +1,5 @@
+<p-toast></p-toast>
+
 <h1>{{ isEditing ? "Editar" : "Nueva" }} sala</h1>
 
 <form
@@ -6,7 +8,7 @@
   [formGroup]="form"
   (ngSubmit)="isEditing ? editRoom() : createRoom()"
 >
-  <div class="input_wrapper">
+  <div class="input-wrapper">
     <div class="input">
       <label for="name">Nombre</label>
       <input pInputText type="text" id="name" formControlName="name" />
@@ -23,7 +25,7 @@
     </div>
   </div>
 
-  <div class="input_wrapper">
+  <div class="input-wrapper">
     <div class="input">
       <label for="floor_number">Planta</label>
       <input
@@ -35,20 +37,47 @@
     </div>
 
     <div class="input">
-      <label for="room_type_id">Tipo</label>
+      <label for="reservation_type">Tipo de reserva</label>
+      <p-dropdown
+        [options]="reserveTypes"
+        [(ngModel)]="selectedReserveType"
+        optionLabel="name"
+        [showClear]="false"
+        placeholder="Selecciona un tipo"
+        id="reservation_type"
+        formControlName="reservation_type"
+      ></p-dropdown>
+    </div>
+  </div>
+
+  <div class="input-wrapper">
+    <div class="input">
+      <label for="room_type_id">Tipo de sala</label>
       <p-dropdown
         [options]="roomTypes"
         [(ngModel)]="selectedRoomType"
         optionLabel="name"
         [showClear]="false"
-        placeholder="Selecciona un tipo de sala"
+        placeholder="Selecciona un tipo"
         id="room_type_id"
         formControlName="room_type_id"
       ></p-dropdown>
     </div>
+
+    <div class="input">
+      <label for="allowed_roles_ids">Reserva permitida</label>
+      <p-multiSelect
+        [options]="roles"
+        [(ngModel)]="selectedRoles"
+        optionLabel="name"
+        placeholder="Selecciona los roles"
+        id="allowed_roles_ids"
+        formControlName="allowed_roles_ids"
+      ></p-multiSelect>
+    </div>
   </div>
 
-  <div class="input_wrapper">
+  <div class="input-wrapper" *ngIf="isGlobalAdmin">
     <div class="input">
       <label for="center_cif">Centro</label>
       <p-dropdown
@@ -74,9 +103,3 @@
     <p-button type="button" label="Volver" routerLink="/rooms"></p-button>
   </div>
 </form>
-
-<p *ngIf="created">{{ isEditing ? "Editada" : "Creada" }} correctamente</p>
-<p *ngIf="error">
-  Ha ocurrido un error al {{ isEditing ? "editar" : "crear" }} la sala:
-  {{ errorMessage }}
-</p>

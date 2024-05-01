@@ -1,3 +1,5 @@
+<p-toast></p-toast>
+
 <h1>{{ isEditing ? "Editar" : "Nuevo" }} profesor</h1>
 
 <form
@@ -6,43 +8,36 @@
   [formGroup]="form"
   (ngSubmit)="isEditing ? editTeacher() : createTeacher()"
 >
-  <div class="input_wrapper">
+  <div class="input-wrapper">
     <div class="input">
       <label for="dni">DNI</label>
       <input pInputText type="text" id="dni" formControlName="dni" />
     </div>
 
     <div class="input">
-      <label for="pass">Contraseña</label>
-      <input pInputText type="password" id="pass" formControlName="pass" />
-    </div>
-  </div>
-
-  <div class="input_wrapper">
-    <div class="input">
       <label for="name">Nombre</label>
       <input pInputText type="text" id="name" formControlName="name" />
     </div>
+  </div>
 
+  <div class="input-wrapper">
     <div class="input">
       <label for="surnames">Apellidos</label>
       <input pInputText type="text" id="surnames" formControlName="surnames" />
     </div>
-  </div>
 
-  <div class="input_wrapper">
     <div class="input">
       <label for="phone">Teléfono</label>
       <input pInputText type="tel" id="phone" formControlName="phone" />
     </div>
+  </div>
 
+  <div class="input-wrapper">
     <div class="input">
       <label for="email">Correo electrónico</label>
       <input pInputText type="email" id="email" formControlName="email" />
     </div>
-  </div>
 
-  <div class="input_wrapper">
     <div class="input">
       <label for="birthdate">Fecha de nacimiento</label>
       <input
@@ -52,22 +47,9 @@
         formControlName="birthdate"
       />
     </div>
-
-    <div class="input">
-      <label for="center_cif">Centro</label>
-      <p-dropdown
-        [options]="centers"
-        [(ngModel)]="selectedCenter"
-        optionLabel="name"
-        [showClear]="false"
-        placeholder="Selecciona un centro"
-        id="center_cif"
-        formControlName="center_cif"
-      ></p-dropdown>
-    </div>
   </div>
 
-  <div class="input_wrapper">
+  <div class="input-wrapper">
     <div class="input">
       <label for="role_id">Rol</label>
       <p-dropdown
@@ -78,6 +60,24 @@
         placeholder="Selecciona un rol"
         id="role_id"
         formControlName="role_id"
+      ></p-dropdown>
+    </div>
+
+    <div class="input" *ngIf="!isEditing">
+      <label for="pass">Contraseña</label>
+      <input pInputText type="password" id="pass" formControlName="pass" />
+    </div>
+
+    <div class="input" *ngIf="isGlobalAdmin">
+      <label for="center_cif">Centro</label>
+      <p-dropdown
+        [options]="centers"
+        [(ngModel)]="selectedCenter"
+        optionLabel="name"
+        [showClear]="false"
+        placeholder="Selecciona un centro"
+        id="center_cif"
+        formControlName="center_cif"
       ></p-dropdown>
     </div>
   </div>
@@ -93,9 +93,3 @@
     <p-button type="button" label="Volver" routerLink="/teachers"></p-button>
   </div>
 </form>
-
-<p *ngIf="created">{{ isEditing ? "Editado" : "Creado" }} correctamente</p>
-<p *ngIf="error">
-  Ha ocurrido un error al {{ isEditing ? "editar" : "crear" }} el profesor:
-  {{ errorMessage }}
-</p>

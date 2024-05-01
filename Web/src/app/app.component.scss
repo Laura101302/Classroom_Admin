@@ -1,5 +1,10 @@
 .layout-wrapper {
-  gap: 3vw;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  justify-content: space-between;
+  padding: 0.5rem 1.5rem 1.5rem;
+  transition: margin-left 0.2s;
 }
 
 .layout-margin {

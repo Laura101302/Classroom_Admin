@@ -14,4 +14,18 @@
         http_response_code($code);
         echo json_encode($response);
     }
+
+    function updateRoomState($id, $state){
+        $db = getDatabase();
+        $sql = $db->prepare("UPDATE ROOM SET state = ? WHERE id = ?;");
+        $sql->execute([$state, $id]);
+        return $sql->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    function updateSeatState($id, $state){
+        $db = getDatabase();
+        $sql = $db->prepare("UPDATE SEAT SET state = ? WHERE id = ?;");
+        $sql->execute([$state, $id]);
+        return $sql->fetchAll(PDO::FETCH_ASSOC);
+    }
 ?>

@@ -1,0 +1,144 @@
+<p-toast></p-toast>
+
+<h1>Listado de reservas</h1>
+
+<div class="new-button" *ngIf="!isGlobalAdmin">
+  <p-button routerLink="/rooms">Nueva reserva</p-button>
+</div>
+
+<div *ngIf="reservations.length">
+  <p-table
+    #dt1
+    [value]="reservations"
+    dataKey="id"
+    [rows]="10"
+    [showCurrentPageReport]="true"
+    [rowsPerPageOptions]="[10, 25, 50]"
+    [loading]="isLoading"
+    [paginator]="true"
+    currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} salas"
+    [globalFilterFields]="
+      isGlobalAdmin
+        ? ['', 'room_id', 'seat_id', 'teacher_email', 'center_cif']
+        : ['', 'room_id', 'seat_id']
+    "
+    styleClass="p-datatable-striped"
+    [tableStyle]="{ 'min-width': '50rem' }"
+  >
+    <ng-template pTemplate="caption">
+      <div class="flex">
+        <button
+          pButton
+          label="Limpiar"
+          class="p-button-outlined"
+          icon="pi pi-filter-slash"
+          (click)="clearFilter(dt1)"
+        ></button>
+        <span class="p-input-icon-left ml-auto">
+          <i class="pi pi-search"></i>
+          <input
+            pInputText
+            type="text"
+            (input)="applyFilterGlobal($event, 'contains')"
+            placeholder="Buscar..."
+          />
+        </span>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="header">
+      <tr>
+        <th></th>
+        <th pSortableColumn="room_id">
+          <div class="flex align-items-center">
+            Sala
+            <p-sortIcon field="room_id"></p-sortIcon>
+            <p-columnFilter
+              type="text"
+              field="room_id"
+              display="menu"
+            ></p-columnFilter>
+          </div>
+        </th>
+        <th pSortableColumn="seat_id">
+          <div class="flex align-items-center">
+            Puesto
+            <p-sortIcon field="seat_id"></p-sortIcon>
+            <p-columnFilter
+              type="text"
+              field="seat_id"
+              display="menu"
+            ></p-columnFilter>
+          </div>
+        </th>
+        <th
+          pSortableColumn="teacher_email"
+          *ngIf="isGlobalAdmin || showAllByCif"
+        >
+          <div class="flex align-items-center">
+            Profesor
+            <p-sortIcon field="teacher_email"></p-sortIcon>
+            <p-columnFilter
+              type="text"
+              field="teacher_email"
+              display="menu"
+            ></p-columnFilter>
+          </div>
+        </th>
+        <th pSortableColumn="center_cif" *ngIf="isGlobalAdmin">
+          <div class="flex align-items-center">
+            Centro
+            <p-sortIcon field="center_cif"></p-sortIcon>
+            <p-columnFilter
+              type="text"
+              field="center_cif"
+              display="menu"
+            ></p-columnFilter>
+          </div>
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-room>
+      <tr>
+        <td class="action-buttons">
+          <button
+            class="pi pi-trash showDetails"
+            (click)="warningDelete(room)"
+          ></button>
+        </td>
+        <td>{{ room.room_id }}</td>
+        <td>{{ room.seat_id }}</td>
+        <td *ngIf="isGlobalAdmin || showAllByCif">{{ room.teacher_email }}</td>
+        <td *ngIf="isGlobalAdmin">{{ room.center.name }}</td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+
+<div *ngIf="!reservations.length || error">
+  <p>No hay reservas para mostrar</p>
+</div>
+
+<p-confirmDialog #cd>
+  <ng-template pTemplate="footer">
+    <button
+      type="button"
+      class="p-element p-ripple p-button-text p-confirm-dialog-reject p-button p-component ng-star-inserted"
+      ng-reflect-label="Cancelar"
+      ng-reflect-ng-class="p-confirm-dialog-reject"
+      (click)="cd.reject()"
+    >
+      <i class="none ng-star-inserted"></i>
+      <span class="p-button-label">Cancelar</span>
+    </button>
+    <button
+      type="button"
+      class="p-element p-ripple p-button-danger p-button-text p-confirm-dialog-accept p-button p-component ng-star-inserted"
+      ng-reflect-label="Eliminar"
+      ng-reflect-ng-class="p-confirm-dialog-accept"
+      (click)="cd.accept()"
+    >
+      <i class="none ng-star-inserted"></i>
+      <span class="p-button-label">Eliminar</span>
+    </button>
+  </ng-template>
+</p-confirmDialog>

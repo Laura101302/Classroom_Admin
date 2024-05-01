@@ -1,6 +1,6 @@
 export interface Teacher {
   dni: string;
-  pass: string;
+  pass?: string;
   name: string;
   surnames: string;
   phone: string;

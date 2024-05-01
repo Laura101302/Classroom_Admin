@@ -1,7 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { Table } from 'primeng/table';
-import { Observable, forkJoin, map } from 'rxjs';
+import { forkJoin, map, Observable, of } from 'rxjs';
 import { IResponse } from 'src/interfaces/response';
 import { Room } from 'src/interfaces/room';
 import { CenterService } from 'src/services/center.service';
@@ -17,18 +18,53 @@ export class RoomListComponent implements OnInit {
   @ViewChild('dt1') dt1: Table | undefined;
   rooms: Room[] = [];
   error: boolean = false;
-  deleted: boolean = false;
-  deletedError: boolean = false;
   isLoading: boolean = false;
+  center!: string;
+  isGlobalAdmin: boolean = false;
+  isAdmin: boolean = false;
+  role!: string | null;
+  canReserve: boolean = true;
 
   constructor(
     private roomService: RoomService,
     private router: Router,
     private roomTypeService: RoomTypeService,
-    private centerService: CenterService
+    private centerService: CenterService,
+    private messageService: MessageService,
+    private confirmationService: ConfirmationService,
+    private activatedRoute: ActivatedRoute
   ) {}
+
   ngOnInit(): void {
-    this.getAllRooms();
+    const center = localStorage.getItem('center');
+    this.role = localStorage.getItem('role');
+
+    if (center) {
+      this.center = center;
+
+      if (this.role) {
+        if (this.role === '0') {
+          this.isGlobalAdmin = true;
+          this.canReserve = false;
+          this.getAllRooms();
+        } else if (this.role === '1') {
+          const path = this.activatedRoute.snapshot.routeConfig?.path;
+
+          if (path && path === 'all-rooms') {
+            this.canReserve = false;
+            this.getAllRooms();
+          } else {
+            this.canReserve = true;
+            this.getAllRoomsByCif();
+          }
+        } else {
+          this.canReserve = true;
+          this.getAllRoomsByCif();
+        }
+      }
+    }
+
+    if (this.role && this.role === '1') this.isAdmin = true;
   }
 
   getAllRooms() {
@@ -40,11 +76,17 @@ export class RoomListComponent implements OnInit {
 
         const observablesArray = roomArray.map((room: Room) => {
           return forkJoin({
+            reservation_type: of(
+              this.getReserveTypeById(room.reservation_type)
+            ),
+            state: of(this.getState(room.state)),
             room_type: this.getRoomTypeById(room.room_type_id),
             center: this.getCenterByCif(room.center_cif),
           }).pipe(
             map((data) => ({
               ...room,
+              reservation_type: data.reservation_type,
+              state: data.state,
               room_type_id: data.room_type.name,
               center_cif: data.center.name,
             }))
@@ -52,8 +94,16 @@ export class RoomListComponent implements OnInit {
         });
 
         forkJoin(observablesArray).subscribe({
-          next: (res) => {
-            this.rooms = res as Room[];
+          next: (res: any) => {
+            if (this.role === '0' || this.role === '1') this.rooms = res;
+            else {
+              res.map((room: Room) => {
+                if (room.allowed_roles_ids.split(',').includes(this.role!)) {
+                  this.rooms.push(room);
+                }
+              });
+            }
+
             this.isLoading = false;
           },
           error: () => {
@@ -63,10 +113,109 @@ export class RoomListComponent implements OnInit {
         });
       },
       error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al recuperar las salas',
+        });
+
         this.error = true;
         this.isLoading = false;
       },
     });
+  }
+
+  getAllRoomsByCif() {
+    this.isLoading = true;
+
+    this.roomService.getAllRoomsByCif(this.center).subscribe({
+      next: (res: IResponse) => {
+        let roomArray = JSON.parse(res.response);
+
+        roomArray = roomArray.filter((room: any) =>
+          room.allowed_roles_ids.includes(this.role)
+        );
+
+        const observablesArray = roomArray.map((room: Room) => {
+          return forkJoin({
+            reservation_type: of(
+              this.getReserveTypeById(room.reservation_type)
+            ),
+            state: of(this.getState(room.state)),
+            room_type: this.getRoomTypeById(room.room_type_id),
+          }).pipe(
+            map((data) => ({
+              ...room,
+              reservation_type: data.reservation_type,
+              state: data.state,
+              room_type_id: data.room_type.name,
+            }))
+          );
+        });
+
+        forkJoin(observablesArray).subscribe({
+          next: (res: any) => {
+            if (this.role === '1') this.rooms = res;
+            else {
+              res.map((room: Room) => {
+                if (room.allowed_roles_ids.split(',').includes(this.role!)) {
+                  this.rooms.push(room);
+                }
+              });
+            }
+
+            this.isLoading = false;
+          },
+          error: () => {
+            this.error = true;
+            this.isLoading = false;
+          },
+        });
+      },
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al recuperar las salas',
+        });
+
+        this.error = true;
+        this.isLoading = false;
+      },
+    });
+  }
+
+  getReserveTypeById(reserveTypeId: number) {
+    let type = '';
+
+    switch (reserveTypeId) {
+      case 1:
+        type = 'Sala entera';
+        break;
+      case 2:
+        type = 'Puestos individuales';
+        break;
+      case 3:
+        type = 'Entera / Individual';
+        break;
+      default:
+        console.log(reserveTypeId);
+        break;
+    }
+
+    return type;
+  }
+
+  getState(state: number) {
+    switch (state) {
+      case 1:
+        return 'Disponible';
+      case 0:
+        return 'Ocupada';
+      default:
+        console.log(state);
+        return '';
+    }
   }
 
   getRoomTypeById(roomTypeId: number) {
@@ -85,29 +234,61 @@ export class RoomListComponent implements OnInit {
     this.router.navigate(['rooms/create-room']);
   }
 
+  reserve(id: number) {
+    this.router.navigate(['reservation', id]);
+  }
+
   edit(id: number) {
-    this.router.navigate(['/rooms/edit-room', id]);
+    this.router.navigate(['rooms/edit-room', id]);
+  }
+
+  warningDelete(room: Room) {
+    this.confirmationService.confirm({
+      target: event?.target as EventTarget,
+      message: 'Se eliminará la sala: ' + room.name,
+      header: 'Eliminar sala',
+      icon: 'pi pi-info-circle',
+      acceptButtonStyleClass: 'p-button-danger p-button-text',
+      rejectButtonStyleClass: 'p-button-text',
+
+      accept: () => {
+        this.delete(room.id);
+      },
+      reject: () => {},
+    });
   }
 
   delete(id: number) {
     this.isLoading = true;
 
-    this.roomService.deleteRoom(id).subscribe((res) => {
-      if (res.code === 200) {
-        this.deleted = true;
-        this.deletedError = false;
-        this.getAllRooms();
-        setTimeout(() => {
-          this.deleted = false;
-        }, 3000);
-      } else {
-        this.deleted = false;
-        this.deletedError = true;
-        this.isLoading = false;
-        setTimeout(() => {
-          this.deletedError = false;
-        }, 3000);
-      }
+    this.roomService.deleteRoom(id).subscribe({
+      next: (res: IResponse) => {
+        if (res.code === 200) {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Eliminada',
+            detail: 'Sala eliminada correctamente',
+          });
+
+          setTimeout(() => {
+            location.reload();
+          }, 2000);
+        } else {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Error al eliminar la sala',
+          });
+          this.isLoading = false;
+        }
+      },
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al eliminar la sala',
+        });
+      },
     });
   }
 

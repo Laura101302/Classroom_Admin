@@ -15,7 +15,11 @@ export class RoomService {
     return this.http.get<IResponse>(this.url);
   }
 
-  getRoomById(id: string) {
+  getAllRoomsByCif(cif: string) {
+    return this.http.get<IResponse>(this.url + `?cif=${cif}`);
+  }
+
+  getRoomById(id: number) {
     return this.http.get<IResponse>(this.url + `?id=${id}`);
   }
 
@@ -29,5 +33,12 @@ export class RoomService {
 
   deleteRoom(id: number) {
     return this.http.delete<IResponse>(this.url + '/' + id);
+  }
+
+  updateState(id: number, state: number) {
+    return this.http.put<IResponse>(
+      this.url + `?id=${id}&state=${state}`,
+      null
+    );
   }
 }

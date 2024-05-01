@@ -20,10 +20,12 @@
     
     switch($method){
         case 'GET':
-            if(isset($_GET['dni'])){
-                sendCode(SUCCESS_CODE, 'Data recovered successfully', json_encode(getTeacherByDni($_GET['dni'])));
+            if(isset($_GET['dni']) && isset($_GET['getPass'])){
+                sendCode(SUCCESS_CODE, 'Data recovered successfully', json_encode(getTeacherByDni($_GET['dni'], $_GET['getPass'])));
             }else if(isset($_GET['email'])){
                 sendCode(SUCCESS_CODE, 'Data recovered successfully', json_encode(getTeacherByEmail($_GET['email'])));
+            }else if(isset($_GET['cif'])){
+                sendCode(SUCCESS_CODE, 'Data recovered successfully', json_encode(getAllTeachersByCif($_GET['cif'])));
             }else{
                 sendCode(SUCCESS_CODE, 'Data recovered successfully', json_encode(getAllTeachers()));
             }

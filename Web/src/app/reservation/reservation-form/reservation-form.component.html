@@ -1,0 +1,62 @@
+<p-toast></p-toast>
+
+<h1>Reservar</h1>
+
+<form action="" method="post" [formGroup]="form" (ngSubmit)="createReserve()">
+  <div class="input-wrapper">
+    <div class="input">
+      <label for="email">Correo electrónico</label>
+      <input pInputText type="email" id="email" formControlName="email" />
+    </div>
+
+    <div class="input">
+      <label for="center">Centro</label>
+      <input pInputText type="text" id="center" formControlName="center" />
+    </div>
+  </div>
+
+  <div class="input-wrapper">
+    <div class="input">
+      <label for="room">Sala</label>
+      <input pInputText type="text" id="room" formControlName="room" />
+    </div>
+
+    <div class="input">
+      <label for="seat_id">Puesto</label>
+      <p-dropdown
+        [options]="seats"
+        [(ngModel)]="selectedSeat"
+        optionLabel="name"
+        [showClear]="false"
+        placeholder="Selecciona un puesto"
+        id="seat_id"
+        formControlName="seat_id"
+      ></p-dropdown>
+    </div>
+  </div>
+
+  <div class="input-wrapper">
+    <div class="input checkbox">
+      <p-checkbox
+        formControlName="whole_room"
+        value="Whole room"
+        inputId="whole_room"
+        [(ngModel)]="isChecked"
+        [binary]="true"
+        [disabled]="isDisabled"
+        (onChange)="checkbox($event)"
+      ></p-checkbox>
+      <label for="whole_room">Reservar toda la sala</label>
+    </div>
+  </div>
+
+  <div class="buttons">
+    <p-button
+      type="submit"
+      severity="success"
+      [disabled]="form.invalid"
+      label="Reservar"
+    ></p-button>
+    <p-button type="button" label="Volver" routerLink="/rooms"></p-button>
+  </div>
+</form>

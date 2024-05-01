@@ -1,3 +1,5 @@
+<p-toast></p-toast>
+
 <div class="form-wrapper">
   <div class="form">
     <div class="header">
@@ -7,7 +9,7 @@
     <h3>Iniciar sesión</h3>
 
     <form action="" method="post" [formGroup]="form" (ngSubmit)="signIn()">
-      <div class="input_wrapper">
+      <div class="input-wrapper-login">
         <div class="input">
           <label for="email">Correo electrónico</label>
           <input pInputText type="email" id="email" formControlName="email" />

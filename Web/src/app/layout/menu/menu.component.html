@@ -1,0 +1,40 @@
+<div class="menu">
+  <p-menubar
+    [model]="
+      isGlobalAdmin
+        ? globalAdminMenuItems
+        : isAdmin
+        ? adminMenuItems
+        : menuItems
+    "
+  >
+    <ng-template pTemplate="start">
+      <img
+        src="../../assets/logo.png"
+        height="40"
+        class="mr-2"
+        routerLink="/"
+        class="logo"
+      />
+    </ng-template>
+    <ng-template pTemplate="end">
+      <div class="buttons">
+        <p-button
+          icon="pi pi-user"
+          [rounded]="true"
+          [text]="true"
+          severity="secondary"
+          [routerLink]="'/'"
+        ></p-button>
+
+        <p-button
+          icon="pi pi-sign-out"
+          [rounded]="true"
+          [text]="true"
+          severity="secondary"
+          (click)="logOut()"
+        ></p-button>
+      </div>
+    </ng-template>
+  </p-menubar>
+</div>

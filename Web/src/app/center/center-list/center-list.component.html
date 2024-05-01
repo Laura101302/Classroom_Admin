@@ -1,3 +1,5 @@
+<p-toast></p-toast>
+
 <h1>Listado de centros</h1>
 
 <div class="new-button">
@@ -51,9 +53,10 @@
     <ng-template pTemplate="header">
       <tr>
         <th></th>
-        <th>
+        <th pSortableColumn="cif">
           <div class="flex align-items-center">
             CIF
+            <p-sortIcon field="cif"></p-sortIcon>
             <p-columnFilter
               type="text"
               field="cif"
@@ -61,9 +64,10 @@
             ></p-columnFilter>
           </div>
         </th>
-        <th>
+        <th pSortableColumn="name">
           <div class="flex align-items-center">
             Nombre
+            <p-sortIcon field="name"></p-sortIcon>
             <p-columnFilter
               type="text"
               field="name"
@@ -71,9 +75,10 @@
             ></p-columnFilter>
           </div>
         </th>
-        <th>
+        <th pSortableColumn="direction">
           <div class="flex align-items-center">
             Dirección
+            <p-sortIcon field="direction"></p-sortIcon>
             <p-columnFilter
               type="text"
               field="direction"
@@ -81,9 +86,10 @@
             ></p-columnFilter>
           </div>
         </th>
-        <th>
+        <th pSortableColumn="postal_code">
           <div class="flex align-items-center">
             Código postal
+            <p-sortIcon field="postal_code"></p-sortIcon>
             <p-columnFilter
               type="text"
               field="postal_code"
@@ -91,9 +97,10 @@
             ></p-columnFilter>
           </div>
         </th>
-        <th>
+        <th pSortableColumn="city">
           <div class="flex align-items-center">
             Ciudad
+            <p-sortIcon field="city"></p-sortIcon>
             <p-columnFilter
               type="text"
               field="city"
@@ -101,9 +108,10 @@
             ></p-columnFilter>
           </div>
         </th>
-        <th>
+        <th pSortableColumn="province">
           <div class="flex align-items-center">
             Provincia
+            <p-sortIcon field="province"></p-sortIcon>
             <p-columnFilter
               type="text"
               field="province"
@@ -122,7 +130,7 @@
           ></button>
           <button
             class="pi pi-trash showDetails"
-            (click)="delete(center.cif)"
+            (click)="warningDelete(center)"
           ></button>
         </td>
         <td>{{ center.cif }}</td>
@@ -140,10 +148,27 @@
   <p>No hay centros para mostrar</p>
 </div>
 
-<div *ngIf="deleted">
-  <p>Centro eliminado correctamente</p>
-</div>
-
-<div *ngIf="deletedError">
-  <p>No se ha podido eliminar el centro</p>
-</div>
+<p-confirmDialog #cd>
+  <ng-template pTemplate="footer">
+    <button
+      type="button"
+      class="p-element p-ripple p-button-text p-confirm-dialog-reject p-button p-component ng-star-inserted"
+      ng-reflect-label="Cancelar"
+      ng-reflect-ng-class="p-confirm-dialog-reject"
+      (click)="cd.reject()"
+    >
+      <i class="none ng-star-inserted"></i>
+      <span class="p-button-label">Cancelar</span>
+    </button>
+    <button
+      type="button"
+      class="p-element p-ripple p-button-danger p-button-text p-confirm-dialog-accept p-button p-component ng-star-inserted"
+      ng-reflect-label="Eliminar"
+      ng-reflect-ng-class="p-confirm-dialog-accept"
+      (click)="cd.accept()"
+    >
+      <i class="none ng-star-inserted"></i>
+      <span class="p-button-label">Eliminar</span>
+    </button>
+  </ng-template>
+</p-confirmDialog>

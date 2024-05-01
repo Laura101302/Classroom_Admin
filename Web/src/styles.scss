@@ -19,7 +19,12 @@ body {
   cursor: pointer;
 }
 
-.p-dropdown {
+.p-dropdown,
+.p-multiSelect {
+  width: 100%;
+}
+
+p-multiselect > .p-multiselect.p-component.p-inputwrapper {
   width: 100%;
 }
 
@@ -30,4 +35,36 @@ body {
 .action-buttons {
   display: flex;
   gap: 1vw;
+}
+
+.advise {
+  font-style: italic;
+  font-size: 14px;
+}
+
+.input-wrapper {
+  display: flex;
+  justify-content: space-evenly;
+  margin: 1vh 0;
+  flex-wrap: wrap;
+  gap: 1vh;
+
+  .input {
+    display: flex;
+    flex-direction: column;
+    gap: 1vh;
+
+    & > input,
+    p-dropdown,
+    p-multiSelect {
+      width: 280px;
+    }
+  }
+
+  .checkbox {
+    flex-direction: row;
+    width: 280px;
+    margin-top: 3vh;
+    justify-content: center;
+  }
 }
