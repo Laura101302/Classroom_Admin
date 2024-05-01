@@ -83,13 +83,24 @@
   </div>
 
   <div class="buttons">
+    <div class="action-buttons">
+      <p-button
+        type="submit"
+        severity="success"
+        [disabled]="form.invalid"
+        [label]="isEditing ? 'Editar' : 'Añadir'"
+      ></p-button>
+      <p-button type="reset" severity="danger" label="Limpiar"></p-button>
+      <p-button type="button" label="Volver" routerLink="/teachers"></p-button>
+    </div>
+
     <p-button
-      type="submit"
-      severity="success"
-      [disabled]="form.invalid"
-      [label]="isEditing ? 'Editar' : 'Añadir'"
+      *ngIf="isEditing"
+      type="button"
+      severity="warning"
+      routerLink="/update-pass"
+      [queryParams]="{ email: teacher?.email }"
+      label="Cambiar contraseña"
     ></p-button>
-    <p-button type="reset" severity="danger" label="Limpiar"></p-button>
-    <p-button type="button" label="Volver" routerLink="/teachers"></p-button>
   </div>
 </form>

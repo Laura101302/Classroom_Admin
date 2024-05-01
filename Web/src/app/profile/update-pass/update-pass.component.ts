@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { UserService } from 'src/services/user.service';
 
@@ -15,7 +16,9 @@ export class UpdatePassComponent implements OnInit {
   constructor(
     private userService: UserService,
     private formBuilder: FormBuilder,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private activatedRoute: ActivatedRoute,
+    private router: Router
   ) {
     this.form = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
@@ -25,6 +28,11 @@ export class UpdatePassComponent implements OnInit {
 
   ngOnInit(): void {
     this.email = localStorage.getItem('user');
+
+    this.activatedRoute.queryParams.subscribe((params) => {
+      const email = params['email'];
+      if (email) this.email = email;
+    });
 
     if (this.email) {
       this.form = this.formBuilder.group({
@@ -47,6 +55,12 @@ export class UpdatePassComponent implements OnInit {
           summary: 'Editada',
           detail: 'Editada correctamente',
         });
+
+        setTimeout(() => {
+          if (this.email === localStorage.getItem('user'))
+            this.router.navigate(['']);
+          else this.router.navigate(['teachers']);
+        }, 2000);
       },
       error: () => {
         this.messageService.add({
