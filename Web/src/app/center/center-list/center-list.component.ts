@@ -15,7 +15,6 @@ export class CenterListComponent implements OnInit {
   @ViewChild('dt1') dt1: Table | undefined;
   centers: Center[] = [];
   error: boolean = false;
-  isLoading: boolean = false;
 
   constructor(
     private centerService: CenterService,
@@ -29,12 +28,9 @@ export class CenterListComponent implements OnInit {
   }
 
   getAllCenters() {
-    this.isLoading = true;
-
     this.centerService.getAllCenters().subscribe({
       next: (res: IResponse) => {
         this.centers = JSON.parse(res.response);
-        this.isLoading = false;
       },
       error: () => {
         this.messageService.add({
@@ -43,7 +39,6 @@ export class CenterListComponent implements OnInit {
           detail: 'Ha ocurrido un error',
         });
         this.error = true;
-        this.isLoading = false;
       },
     });
   }
@@ -73,8 +68,6 @@ export class CenterListComponent implements OnInit {
   }
 
   delete(cif: string) {
-    this.isLoading = true;
-
     this.centerService.deleteCenter(cif).subscribe((res: any) => {
       if (res.code === 200) {
         this.messageService.add({
@@ -92,7 +85,6 @@ export class CenterListComponent implements OnInit {
           summary: 'Error',
           detail: 'No se ha podido eliminar el centro',
         });
-        this.isLoading = false;
       }
     });
   }

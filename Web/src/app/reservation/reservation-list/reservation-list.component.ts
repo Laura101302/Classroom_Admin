@@ -19,7 +19,6 @@ export class ReservationListComponent implements OnInit {
   @ViewChild('dt1') dt1: Table | undefined;
   reservations: Reserve[] = [];
   error: boolean = false;
-  isLoading: boolean = false;
   email!: string;
   isGlobalAdmin: boolean = false;
   center!: string;
@@ -60,8 +59,6 @@ export class ReservationListComponent implements OnInit {
   }
 
   getAllReserves() {
-    this.isLoading = true;
-
     this.reservationService.getAllReserves().subscribe({
       next: (res: IResponse) => {
         const reservationArray = JSON.parse(res.response);
@@ -91,7 +88,6 @@ export class ReservationListComponent implements OnInit {
                 (reservation) => reservation.center?.cif === this.center
               );
             } else this.reservations = res as Reserve[];
-            this.isLoading = false;
           },
           error: () => {
             this.messageService.add({
@@ -101,7 +97,6 @@ export class ReservationListComponent implements OnInit {
             });
 
             this.error = true;
-            this.isLoading = false;
           },
         });
       },
@@ -113,14 +108,11 @@ export class ReservationListComponent implements OnInit {
         });
 
         this.error = true;
-        this.isLoading = false;
       },
     });
   }
 
   getAllReservesByTeacherEmail() {
-    this.isLoading = true;
-
     this.reservationService.getAllReservesByTeacherEmail(this.email).subscribe({
       next: (res: IResponse) => {
         const reservationArray = JSON.parse(res.response);
@@ -142,7 +134,6 @@ export class ReservationListComponent implements OnInit {
         forkJoin(observablesArray).subscribe({
           next: (res) => {
             this.reservations = res as Reserve[];
-            this.isLoading = false;
           },
           error: () => {
             this.messageService.add({
@@ -152,7 +143,6 @@ export class ReservationListComponent implements OnInit {
             });
 
             this.error = true;
-            this.isLoading = false;
           },
         });
       },
@@ -164,7 +154,6 @@ export class ReservationListComponent implements OnInit {
         });
 
         this.error = true;
-        this.isLoading = false;
       },
     });
   }
@@ -210,8 +199,6 @@ export class ReservationListComponent implements OnInit {
   }
 
   delete(id: number) {
-    this.isLoading = true;
-
     this.reservationService.deleteReserve(id).subscribe((res) => {
       if (res.code === 200) {
         this.messageService.add({
@@ -229,8 +216,6 @@ export class ReservationListComponent implements OnInit {
           summary: 'Error',
           detail: 'Error al eliminar la reserva',
         });
-
-        this.isLoading = false;
       }
     });
   }
