@@ -162,7 +162,7 @@
       <tr>
         <td class="action-buttons">
           <button
-            *ngIf="!isGlobalAdmin"
+            *ngIf="canReserve"
             class="pi pi-calendar showDetails"
             (click)="reserve(room.id)"
             [disabled]="room.state !== 'Disponible'"

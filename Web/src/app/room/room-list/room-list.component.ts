@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Table } from 'primeng/table';
 import { forkJoin, map, Observable, of } from 'rxjs';
@@ -23,6 +23,7 @@ export class RoomListComponent implements OnInit {
   isGlobalAdmin: boolean = false;
   isAdmin: boolean = false;
   role!: string | null;
+  canReserve: boolean = true;
 
   constructor(
     private roomService: RoomService,
@@ -30,7 +31,8 @@ export class RoomListComponent implements OnInit {
     private roomTypeService: RoomTypeService,
     private centerService: CenterService,
     private messageService: MessageService,
-    private confirmationService: ConfirmationService
+    private confirmationService: ConfirmationService,
+    private activatedRoute: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
@@ -40,10 +42,26 @@ export class RoomListComponent implements OnInit {
     if (center) {
       this.center = center;
 
-      if (this.role && this.role === '0') {
-        this.isGlobalAdmin = true;
-        this.getAllRooms();
-      } else this.getAllRoomsByCif();
+      if (this.role) {
+        if (this.role === '0') {
+          this.isGlobalAdmin = true;
+          this.canReserve = false;
+          this.getAllRooms();
+        } else if (this.role === '1') {
+          const path = this.activatedRoute.snapshot.routeConfig?.path;
+
+          if (path && path === 'all-rooms') {
+            this.canReserve = false;
+            this.getAllRooms();
+          } else {
+            this.canReserve = true;
+            this.getAllRoomsByCif();
+          }
+        } else {
+          this.canReserve = true;
+          this.getAllRoomsByCif();
+        }
+      }
     }
 
     if (this.role && this.role === '1') this.isAdmin = true;

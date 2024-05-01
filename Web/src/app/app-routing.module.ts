@@ -26,6 +26,7 @@ const routes: Routes = [
   { path: 'teachers', component: TeacherListComponent },
   { path: 'teachers/create-teacher', component: TeacherFormComponent },
   { path: 'teachers/edit-teacher/:dni', component: TeacherFormComponent },
+  { path: 'all-rooms', component: RoomListComponent },
   { path: 'rooms', component: RoomListComponent },
   { path: 'rooms/create-room', component: RoomFormComponent },
   { path: 'rooms/edit-room/:id', component: RoomFormComponent },
