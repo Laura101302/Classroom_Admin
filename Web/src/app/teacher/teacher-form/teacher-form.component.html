@@ -99,7 +99,7 @@
       type="button"
       severity="warning"
       routerLink="/update-pass"
-      [queryParams]="{ email: teacher?.email }"
+      [queryParams]="{ email: teacher ? teacher.email : '' }"
       label="Cambiar contraseña"
     ></p-button>
   </div>
