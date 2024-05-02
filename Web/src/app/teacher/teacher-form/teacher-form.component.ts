@@ -25,6 +25,7 @@ export class TeacherFormComponent implements OnInit {
   selectedRole!: Role | undefined;
   center!: string;
   isGlobalAdmin: boolean = false;
+  isAdmin: boolean = false;
 
   constructor(
     private teacherService: TeacherService,
@@ -65,9 +66,11 @@ export class TeacherFormComponent implements OnInit {
     const role = localStorage.getItem('role');
 
     if (center) this.center = center;
-    if (role && role === '0') {
-      this.isGlobalAdmin = true;
-      this.getAllCenters();
+    if (role) {
+      if (role === '0') {
+        this.isGlobalAdmin = true;
+        this.getAllCenters();
+      } else if (role === '1') this.isAdmin = true;
     }
 
     this.getAllRoles();
@@ -183,7 +186,9 @@ export class TeacherFormComponent implements OnInit {
       ...this.form.value,
       role_id: this.form.value.role_id.id,
       center_cif: this.isGlobalAdmin
-        ? this.form.value.center_cif.cif
+        ? this.form.value.center_cif === 'null'
+          ? null
+          : this.form.value.center_cif.cif
         : this.center,
     };
 
@@ -197,7 +202,9 @@ export class TeacherFormComponent implements OnInit {
           });
 
           setTimeout(() => {
-            this.router.navigate(['teachers']);
+            if (this.isAdmin || this.isGlobalAdmin)
+              this.router.navigate(['teachers']);
+            else this.router.navigate(['']);
           }, 2000);
         }
       },
