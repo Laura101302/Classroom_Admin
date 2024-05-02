@@ -71,4 +71,9 @@ export class UpdatePassComponent implements OnInit {
       },
     });
   }
+
+  goBack() {
+    if (this.email === localStorage.getItem('user')) this.router.navigate(['']);
+    else this.router.navigate(['teachers']);
+  }
 }
