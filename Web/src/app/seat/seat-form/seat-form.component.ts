@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
+import { forkJoin, of } from 'rxjs';
 import { IResponse } from 'src/interfaces/response';
 import { Room } from 'src/interfaces/room';
 import { Seat } from 'src/interfaces/seat';
@@ -111,19 +112,45 @@ export class SeatFormComponent implements OnInit {
       room_id: this.form.value.room_id.id,
     };
 
-    this.seatService.createSeat(form).subscribe({
-      next: (res: IResponse) => {
-        if (res.code === 200) {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Creado',
-            detail: 'Creado correctamente',
-          });
+    const room = {
+      ...this.form.value.room_id,
+      allowed_roles_ids: this.form.value.room_id.allowed_roles_ids.split(','),
+      seats_number: this.form.value.room_id.seats_number + 1,
+    };
 
-          setTimeout(() => {
-            this.router.navigate(['seats']);
-          }, 2000);
-        }
+    const create = this.seatService.createSeat(form).subscribe({
+      next: () => {},
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al crear el puesto',
+        });
+      },
+    });
+
+    const edit = this.roomService.editRoom(room).subscribe({
+      next: () => {},
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al editar la sala',
+        });
+      },
+    });
+
+    forkJoin({ createSeat: of(create), editRoom: of(edit) }).subscribe({
+      next: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Creado',
+          detail: 'Creado correctamente',
+        });
+
+        setTimeout(() => {
+          this.router.navigate(['seats']);
+        }, 2000);
       },
       error: () => {
         this.messageService.add({

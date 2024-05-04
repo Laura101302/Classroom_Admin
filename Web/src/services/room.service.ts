@@ -41,4 +41,8 @@ export class RoomService {
       null
     );
   }
+
+  updateSeatsNumber(id: number) {
+    return this.http.put<IResponse>(this.url + `?id=${id}`, null);
+  }
 }

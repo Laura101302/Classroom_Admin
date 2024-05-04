@@ -18,8 +18,8 @@
     currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} salas"
     [globalFilterFields]="
       isGlobalAdmin
-        ? ['', 'name', 'state', 'room_id', 'center_name']
-        : ['', 'name', 'state', 'room_id']
+        ? ['', 'name', 'state', 'room_name', 'center_name']
+        : ['', 'name', 'state', 'room_name']
     "
     styleClass="p-datatable-striped"
     [tableStyle]="{ 'min-width': '50rem' }"
@@ -69,13 +69,13 @@
             ></p-columnFilter>
           </div>
         </th>
-        <th pSortableColumn="room_id">
+        <th pSortableColumn="room_name">
           <div class="flex align-items-center">
             Sala
-            <p-sortIcon field="room_id"></p-sortIcon>
+            <p-sortIcon field="room_name"></p-sortIcon>
             <p-columnFilter
               type="text"
-              field="room_id"
+              field="room_name"
               display="menu"
             ></p-columnFilter>
           </div>
@@ -115,7 +115,7 @@
         >
           {{ seat.state }}
         </td>
-        <td>{{ seat.room_id }}</td>
+        <td>{{ seat.room_name }}</td>
         <td *ngIf="isGlobalAdmin">{{ seat.center_name }}</td>
       </tr>
     </ng-template>

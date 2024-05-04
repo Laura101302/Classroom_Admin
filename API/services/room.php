@@ -50,4 +50,11 @@
         $sql->execute();
         return $sql->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    function updateSeatsNumber($id){
+        $db = getDatabase();
+        $sql = $db->prepare("UPDATE ROOM SET seats_number = seats_number - 1 WHERE id = ?;");
+        $sql->execute([$id]);
+        return $sql->fetchAll(PDO::FETCH_ASSOC);
+    }
 ?>
