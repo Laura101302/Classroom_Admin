@@ -32,8 +32,8 @@
             $json_data = file_get_contents("php://input");
             $json = json_decode($json_data, true);
             $create = createRoom($json);
-            if ($create) {
-                sendCode(SUCCESS_CODE, "Created successfully", '');
+            if ($create['query']) {
+                sendCode(SUCCESS_CODE, "Created successfully", ['id' => $create['id']]);
             } else {
                 sendCode(INTERNAL_SERVER_ERROR_CODE, "Error creating", '');
                 exit();

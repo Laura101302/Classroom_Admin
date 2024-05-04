@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
+import { forkJoin } from 'rxjs';
 import { Center } from 'src/interfaces/center';
 import { IResponse } from 'src/interfaces/response';
 import { Role } from 'src/interfaces/role';
@@ -11,6 +12,7 @@ import { CenterService } from 'src/services/center.service';
 import { RoleService } from 'src/services/role.service';
 import { RoomTypeService } from 'src/services/room-type.service';
 import { RoomService } from 'src/services/room.service';
+import { SeatService } from 'src/services/seat.service';
 
 @Component({
   selector: 'app-room-form',
@@ -57,7 +59,8 @@ export class RoomFormComponent implements OnInit {
     private centerService: CenterService,
     private roleService: RoleService,
     private messageService: MessageService,
-    private router: Router
+    private router: Router,
+    private seatService: SeatService
   ) {
     this.form = this.formBuilder.group({
       id: [''],
@@ -119,7 +122,7 @@ export class RoomFormComponent implements OnInit {
         this.form = this.formBuilder.group({
           id: this.room.id,
           name: this.room.name,
-          seats_number: this.room.seats_number,
+          seats_number: { value: this.room.seats_number, disabled: true },
           floor_number: this.room.floor_number,
           reservation_type: this.room.reservation_type,
           room_type_id: this.room.room_type_id,
@@ -196,15 +199,39 @@ export class RoomFormComponent implements OnInit {
     this.roomService.createRoom(form).subscribe({
       next: (res: IResponse) => {
         if (res.code === 200) {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Creada',
-            detail: 'Creada correctamente',
-          });
+          const observables = [];
 
-          setTimeout(() => {
-            this.router.navigate(['rooms']);
-          }, 2000);
+          for (let i = 0; i < form.seats_number; i++) {
+            const seat = {
+              id: '',
+              name: form.name + ' ' + (i + 1),
+              room_id: res.response.id,
+              state: 1,
+            };
+
+            observables.push(this.createSeat(seat));
+          }
+
+          forkJoin([observables]).subscribe({
+            next: () => {
+              this.messageService.add({
+                severity: 'success',
+                summary: 'Creada',
+                detail: 'Creada correctamente',
+              });
+
+              setTimeout(() => {
+                this.router.navigate(['rooms']);
+              }, 2000);
+            },
+            error: () => {
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Error al crear la sala',
+              });
+            },
+          });
         }
       },
       error: () => {
@@ -212,6 +239,19 @@ export class RoomFormComponent implements OnInit {
           severity: 'error',
           summary: 'Error',
           detail: 'Error al crear la sala',
+        });
+      },
+    });
+  }
+
+  createSeat(seat: any) {
+    this.seatService.createSeat(seat).subscribe({
+      next: () => {},
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al crear el puesto',
         });
       },
     });
