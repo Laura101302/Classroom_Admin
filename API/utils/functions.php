@@ -28,4 +28,11 @@
         $sql->execute([$state, $id]);
         return $sql->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    function updateSeatStateByRoomId($room_id, $state) {
+        $db = getDatabase();
+        $sql = $db->prepare("UPDATE SEAT SET state = ? WHERE room_id = ?;");
+        $sql->execute([$state, $room_id]);
+        return $sql->fetchAll(PDO::FETCH_ASSOC);
+    }
 ?>

@@ -43,6 +43,9 @@
             if(isset($_GET['id']) && isset($_GET['state'])){
                 sendCode(SUCCESS_CODE, 'Updated successfully', updateSeatState($_GET['id'], $_GET['state']));
                 exit();
+            }else if(isset($_GET['room_id']) && isset($_GET['state'])){
+                sendCode(SUCCESS_CODE, 'Updated successfully', updateSeatStateByRoomId($_GET['room_id'], $_GET['state']));
+                exit();
             }else{
                 $json_data = file_get_contents("php://input");
                 $json = json_decode($json_data, true);

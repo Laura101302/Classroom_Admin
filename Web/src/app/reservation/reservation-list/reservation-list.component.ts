@@ -72,9 +72,11 @@ export class ReservationListComponent implements OnInit {
               return this.getCenterByCif(data.room.center_cif).pipe(
                 map((center: any) => ({
                   ...r,
-                  room_id: data.room.name,
+                  room_id: data.room.id,
+                  room_name: data.room.name,
                   seat_id: data.seat,
                   center: center,
+                  reservation_type: data.room.reservation_type,
                 }))
               );
             })
@@ -116,7 +118,6 @@ export class ReservationListComponent implements OnInit {
     this.reservationService.getAllReservesByTeacherEmail(this.email).subscribe({
       next: (res: IResponse) => {
         const reservationArray = JSON.parse(res.response);
-        console.log(reservationArray);
 
         const observablesArray = reservationArray.map((r: Reserve) => {
           return forkJoin({
@@ -125,8 +126,10 @@ export class ReservationListComponent implements OnInit {
           }).pipe(
             map((data: any) => ({
               ...r,
-              room_id: data.room.name,
+              room_id: data.room.id,
+              room_name: data.room.name,
               seat_id: data.seat,
+              reservation_type: data.room.reservation_type,
             }))
           );
         });
@@ -185,20 +188,23 @@ export class ReservationListComponent implements OnInit {
         'Se eliminará la reserva del puesto: ' +
         reserve.seat_id +
         ', ' +
-        reserve.room_id,
+        reserve.room_name,
       header: 'Eliminar reserva',
       icon: 'pi pi-info-circle',
       acceptButtonStyleClass: 'p-button-danger p-button-text',
       rejectButtonStyleClass: 'p-button-text',
 
       accept: () => {
-        this.delete(reserve.id);
+        this.delete(reserve.id, reserve.reservation_type, reserve.room_id);
       },
       reject: () => {},
     });
   }
 
-  delete(id: number) {
+  delete(id: number, reservation_type: number | undefined, room_id: number) {
+    if (reservation_type && reservation_type === 1)
+      this.updateSeatStateByRoomId(room_id);
+
     this.reservationService.deleteReserve(id).subscribe((res) => {
       if (res.code === 200) {
         this.messageService.add({
@@ -217,6 +223,19 @@ export class ReservationListComponent implements OnInit {
           detail: 'Error al eliminar la reserva',
         });
       }
+    });
+  }
+
+  updateSeatStateByRoomId(room_id: number) {
+    this.seatService.updateSeatStateByRoomId(room_id, 1).subscribe({
+      next: () => {},
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al actualizar el estado',
+        });
+      },
     });
   }
 

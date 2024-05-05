@@ -176,12 +176,15 @@ export class ReservationFormComponent implements OnInit {
     this.roomService.updateState(this.params['id'], 0).subscribe({
       next: (res) => {
         if (res.code === 200) {
-          if (fullRoom)
+          if (fullRoom) {
             this.messageService.add({
               severity: 'success',
               summary: 'Reservada',
               detail: 'Reservada correctamente',
             });
+
+            this.updateSeatStateByRoomId();
+          }
 
           setTimeout(() => {
             this.router.navigate(['my-reserves']);
@@ -193,6 +196,19 @@ export class ReservationFormComponent implements OnInit {
           severity: 'error',
           summary: 'Error',
           detail: 'Error al crear la reserva',
+        });
+      },
+    });
+  }
+
+  updateSeatStateByRoomId() {
+    this.seatService.updateSeatStateByRoomId(this.params['id'], 0).subscribe({
+      next: () => {},
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al actualizar el estado',
         });
       },
     });

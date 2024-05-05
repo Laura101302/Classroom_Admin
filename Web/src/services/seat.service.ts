@@ -41,4 +41,11 @@ export class SeatService {
       null
     );
   }
+
+  updateSeatStateByRoomId(room_id: number, state: number) {
+    return this.http.put<IResponse>(
+      this.url + `?room_id=${room_id}&state=${state}`,
+      null
+    );
+  }
 }
