@@ -262,6 +262,8 @@ export class RoomFormComponent implements OnInit {
       (role: Role) => role.id
     );
 
+    this.form.get('seats_number')?.enable();
+
     const form = {
       ...this.form.value,
       reservation_type: this.form.value.reservation_type.id,
@@ -272,6 +274,8 @@ export class RoomFormComponent implements OnInit {
         : this.center,
       allowed_roles_ids: roles_ids,
     };
+
+    this.form.get('seats_number')?.disable();
 
     this.roomService.editRoom(form).subscribe({
       next: (res: IResponse) => {
