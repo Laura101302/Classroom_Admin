@@ -50,6 +50,7 @@ export class RoomFormComponent implements OnInit {
   selectedRoles!: Role[];
   center!: string;
   isGlobalAdmin: boolean = false;
+  isAdmin: boolean = false;
 
   constructor(
     private roomService: RoomService,
@@ -80,9 +81,11 @@ export class RoomFormComponent implements OnInit {
     const role = localStorage.getItem('role');
 
     if (center) this.center = center;
-    if (role && role === '0') {
-      this.isGlobalAdmin = true;
-      this.getAllCenters();
+    if (role) {
+      if (role === '0') {
+        this.isGlobalAdmin = true;
+        this.getAllCenters();
+      } else if (role === '1') this.isAdmin = true;
     }
 
     this.getAllRoomTypes();
@@ -221,7 +224,9 @@ export class RoomFormComponent implements OnInit {
               });
 
               setTimeout(() => {
-                this.router.navigate(['rooms']);
+                this.isAdmin
+                  ? this.router.navigate(['all-rooms'])
+                  : this.router.navigate(['rooms']);
               }, 2000);
             },
             error: () => {
@@ -287,7 +292,9 @@ export class RoomFormComponent implements OnInit {
           });
 
           setTimeout(() => {
-            this.router.navigate(['rooms']);
+            this.isAdmin
+              ? this.router.navigate(['all-rooms'])
+              : this.router.navigate(['rooms']);
           }, 2000);
         }
       },

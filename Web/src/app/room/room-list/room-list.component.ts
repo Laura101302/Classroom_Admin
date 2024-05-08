@@ -47,6 +47,7 @@ export class RoomListComponent implements OnInit {
           this.canReserve = false;
           this.getAllRooms();
         } else if (this.role === '1') {
+          this.isAdmin = true;
           const path = this.activatedRoute.snapshot.routeConfig?.path;
 
           if (path && path === 'all-rooms') {
@@ -62,8 +63,6 @@ export class RoomListComponent implements OnInit {
         }
       }
     }
-
-    if (this.role && this.role === '1') this.isAdmin = true;
   }
 
   getAllRooms() {

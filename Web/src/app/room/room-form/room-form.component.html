@@ -100,6 +100,10 @@
       [label]="isEditing ? 'Editar' : 'Añadir'"
     ></p-button>
     <p-button type="reset" severity="danger" label="Limpiar"></p-button>
-    <p-button type="button" label="Volver" routerLink="/rooms"></p-button>
+    <p-button
+      type="button"
+      label="Volver"
+      [routerLink]="isAdmin ? '/all-rooms' : '/rooms'"
+    ></p-button>
   </div>
 </form>

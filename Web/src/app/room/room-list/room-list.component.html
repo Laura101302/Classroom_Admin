@@ -6,9 +6,13 @@
   <p-button (click)="create()">Nueva sala</p-button>
 </div>
 
-<p *ngIf="rooms.length && !isGlobalAdmin" class="advise">
+<p *ngIf="rooms.length && !isGlobalAdmin && canReserve" class="advise">
   Pulse sobre "<span class="pi pi-calendar"></span>" para ver la disponibilidad
   de la sala
+</p>
+
+<p *ngIf="isAdmin && !canReserve" class="advise">
+  Para reservar una sala, diríjase a "Reservas" > "Reservar"
 </p>
 
 <div *ngIf="rooms.length">
