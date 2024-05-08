@@ -135,14 +135,9 @@ export class MenuComponent implements OnInit {
         label: 'Salas',
         items: [
           {
-            label: 'Todas las salas',
-            icon: 'pi pi-fw pi-building',
-            routerLink: ['all-rooms'],
-          },
-          {
             label: 'Lista de salas',
             icon: 'pi pi-fw pi-building',
-            routerLink: ['rooms'],
+            routerLink: ['all-rooms'],
           },
           {
             label: 'Nueva sala',
@@ -191,17 +186,6 @@ export class MenuComponent implements OnInit {
     ];
 
     this.menuItems = [
-      {
-        label: 'Salas',
-        items: [
-          {
-            label: 'Lista de salas',
-            icon: 'pi pi-fw pi-building',
-            routerLink: ['rooms'],
-          },
-        ],
-      },
-
       {
         label: 'Reservas',
         items: [
