@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
-import { forkJoin } from 'rxjs';
+import { forkJoin, map, of, timer } from 'rxjs';
 import { Center } from 'src/interfaces/center';
 import { IResponse } from 'src/interfaces/response';
 import { Role } from 'src/interfaces/role';
@@ -84,102 +84,116 @@ export class RoomFormComponent implements OnInit {
     if (role) {
       if (role === '0') {
         this.isGlobalAdmin = true;
-        this.getAllCenters();
-      } else if (role === '1') this.isAdmin = true;
-    }
 
-    this.getAllRoomTypes();
-    this.getAllRoles();
+        forkJoin({
+          centers: this.getAllCenters(),
+          roomTypes: this.getAllRoomTypes(),
+          roles: this.getAllRoles(),
+        }).subscribe({
+          next: (res) => {
+            this.centers = res.centers;
+            this.roomTypes = res.roomTypes;
+            this.roles = res.roles;
 
-    if (params['id']) {
-      this.isEditing = true;
-      this.roomService.getRoomById(params['id']).subscribe((res) => {
-        this.room = JSON.parse(res.response)[0];
-
-        if (this.reserveTypes)
-          this.selectedReserveType = this.reserveTypes.find(
-            (reserveType) => reserveType.id === this.room.reservation_type
-          );
-
-        if (this.roomTypes)
-          this.selectedRoomType = this.roomTypes.find(
-            (roomType) => roomType.id === this.room.room_type_id
-          );
-
-        if (this.centers)
-          this.selectedCenter = this.centers.find(
-            (center) => center.cif === this.room.center_cif
-          );
-
-        if (this.roles) {
-          this.selectedRoles = [];
-
-          this.room.allowed_roles_ids.split(',').map((allowedRoleId) => {
-            this.roles.map((role) => {
-              if (parseInt(allowedRoleId) === role.id)
-                this.selectedRoles.push(role);
+            if (params['id']) this.setFormData(params['id']);
+          },
+          error: () => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Error al recuperar los datos',
             });
-          });
-        }
+          },
+        });
+      } else if (role === '1') this.isAdmin = true;
 
-        this.form = this.formBuilder.group({
-          id: this.room.id,
-          name: this.room.name,
-          seats_number: { value: this.room.seats_number, disabled: true },
-          floor_number: this.room.floor_number,
-          reservation_type: this.room.reservation_type,
-          room_type_id: this.room.room_type_id,
-          center_cif: this.room.center_cif,
-          allowed_roles_ids: this.room.allowed_roles_ids,
+      if (role !== '0') {
+        forkJoin({
+          roomTypes: this.getAllRoomTypes(),
+          roles: this.getAllRoles(),
+        }).subscribe({
+          next: (res) => {
+            this.roomTypes = res.roomTypes;
+            this.roles = res.roles;
+
+            if (params['id']) this.setFormData(params['id']);
+            else this.form.patchValue({ center_cif: this.center });
+          },
+          error: () => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Error al recuperar los datos',
+            });
+          },
         });
-      });
-    } else {
-      if (!this.isGlobalAdmin)
-        this.form.patchValue({
-          center_cif: this.center,
-        });
+      }
     }
   }
 
   getAllCenters() {
-    this.centerService.getAllCenters().subscribe({
-      next: (res: IResponse) => (this.centers = JSON.parse(res.response)),
-      error: () => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Error al recuperar los centros',
-        });
-      },
-    });
+    return this.centerService
+      .getAllCenters()
+      .pipe(map((res: IResponse) => JSON.parse(res.response)));
   }
 
   getAllRoomTypes() {
-    this.roomTypeService.getAllRoomTypes().subscribe({
-      next: (res: IResponse) => (this.roomTypes = JSON.parse(res.response)),
-      error: () => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Error al recuperar los tipos de salas',
-        });
-      },
-    });
+    return this.roomTypeService
+      .getAllRoomTypes()
+      .pipe(map((res: IResponse) => JSON.parse(res.response)));
   }
 
   getAllRoles() {
-    this.roleService.getAllRoles().subscribe({
-      next: (res: IResponse) => {
-        this.roles = JSON.parse(res.response);
-        if (!this.isGlobalAdmin) this.roles.shift();
-      },
-      error: () => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Error al recuperar los roles',
+    return this.roleService.getAllRoles().pipe(
+      map((res: IResponse) => {
+        const roles = JSON.parse(res.response);
+        roles.shift();
+        return roles;
+      })
+    );
+  }
+
+  setFormData(id: number) {
+    this.isEditing = true;
+    this.roomService.getRoomById(id).subscribe((res) => {
+      this.room = JSON.parse(res.response)[0];
+
+      if (this.reserveTypes)
+        this.selectedReserveType = this.reserveTypes.find(
+          (reserveType) => reserveType.id === this.room.reservation_type
+        );
+
+      if (this.roomTypes)
+        this.selectedRoomType = this.roomTypes.find(
+          (roomType) => roomType.id === this.room.room_type_id
+        );
+
+      if (this.centers)
+        this.selectedCenter = this.centers.find(
+          (center) => center.cif === this.room.center_cif
+        );
+
+      if (this.roles) {
+        this.selectedRoles = [];
+
+        this.room.allowed_roles_ids.split(',').map((allowedRoleId) => {
+          this.roles.map((role) => {
+            if (parseInt(allowedRoleId) === role.id)
+              this.selectedRoles.push(role);
+          });
         });
-      },
+      }
+
+      this.form = this.formBuilder.group({
+        id: this.room.id,
+        name: this.room.name,
+        seats_number: { value: this.room.seats_number, disabled: true },
+        floor_number: this.room.floor_number,
+        reservation_type: this.room.reservation_type,
+        room_type_id: this.room.room_type_id,
+        center_cif: this.room.center_cif,
+        allowed_roles_ids: this.room.allowed_roles_ids,
+      });
     });
   }
 
