@@ -37,6 +37,8 @@ import { ToastModule } from 'primeng/toast';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { MultiSelectModule } from 'primeng/multiselect';
+import { PasswordModule } from 'primeng/password';
+
 import { SpinnerHttpInterceptor } from 'src/interceptors/spinnerHttp.interceptor';
 
 @NgModule({
@@ -79,6 +81,7 @@ import { SpinnerHttpInterceptor } from 'src/interceptors/spinnerHttp.interceptor
     ToastModule,
     ConfirmDialogModule,
     MultiSelectModule,
+    PasswordModule,
   ],
   providers: [
     MessageService,

@@ -11,7 +11,14 @@
 
     <div class="input">
       <label for="pass">Nueva contraseña</label>
-      <input pInputText type="password" id="pass" formControlName="pass" />
+      <p-password
+        id="pass"
+        formControlName="pass"
+        [toggleMask]="true"
+        [feedback]="false"
+        [style]="{ width: '100%' }"
+        [inputStyle]="{ width: '100%' }"
+      />
     </div>
   </div>
 
