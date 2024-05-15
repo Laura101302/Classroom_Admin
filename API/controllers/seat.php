@@ -22,8 +22,10 @@
         case 'GET':
             if(isset($_GET['id'])){
                 sendCode(SUCCESS_CODE, 'Data recovered successfully', json_encode(getSeatById($_GET['id'])));
+            }elseif(isset($_GET['room_id']) && isset($_GET['state'])){
+                sendCode(SUCCESS_CODE, 'Data recovered successfully', json_encode(getAvailableSeatsByRoomId($_GET['room_id'], $_GET['state'])));
             }elseif(isset($_GET['room_id'])){
-                sendCode(SUCCESS_CODE, 'Data recovered successfully', json_encode(getAvailableSeatsByRoomId($_GET['room_id'])));
+                sendCode(SUCCESS_CODE, 'Data recovered successfully', json_encode(getAllSeatsByRoomId($_GET['room_id'])));
             }else{
                 sendCode(SUCCESS_CODE, 'Data recovered successfully', json_encode(getAllSeats()));
             }
