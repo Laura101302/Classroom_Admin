@@ -6,6 +6,7 @@ import { Observable, forkJoin, map } from 'rxjs';
 import { IResponse } from 'src/interfaces/response';
 import { Teacher } from 'src/interfaces/teacher';
 import { CenterService } from 'src/services/center.service';
+import { ReservationService } from 'src/services/reservation.service';
 import { RoleService } from 'src/services/role.service';
 import { TeacherService } from 'src/services/teacher.service';
 
@@ -28,7 +29,8 @@ export class TeacherListComponent {
     private centerService: CenterService,
     private roleService: RoleService,
     private messageService: MessageService,
-    private confirmationService: ConfirmationService
+    private confirmationService: ConfirmationService,
+    private reservationService: ReservationService
   ) {}
 
   ngOnInit(): void {
@@ -156,19 +158,37 @@ export class TeacherListComponent {
   }
 
   warningDelete(teacher: Teacher) {
-    this.teacherToDelete = teacher.name + ' ' + teacher.surnames;
-    this.confirmationService.confirm({
-      target: event?.target as EventTarget,
-      header: 'Eliminar profesor',
-      icon: 'pi pi-info-circle',
-      acceptButtonStyleClass: 'p-button-danger p-button-text',
-      rejectButtonStyleClass: 'p-button-text',
+    forkJoin({
+      reserves: this.getAllReservesByTeacherEmail(teacher.email),
+    }).subscribe((res) => {
+      if (res.reserves.length) {
+        this.messageService.add({
+          severity: 'warn',
+          summary: 'Advertencia',
+          detail: 'No se puede eliminar un profesor con reservas asociadas',
+        });
+      } else {
+        this.teacherToDelete = teacher.name + ' ' + teacher.surnames;
+        this.confirmationService.confirm({
+          target: event?.target as EventTarget,
+          header: 'Eliminar profesor',
+          icon: 'pi pi-info-circle',
+          acceptButtonStyleClass: 'p-button-danger p-button-text',
+          rejectButtonStyleClass: 'p-button-text',
 
-      accept: () => {
-        this.delete(teacher.dni);
-      },
-      reject: () => {},
+          accept: () => {
+            this.delete(teacher.dni);
+          },
+          reject: () => {},
+        });
+      }
     });
+  }
+
+  getAllReservesByTeacherEmail(email: string) {
+    return this.reservationService
+      .getAllReservesByTeacherEmail(email)
+      .pipe(map((res: IResponse) => JSON.parse(res.response)));
   }
 
   delete(dni: string) {
