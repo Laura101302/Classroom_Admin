@@ -66,5 +66,10 @@ p-multiselect > .p-multiselect.p-component.p-inputwrapper {
     width: 280px;
     margin-top: 3vh;
     justify-content: center;
+
+    label {
+      display: flex;
+      align-items: center;
+    }
   }
 }
