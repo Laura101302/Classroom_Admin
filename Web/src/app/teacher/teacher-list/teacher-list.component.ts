@@ -20,6 +20,7 @@ export class TeacherListComponent {
   error: boolean = false;
   center!: string;
   isGlobalAdmin: boolean = false;
+  teacherToDelete!: string;
 
   constructor(
     private teacherService: TeacherService,
@@ -155,10 +156,9 @@ export class TeacherListComponent {
   }
 
   warningDelete(teacher: Teacher) {
+    this.teacherToDelete = teacher.name + ' ' + teacher.surnames;
     this.confirmationService.confirm({
       target: event?.target as EventTarget,
-      message:
-        'Se eliminará el profesor: ' + teacher.name + ' ' + teacher.surnames,
       header: 'Eliminar profesor',
       icon: 'pi pi-info-circle',
       acceptButtonStyleClass: 'p-button-danger p-button-text',

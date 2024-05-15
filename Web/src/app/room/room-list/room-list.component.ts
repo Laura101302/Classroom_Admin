@@ -23,6 +23,7 @@ export class RoomListComponent implements OnInit {
   isAdmin: boolean = false;
   role!: string | null;
   canReserve: boolean = true;
+  roomToDelete!: string;
 
   constructor(
     private roomService: RoomService,
@@ -229,9 +230,9 @@ export class RoomListComponent implements OnInit {
   }
 
   warningDelete(room: Room) {
+    this.roomToDelete = room.name;
     this.confirmationService.confirm({
       target: event?.target as EventTarget,
-      message: 'Se eliminará la sala: ' + room.name,
       header: 'Eliminar sala',
       icon: 'pi pi-info-circle',
       acceptButtonStyleClass: 'p-button-danger p-button-text',

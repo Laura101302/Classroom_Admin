@@ -11,7 +11,7 @@
   de la sala
 </p>
 
-<p *ngIf="isAdmin && !canReserve" class="advise">
+<p *ngIf="rooms.length && isAdmin && !canReserve" class="advise">
   Para reservar una sala, diríjase a "Reservas" > "Reservar"
 </p>
 
@@ -207,6 +207,14 @@
 </div>
 
 <p-confirmDialog #cd>
+  <ng-template pTemplate="message" let-message>
+    <div style="margin-left: 1rem">
+      <span>
+        Se eliminará la sala <b>{{ roomToDelete }}</b
+        >, sus puestos y las reservas asociadas
+      </span>
+    </div>
+  </ng-template>
   <ng-template pTemplate="footer">
     <button
       type="button"

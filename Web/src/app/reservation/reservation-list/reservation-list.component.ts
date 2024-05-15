@@ -24,6 +24,7 @@ export class ReservationListComponent implements OnInit {
   center!: string;
   role!: string;
   showAllByCif!: boolean;
+  reservationToDelete!: string | undefined;
 
   constructor(
     private router: Router,
@@ -182,13 +183,9 @@ export class ReservationListComponent implements OnInit {
   }
 
   warningDelete(reserve: Reserve) {
+    this.reservationToDelete = reserve.seat_id + ' - ' + reserve.room_name;
     this.confirmationService.confirm({
       target: event?.target as EventTarget,
-      message:
-        'Se eliminará la reserva del puesto: ' +
-        reserve.seat_id +
-        ', ' +
-        reserve.room_name,
       header: 'Eliminar reserva',
       icon: 'pi pi-info-circle',
       acceptButtonStyleClass: 'p-button-danger p-button-text',

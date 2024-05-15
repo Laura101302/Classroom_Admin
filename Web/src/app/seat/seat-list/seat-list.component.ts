@@ -21,6 +21,7 @@ export class SeatListComponent implements OnInit {
   center!: string;
   isGlobalAdmin: boolean = false;
   isAdmin: boolean = false;
+  seatToDelete!: string;
 
   constructor(
     private seatService: SeatService,
@@ -140,9 +141,9 @@ export class SeatListComponent implements OnInit {
   }
 
   warningDelete(seat: Seat) {
+    this.seatToDelete = seat.name;
     this.confirmationService.confirm({
       target: event?.target as EventTarget,
-      message: 'Se eliminará el puesto: ' + seat.name,
       header: 'Eliminar puesto',
       icon: 'pi pi-info-circle',
       acceptButtonStyleClass: 'p-button-danger p-button-text',

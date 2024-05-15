@@ -85,7 +85,6 @@ export class ProfileComponent implements OnInit {
   warningDeleteAccount(user: Teacher) {
     this.confirmationService.confirm({
       target: event?.target as EventTarget,
-      message: '¿Estás seguro? Se eliminará la cuenta de usuario',
       header: 'Eliminar cuenta',
       icon: 'pi pi-exclamation-triangle',
       acceptButtonStyleClass: 'p-button-danger p-button-text',

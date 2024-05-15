@@ -164,6 +164,14 @@
 </div>
 
 <p-confirmDialog #cd>
+  <ng-template pTemplate="message" let-message>
+    <div style="margin-left: 1rem">
+      <span>
+        Se eliminará el profesor <b>{{ teacherToDelete }}</b> y las reservas
+        asociadas
+      </span>
+    </div>
+  </ng-template>
   <ng-template pTemplate="footer">
     <button
       type="button"
