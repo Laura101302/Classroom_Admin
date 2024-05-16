@@ -111,6 +111,8 @@ export class SeatFormComponent implements OnInit {
           state: this.seat.state,
           room_id: this.seat.room_id,
         });
+
+        this.form.get('room_id')?.disable();
       },
       error: () => {
         this.messageService.add({
@@ -180,10 +182,14 @@ export class SeatFormComponent implements OnInit {
   }
 
   editSeat() {
+    this.form.get('room_id')?.enable();
+
     const form = {
       ...this.form.value,
       room_id: this.form.value.room_id.id,
     };
+
+    this.form.get('room_id')?.disable();
 
     this.seatService.editSeat(form).subscribe({
       next: (res: IResponse) => {
