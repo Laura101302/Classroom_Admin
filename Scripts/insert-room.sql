@@ -8,7 +8,7 @@ INSERT INTO ROOM VALUES(5, 'Dirección', 1, 0, 2, 1, '1', 3, "12345678F");
 INSERT INTO ROOM VALUES(6, 'Secretaría', 1, 0, 2, 1, '1', 3, "12345678F");
 INSERT INTO ROOM VALUES(7, 'Jefe de Estudios', 2, 0, 2, 1, '1', 3, "12345678F");
 INSERT INTO ROOM VALUES(8, 'Tep', 1, 0, 2, 1, '1', 3, "12345678F");
-INSERT INTO ROOM VALUES(9, 'Salón de actos', 1, 0, 2, 1, '1,2', 2, "12345678F"); -- (tambien reservan los jefes de departamento)
+INSERT INTO ROOM VALUES(9, 'Salón de actos', 1, 0, 1, 1, '1,2', 2, "12345678F"); -- (tambien reservan los jefes de departamento)
 
 -- PRIMERA PLANTA
 
