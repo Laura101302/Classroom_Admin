@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MessageService } from 'primeng/api';
+import { TranslateService } from '@ngx-translate/core';
+import { MessageService, PrimeNGConfig } from 'primeng/api';
 import { forkJoin, map } from 'rxjs';
 import { Reserve } from 'src/interfaces/reserve';
 import { IResponse } from 'src/interfaces/response';
@@ -26,6 +27,7 @@ export class ReservationFormComponent implements OnInit {
   isDisabled!: boolean;
   showCheckbox: boolean = true;
   showDropdown: boolean = true;
+  minDate!: Date;
 
   constructor(
     private roomService: RoomService,
@@ -35,19 +37,25 @@ export class ReservationFormComponent implements OnInit {
     private reservationService: ReservationService,
     private router: Router,
     private seatService: SeatService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private primeNGConfig: PrimeNGConfig,
+    private translateService: TranslateService
   ) {
     this.form = this.formBuilder.group({
       id: [''],
       room: [{ value: '', disabled: true }, Validators.required],
       seat_id: ['', Validators.required],
       whole_room: [],
+      date: ['', Validators.required],
     });
   }
 
   ngOnInit(): void {
+    this.translateService.setDefaultLang('es');
+    this.translate('es');
     this.params = this.activatedRoute.snapshot.params;
     this.email = localStorage.getItem('user');
+    this.minDate = new Date();
 
     if (this.email) {
       forkJoin({
@@ -68,6 +76,7 @@ export class ReservationFormComponent implements OnInit {
   createReserve() {
     const body = {
       id: this.form.value['id'],
+      date: this.form.value['date'],
       room_id: this.params['id'],
       seat_id: this.selectedSeat?.id,
       teacher_email: this.email,
@@ -113,7 +122,6 @@ export class ReservationFormComponent implements OnInit {
         switch (response.reservation_type) {
           case 1: // Entera
             this.form.get('seat_id')?.setValue('');
-            this.form.get('seat_id')?.disable();
             this.isChecked = true;
             this.isDisabled = true;
             this.showDropdown = false;
@@ -209,5 +217,12 @@ export class ReservationFormComponent implements OnInit {
       this.form.get('seat_id')?.setValue('');
       this.form.get('seat_id')?.disable();
     } else this.form.get('seat_id')?.enable();
+  }
+
+  translate(lang: string) {
+    this.translateService.use(lang);
+    this.translateService
+      .get('primeng')
+      .subscribe((res) => this.primeNGConfig.setTranslation(res));
   }
 }

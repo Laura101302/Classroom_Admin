@@ -18,8 +18,8 @@
     currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} reservas"
     [globalFilterFields]="
       isGlobalAdmin
-        ? ['', 'room_name', 'seat_id', 'teacher_email', 'center_cif']
-        : ['', 'room_name', 'seat_id']
+        ? ['', 'room_name', 'seat_id', 'date', 'teacher_email', 'center_cif']
+        : ['', 'room_name', 'seat_id', 'date']
     "
     styleClass="p-datatable-striped"
     [tableStyle]="{ 'min-width': '50rem' }"
@@ -69,6 +69,17 @@
             ></p-columnFilter>
           </div>
         </th>
+        <th pSortableColumn="date">
+          <div class="flex align-items-center">
+            Fecha
+            <p-sortIcon field="date"></p-sortIcon>
+            <p-columnFilter
+              type="text"
+              field="date"
+              display="menu"
+            ></p-columnFilter>
+          </div>
+        </th>
         <th
           pSortableColumn="teacher_email"
           *ngIf="isGlobalAdmin || showAllByCif"
@@ -106,6 +117,7 @@
         </td>
         <td>{{ reserve.room_name }}</td>
         <td>{{ reserve.seat_id }}</td>
+        <td>{{ reserve.date }}</td>
         <td *ngIf="isGlobalAdmin || showAllByCif">
           {{ reserve.teacher_email }}
         </td>

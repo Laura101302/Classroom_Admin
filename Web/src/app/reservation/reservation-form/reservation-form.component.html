@@ -34,6 +34,20 @@
       ></p-checkbox>
       <label for="whole_room">Reservar toda la sala</label>
     </div>
+
+    <div class="input">
+      <label for="date">Fecha</label>
+      <p-calendar
+        [minDate]="minDate"
+        [iconDisplay]="'input'"
+        [showIcon]="true"
+        inputId="icondisplay"
+        placeholder="Selecciona una fecha"
+        id="date"
+        formControlName="date"
+        [disabledDays]="[0, 6]"
+      />
+    </div>
   </div>
 
   <div class="buttons">
