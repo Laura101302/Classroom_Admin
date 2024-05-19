@@ -5,23 +5,11 @@
 <form action="" method="post" [formGroup]="form" (ngSubmit)="createReserve()">
   <div class="input-wrapper">
     <div class="input">
-      <label for="email">Correo electrónico</label>
-      <input pInputText type="email" id="email" formControlName="email" />
-    </div>
-
-    <div class="input">
-      <label for="center">Centro</label>
-      <input pInputText type="text" id="center" formControlName="center" />
-    </div>
-  </div>
-
-  <div class="input-wrapper">
-    <div class="input">
       <label for="room">Sala</label>
       <input pInputText type="text" id="room" formControlName="room" />
     </div>
 
-    <div class="input">
+    <div class="input" *ngIf="showDropdown">
       <label for="seat_id">Puesto</label>
       <p-dropdown
         [options]="seats"
@@ -33,10 +21,8 @@
         formControlName="seat_id"
       ></p-dropdown>
     </div>
-  </div>
 
-  <div class="input-wrapper">
-    <div class="input checkbox">
+    <div class="input checkbox" *ngIf="showCheckbox">
       <p-checkbox
         formControlName="whole_room"
         value="Whole room"
@@ -47,6 +33,20 @@
         (onChange)="checkbox($event)"
       ></p-checkbox>
       <label for="whole_room">Reservar toda la sala</label>
+    </div>
+
+    <div class="input">
+      <label for="date">Fecha</label>
+      <p-calendar
+        [minDate]="minDate"
+        [iconDisplay]="'input'"
+        [showIcon]="true"
+        inputId="icondisplay"
+        placeholder="Selecciona una fecha"
+        id="date"
+        formControlName="date"
+        [disabledDays]="[0, 6]"
+      />
     </div>
   </div>
 

@@ -23,6 +23,7 @@ export class RoomListComponent implements OnInit {
   isAdmin: boolean = false;
   role!: string | null;
   canReserve: boolean = true;
+  roomToDelete!: string;
 
   constructor(
     private roomService: RoomService,
@@ -47,6 +48,7 @@ export class RoomListComponent implements OnInit {
           this.canReserve = false;
           this.getAllRooms();
         } else if (this.role === '1') {
+          this.isAdmin = true;
           const path = this.activatedRoute.snapshot.routeConfig?.path;
 
           if (path && path === 'all-rooms') {
@@ -62,8 +64,6 @@ export class RoomListComponent implements OnInit {
         }
       }
     }
-
-    if (this.role && this.role === '1') this.isAdmin = true;
   }
 
   getAllRooms() {
@@ -230,9 +230,9 @@ export class RoomListComponent implements OnInit {
   }
 
   warningDelete(room: Room) {
+    this.roomToDelete = room.name;
     this.confirmationService.confirm({
       target: event?.target as EventTarget,
-      message: 'Se eliminará la sala: ' + room.name,
       header: 'Eliminar sala',
       icon: 'pi pi-info-circle',
       acceptButtonStyleClass: 'p-button-danger p-button-text',

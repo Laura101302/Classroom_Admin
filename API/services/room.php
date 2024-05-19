@@ -5,16 +5,18 @@
 
     function createRoom($json) {
         $roomExists = getRoomById($json['id']);
-
+    
         if ($roomExists) {
             sendCode(INTERNAL_SERVER_ERROR_CODE, "ID already in use", '');
             exit();
         }
-
+    
         $allowed_roles_ids = implode(',', $json['allowed_roles_ids']);
         $db = getDatabase();
         $sql = $db->prepare("INSERT INTO ROOM values(?, ?, ?, ?, ?, ?, ?, ?, ?)");
-        return $sql->execute([$json['id'], $json['name'], $json['seats_number'], $json['floor_number'], $json['reservation_type'], $json['state'], $allowed_roles_ids, $json['room_type_id'], $json['center_cif']]);
+        $query = $sql->execute([$json['id'], $json['name'], $json['seats_number'], $json['floor_number'], $json['reservation_type'], $json['state'], $allowed_roles_ids, $json['room_type_id'], $json['center_cif']]);
+        $id = $db->lastInsertId();
+        return ['query' => $query, 'id' => $id];
     }
 
     function editRoom($json) {
@@ -48,6 +50,13 @@
         $db = getDatabase();
         $sql = $db->prepare("SELECT * FROM ROOM;");
         $sql->execute();
+        return $sql->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    function updateSeatsNumber($id){
+        $db = getDatabase();
+        $sql = $db->prepare("UPDATE ROOM SET seats_number = seats_number - 1 WHERE id = ?;");
+        $sql->execute([$id]);
         return $sql->fetchAll(PDO::FETCH_ASSOC);
     }
 ?>

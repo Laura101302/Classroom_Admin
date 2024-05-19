@@ -32,8 +32,8 @@
             $json_data = file_get_contents("php://input");
             $json = json_decode($json_data, true);
             $create = createRoom($json);
-            if ($create) {
-                sendCode(SUCCESS_CODE, "Created successfully", '');
+            if ($create['query']) {
+                sendCode(SUCCESS_CODE, "Created successfully", ['id' => $create['id']]);
             } else {
                 sendCode(INTERNAL_SERVER_ERROR_CODE, "Error creating", '');
                 exit();
@@ -43,7 +43,10 @@
             if(isset($_GET['id']) && isset($_GET['state'])){
                 sendCode(SUCCESS_CODE, 'Updated successfully', updateRoomState($_GET['id'], $_GET['state']));
                 exit();
-            }else{
+            }else if(isset($_GET['id'])){
+                sendCode(SUCCESS_CODE, 'Updated successfully', updateSeatsNumber($_GET['id']));
+                exit();
+            } else{
                 $json_data = file_get_contents("php://input");
                 $json = json_decode($json_data, true);
                 $edit = editRoom($json);

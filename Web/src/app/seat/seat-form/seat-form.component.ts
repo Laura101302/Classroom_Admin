@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
+import { forkJoin, map, of } from 'rxjs';
 import { IResponse } from 'src/interfaces/response';
 import { Room } from 'src/interfaces/room';
 import { Seat } from 'src/interfaces/seat';
@@ -46,32 +47,35 @@ export class SeatFormComponent implements OnInit {
     if (center) this.center = center;
     if (role && role === '0') {
       this.isGlobalAdmin = true;
-      this.getAllRooms();
-    } else this.getAllRoomsByCif();
 
-    if (params['id']) {
-      this.isEditing = true;
-      this.seatService.getSeatById(params['id']).subscribe({
-        next: (res: IResponse) => {
-          this.seat = JSON.parse(res.response)[0];
-
-          if (this.rooms)
-            this.selectedRoom = this.rooms.find(
-              (room) => room.id === this.seat.room_id
-            );
-
-          this.form = this.formBuilder.group({
-            id: this.seat.id,
-            name: this.seat.name,
-            state: this.seat.state,
-            room_id: this.seat.room_id,
-          });
+      forkJoin({
+        rooms: this.getAllRooms(),
+      }).subscribe({
+        next: (res) => {
+          this.rooms = res.rooms;
+          if (params['id']) this.setFormData(params['id']);
         },
         error: () => {
           this.messageService.add({
             severity: 'error',
             summary: 'Error',
-            detail: 'Error al recuperar el puesto',
+            detail: 'Error al recuperar los datos',
+          });
+        },
+      });
+    } else {
+      forkJoin({
+        rooms: this.getAllRoomsByCif(),
+      }).subscribe({
+        next: (res) => {
+          this.rooms = res.rooms;
+          if (params['id']) this.setFormData(params['id']);
+        },
+        error: () => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Error al recuperar los datos',
           });
         },
       });
@@ -79,26 +83,42 @@ export class SeatFormComponent implements OnInit {
   }
 
   getAllRooms() {
-    this.roomService.getAllRooms().subscribe({
-      next: (res) => (this.rooms = JSON.parse(res.response)),
-      error: () => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Error al recuperar las salas',
-        });
-      },
-    });
+    return this.roomService
+      .getAllRooms()
+      .pipe(map((res: IResponse) => JSON.parse(res.response)));
   }
 
   getAllRoomsByCif() {
-    this.roomService.getAllRoomsByCif(this.center).subscribe({
-      next: (res) => (this.rooms = JSON.parse(res.response)),
+    return this.roomService
+      .getAllRoomsByCif(this.center)
+      .pipe(map((res: IResponse) => JSON.parse(res.response)));
+  }
+
+  setFormData(id: number) {
+    this.isEditing = true;
+    this.seatService.getSeatById(id).subscribe({
+      next: (res: IResponse) => {
+        this.seat = JSON.parse(res.response)[0];
+
+        if (this.rooms)
+          this.selectedRoom = this.rooms.find(
+            (room) => room.id === this.seat.room_id
+          );
+
+        this.form = this.formBuilder.group({
+          id: this.seat.id,
+          name: this.seat.name,
+          state: this.seat.state,
+          room_id: this.seat.room_id,
+        });
+
+        this.form.get('room_id')?.disable();
+      },
       error: () => {
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
-          detail: 'Error al recuperar las salas',
+          detail: 'Error al recuperar el puesto',
         });
       },
     });
@@ -111,19 +131,45 @@ export class SeatFormComponent implements OnInit {
       room_id: this.form.value.room_id.id,
     };
 
-    this.seatService.createSeat(form).subscribe({
-      next: (res: IResponse) => {
-        if (res.code === 200) {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Creado',
-            detail: 'Creado correctamente',
-          });
+    const room = {
+      ...this.form.value.room_id,
+      allowed_roles_ids: this.form.value.room_id.allowed_roles_ids.split(','),
+      seats_number: this.form.value.room_id.seats_number + 1,
+    };
 
-          setTimeout(() => {
-            this.router.navigate(['seats']);
-          }, 2000);
-        }
+    const create = this.seatService.createSeat(form).subscribe({
+      next: () => {},
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al crear el puesto',
+        });
+      },
+    });
+
+    const edit = this.roomService.editRoom(room).subscribe({
+      next: () => {},
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al editar la sala',
+        });
+      },
+    });
+
+    forkJoin({ createSeat: of(create), editRoom: of(edit) }).subscribe({
+      next: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Creado',
+          detail: 'Creado correctamente',
+        });
+
+        setTimeout(() => {
+          this.router.navigate(['seats']);
+        }, 2000);
       },
       error: () => {
         this.messageService.add({
@@ -136,10 +182,14 @@ export class SeatFormComponent implements OnInit {
   }
 
   editSeat() {
+    this.form.get('room_id')?.enable();
+
     const form = {
       ...this.form.value,
       room_id: this.form.value.room_id.id,
     };
+
+    this.form.get('room_id')?.disable();
 
     this.seatService.editSeat(form).subscribe({
       next: (res: IResponse) => {

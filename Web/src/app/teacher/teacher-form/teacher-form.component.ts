@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
+import { forkJoin, map } from 'rxjs';
 import { Center } from 'src/interfaces/center';
 import { IResponse } from 'src/interfaces/response';
 import { Role } from 'src/interfaces/role';
@@ -69,80 +70,98 @@ export class TeacherFormComponent implements OnInit {
     if (role) {
       if (role === '0') {
         this.isGlobalAdmin = true;
-        this.getAllCenters();
-      } else if (role === '1') this.isAdmin = true;
-    }
 
-    this.getAllRoles();
+        forkJoin({
+          centers: this.getAllCenters(),
+          roles: this.getAllRoles(),
+        }).subscribe({
+          next: (res) => {
+            this.centers = res.centers;
+            this.roles = res.roles;
 
-    if (params['dni']) {
-      this.isEditing = true;
-      this.teacherService.getTeacherByDni(params['dni'], false).subscribe({
-        next: (res: IResponse) => {
-          this.teacher = JSON.parse(res.response)[0];
-
-          if (this.roles)
-            this.selectedRole = this.roles.find(
-              (role) => role.id === this.teacher.role_id
-            );
-
-          if (this.centers)
-            this.selectedCenter = this.centers.find(
-              (center) => center.cif === this.teacher.center_cif
-            );
-
-          this.form = this.formBuilder.group({
-            dni: this.teacher.dni,
-            name: this.teacher.name,
-            surnames: this.teacher.surnames,
-            phone: this.teacher.phone,
-            email: this.teacher.email,
-            birthdate: this.teacher.birthdate,
-            role_id: this.selectedRole,
-            pass: this.teacher.pass,
-            center_cif: this.selectedCenter || this.center,
-          });
-        },
-        error: () => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Error al recuperar el profesor',
-          });
-        },
-      });
-    } else {
-      if (!this.isGlobalAdmin)
-        this.form.patchValue({
-          center_cif: this.center,
+            if (params['dni']) this.setFormData(params['dni']);
+          },
+          error: () => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Error al recuperar los datos',
+            });
+          },
         });
+      } else if (role === '1') this.isAdmin = true;
+
+      if (role !== '0') {
+        forkJoin({
+          roles: this.getAllRoles(),
+        }).subscribe({
+          next: (res) => {
+            this.roles = res.roles;
+
+            if (params['dni']) this.setFormData(params['dni']);
+            else this.form.patchValue({ center_cif: this.center });
+          },
+          error: () => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Error al recuperar los datos',
+            });
+          },
+        });
+      }
     }
   }
 
   getAllRoles() {
-    this.roleService.getAllRoles().subscribe({
-      next: (res) => {
-        this.roles = JSON.parse(res.response);
-        if (!this.isGlobalAdmin) this.roles.shift();
-      },
-      error: () => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Error al recuperar los roles',
-        });
-      },
-    });
+    return this.roleService.getAllRoles().pipe(
+      map((res: IResponse) => {
+        const roles = JSON.parse(res.response);
+        if (!this.isGlobalAdmin) roles.shift();
+        return roles;
+      })
+    );
   }
 
   getAllCenters() {
-    this.centerService.getAllCenters().subscribe({
-      next: (res) => (this.centers = JSON.parse(res.response)),
+    return this.centerService
+      .getAllCenters()
+      .pipe(map((res: IResponse) => JSON.parse(res.response)));
+  }
+
+  setFormData(dni: string) {
+    this.isEditing = true;
+    this.teacherService.getTeacherByDni(dni, false).subscribe({
+      next: (res: IResponse) => {
+        this.teacher = JSON.parse(res.response)[0];
+
+        if (this.roles)
+          this.selectedRole = this.roles.find(
+            (role) => role.id === this.teacher.role_id
+          );
+
+        if (this.centers)
+          this.selectedCenter = this.centers.find(
+            (center) => center.cif === this.teacher.center_cif
+          );
+
+        this.form = this.formBuilder.group({
+          dni: this.teacher.dni,
+          name: this.teacher.name,
+          surnames: this.teacher.surnames,
+          phone: this.teacher.phone,
+          email: this.teacher.email,
+          birthdate: this.teacher.birthdate,
+          role_id: this.selectedRole,
+          pass: this.teacher.pass,
+          center_cif: this.selectedCenter || this.center,
+        });
+      },
       error: () => {
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
-          detail: 'Error al recuperar los centros',
+          detail: 'Error al recuperar el profesor',
         });
       },
     });
@@ -153,7 +172,9 @@ export class TeacherFormComponent implements OnInit {
       ...this.form.value,
       role_id: this.form.value.role_id.id,
       center_cif: this.isGlobalAdmin
-        ? this.form.value.center_cif.cif
+        ? this.form.value.center_cif === 'null'
+          ? null
+          : this.form.value.center_cif.cif
         : this.center,
     };
 

@@ -15,8 +15,14 @@ export class SeatService {
     return this.http.get<IResponse>(this.url);
   }
 
-  getAvailableSeatsByRoomId(room_id: number) {
+  getAllSeatsByRoomId(room_id: number) {
     return this.http.get<IResponse>(this.url + `?room_id=${room_id}`);
+  }
+
+  getAvailableSeatsByRoomId(room_id: number, state: number = 1) {
+    return this.http.get<IResponse>(
+      this.url + `?room_id=${room_id}&state=${state}`
+    );
   }
 
   getSeatById(id: number) {
@@ -38,6 +44,13 @@ export class SeatService {
   updateState(id: number, state: number) {
     return this.http.put<IResponse>(
       this.url + `?id=${id}&state=${state}`,
+      null
+    );
+  }
+
+  updateSeatStateByRoomId(room_id: number, state: number) {
+    return this.http.put<IResponse>(
+      this.url + `?room_id=${room_id}&state=${state}`,
       null
     );
   }

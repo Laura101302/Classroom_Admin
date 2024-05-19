@@ -48,6 +48,11 @@
 </div>
 
 <p-confirmDialog #cd>
+  <ng-template pTemplate="message" let-message>
+    <div style="margin-left: 1rem">
+      <span>¿Estás seguro? Se eliminará la cuenta de usuario</span>
+    </div>
+  </ng-template>
   <ng-template pTemplate="footer">
     <button
       type="button"

@@ -15,6 +15,7 @@ export class CenterListComponent implements OnInit {
   @ViewChild('dt1') dt1: Table | undefined;
   centers: Center[] = [];
   error: boolean = false;
+  centerToDelete!: string;
 
   constructor(
     private centerService: CenterService,
@@ -52,9 +53,9 @@ export class CenterListComponent implements OnInit {
   }
 
   warningDelete(center: Center) {
+    this.centerToDelete = center.name;
     this.confirmationService.confirm({
       target: event?.target as EventTarget,
-      message: 'Se eliminará el centro: ' + center.name,
       header: 'Eliminar centro',
       icon: 'pi pi-info-circle',
       acceptButtonStyleClass: 'p-button-danger p-button-text',

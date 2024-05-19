@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MessageService } from 'primeng/api';
+import { TranslateService } from '@ngx-translate/core';
+import { MessageService, PrimeNGConfig } from 'primeng/api';
+import { forkJoin, map } from 'rxjs';
 import { Reserve } from 'src/interfaces/reserve';
 import { IResponse } from 'src/interfaces/response';
 import { Seat } from 'src/interfaces/seat';
@@ -19,11 +21,13 @@ export class ReservationFormComponent implements OnInit {
   params!: any;
   form!: FormGroup;
   email!: string | null;
-  center!: string | null;
   seats!: Seat[];
   selectedSeat!: Seat | undefined;
   isChecked!: boolean;
   isDisabled!: boolean;
+  showCheckbox: boolean = true;
+  showDropdown: boolean = true;
+  minDate!: Date;
 
   constructor(
     private roomService: RoomService,
@@ -33,38 +37,46 @@ export class ReservationFormComponent implements OnInit {
     private reservationService: ReservationService,
     private router: Router,
     private seatService: SeatService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private primeNGConfig: PrimeNGConfig,
+    private translateService: TranslateService
   ) {
     this.form = this.formBuilder.group({
       id: [''],
-      email: [
-        { value: '', disabled: true },
-        [Validators.required, Validators.email],
-      ],
       room: [{ value: '', disabled: true }, Validators.required],
       seat_id: ['', Validators.required],
-      center: [{ value: '', disabled: true }, Validators.required],
       whole_room: [],
+      date: ['', Validators.required],
     });
   }
 
   ngOnInit(): void {
+    this.translateService.setDefaultLang('es');
+    this.translate('es');
     this.params = this.activatedRoute.snapshot.params;
-
     this.email = localStorage.getItem('user');
-    this.center = localStorage.getItem('center');
+    this.minDate = new Date();
 
-    if (this.email && this.center) {
-      this.form.patchValue({ email: this.email });
-      this.getRoomById(this.params['id']);
-      this.getAvailableSeatsByRoomId(this.params['id']);
-      this.getCenterByCif(this.center);
+    if (this.email) {
+      forkJoin({
+        room: this.getRoomById(this.params['id']),
+        allSeats: this.getAllSeatsByRoomId(this.params['id']),
+        seats: this.getAvailableSeatsByRoomId(this.params['id']),
+      }).subscribe({
+        next: (res) => {
+          this.form.patchValue({ room: res.room });
+          this.seats = res.seats;
+
+          if (res.allSeats.length > this.seats.length) this.isDisabled = true;
+        },
+      });
     }
   }
 
   createReserve() {
     const body = {
       id: this.form.value['id'],
+      date: this.form.value['date'],
       room_id: this.params['id'],
       seat_id: this.selectedSeat?.id,
       teacher_email: this.email,
@@ -103,85 +115,72 @@ export class ReservationFormComponent implements OnInit {
   }
 
   getRoomById(room_id: number) {
-    setTimeout(() => {
-      this.roomService.getRoomById(room_id).subscribe({
-        next: (res: IResponse) => {
-          const response = JSON.parse(res.response)[0];
+    return this.roomService.getRoomById(room_id).pipe(
+      map((res: IResponse) => {
+        const response = JSON.parse(res.response)[0];
 
-          switch (response.reservation_type) {
-            case 1: // Entera
-              this.form.get('seat_id')?.setValue('');
-              this.form.get('seat_id')?.disable();
-              this.isChecked = true;
-              this.isDisabled = true;
-              break;
-            case 2: // Individual
-              this.isChecked = false;
-              this.isDisabled = true;
-              break;
-            case 3: // Entera / Individual
-              this.isChecked = false;
-              this.isDisabled = false;
-              break;
-            default:
-              console.log(response.reservation_type);
-              break;
-          }
+        switch (response.reservation_type) {
+          case 1: // Entera
+            this.form.get('seat_id')?.setValue('');
+            this.isChecked = true;
+            this.isDisabled = true;
+            this.showDropdown = false;
+            break;
+          case 2: // Individual
+            this.isChecked = false;
+            this.showCheckbox = false;
+            break;
+          case 3: // Entera / Individual
+            this.isChecked = false;
+            this.isDisabled = false;
+            break;
+          default:
+            console.log(response.reservation_type);
+            break;
+        }
 
-          this.form.patchValue({ room: response.name });
-        },
-        error: () => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Error al recuperar los datos',
-          });
-        },
-      });
-    }, 0);
+        return response.name;
+      })
+    );
+  }
+
+  getAllSeatsByRoomId(room_id: number) {
+    return this.seatService.getAllSeatsByRoomId(room_id).pipe(
+      map((res: IResponse) => {
+        return JSON.parse(res.response);
+      })
+    );
   }
 
   getAvailableSeatsByRoomId(room_id: number) {
-    this.seatService.getAvailableSeatsByRoomId(room_id).subscribe({
-      next: (res: IResponse) => {
-        this.seats = JSON.parse(res.response);
-        if (this.seats.length === 0) this.updateRoomState(false);
-        return this.seats;
-      },
-      error: (error) => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Error al recuperar los puestos',
-        });
-      },
-    });
+    return this.seatService.getAvailableSeatsByRoomId(room_id).pipe(
+      map((res: IResponse) => {
+        const seats = JSON.parse(res.response);
+        if (seats.length === 0) this.updateRoomState(false);
+        return seats;
+      })
+    );
   }
 
   getCenterByCif(centerCif: string) {
-    this.centerService.getCenterByCif(centerCif).subscribe({
-      next: (res: IResponse) =>
-        this.form.patchValue({ center: JSON.parse(res.response)[0].name }),
-      error: () => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Error al recuperar los datos',
-        });
-      },
-    });
+    return this.centerService
+      .getCenterByCif(centerCif)
+      .pipe(map((res: IResponse) => JSON.parse(res.response)[0].name));
   }
 
   updateRoomState(fullRoom: boolean) {
     this.roomService.updateState(this.params['id'], 0).subscribe({
       next: (res) => {
         if (res.code === 200) {
-          if (fullRoom)
+          if (fullRoom) {
             this.messageService.add({
               severity: 'success',
               summary: 'Reservada',
               detail: 'Reservada correctamente',
             });
+
+            this.updateSeatStateByRoomId();
+          }
 
           setTimeout(() => {
             this.router.navigate(['my-reserves']);
@@ -198,6 +197,19 @@ export class ReservationFormComponent implements OnInit {
     });
   }
 
+  updateSeatStateByRoomId() {
+    this.seatService.updateSeatStateByRoomId(this.params['id'], 0).subscribe({
+      next: () => {},
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al actualizar el estado',
+        });
+      },
+    });
+  }
+
   checkbox(event: any) {
     this.isChecked = event.checked;
 
@@ -205,5 +217,12 @@ export class ReservationFormComponent implements OnInit {
       this.form.get('seat_id')?.setValue('');
       this.form.get('seat_id')?.disable();
     } else this.form.get('seat_id')?.enable();
+  }
+
+  translate(lang: string) {
+    this.translateService.use(lang);
+    this.translateService
+      .get('primeng')
+      .subscribe((res) => this.primeNGConfig.setTranslation(res));
   }
 }

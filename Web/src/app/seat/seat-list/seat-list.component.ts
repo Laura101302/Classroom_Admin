@@ -21,6 +21,7 @@ export class SeatListComponent implements OnInit {
   center!: string;
   isGlobalAdmin: boolean = false;
   isAdmin: boolean = false;
+  seatToDelete!: string;
 
   constructor(
     private seatService: SeatService,
@@ -61,7 +62,8 @@ export class SeatListComponent implements OnInit {
                 map((center: any) => ({
                   ...seat,
                   state: data.state,
-                  room_id: data.room.name,
+                  room_id: data.room.id,
+                  room_name: data.room.name,
                   center_cif: data.room.center_cif,
                   center_name: center.name,
                 }))
@@ -139,23 +141,45 @@ export class SeatListComponent implements OnInit {
   }
 
   warningDelete(seat: Seat) {
+    this.seatToDelete = seat.name;
     this.confirmationService.confirm({
       target: event?.target as EventTarget,
-      message: 'Se eliminará el puesto: ' + seat.name,
       header: 'Eliminar puesto',
       icon: 'pi pi-info-circle',
       acceptButtonStyleClass: 'p-button-danger p-button-text',
       rejectButtonStyleClass: 'p-button-text',
 
       accept: () => {
-        this.delete(seat.id);
+        this.delete(seat.id, seat.room_id);
       },
       reject: () => {},
     });
   }
 
-  delete(id: number) {
+  delete(id: number, roomId: number) {
     this.seatService.deleteSeat(id).subscribe({
+      next: (res: IResponse) => {
+        if (res.code === 200) this.updateSeatsNumber(roomId);
+        else {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Error al eliminar el puesto',
+          });
+        }
+      },
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al eliminar el puesto',
+        });
+      },
+    });
+  }
+
+  updateSeatsNumber(roomId: number) {
+    this.roomService.updateSeatsNumber(roomId).subscribe({
       next: (res: IResponse) => {
         if (res.code === 200) {
           this.messageService.add({

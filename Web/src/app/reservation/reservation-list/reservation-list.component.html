@@ -15,11 +15,11 @@
     [showCurrentPageReport]="true"
     [rowsPerPageOptions]="[10, 25, 50]"
     [paginator]="true"
-    currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} salas"
+    currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} reservas"
     [globalFilterFields]="
       isGlobalAdmin
-        ? ['', 'room_id', 'seat_id', 'teacher_email', 'center_cif']
-        : ['', 'room_id', 'seat_id']
+        ? ['', 'room_name', 'seat_id', 'date', 'teacher_email', 'center_cif']
+        : ['', 'room_name', 'seat_id', 'date']
     "
     styleClass="p-datatable-striped"
     [tableStyle]="{ 'min-width': '50rem' }"
@@ -47,13 +47,13 @@
     <ng-template pTemplate="header">
       <tr>
         <th></th>
-        <th pSortableColumn="room_id">
+        <th pSortableColumn="room_name">
           <div class="flex align-items-center">
             Sala
-            <p-sortIcon field="room_id"></p-sortIcon>
+            <p-sortIcon field="room_name"></p-sortIcon>
             <p-columnFilter
               type="text"
-              field="room_id"
+              field="room_name"
               display="menu"
             ></p-columnFilter>
           </div>
@@ -65,6 +65,17 @@
             <p-columnFilter
               type="text"
               field="seat_id"
+              display="menu"
+            ></p-columnFilter>
+          </div>
+        </th>
+        <th pSortableColumn="date">
+          <div class="flex align-items-center">
+            Fecha
+            <p-sortIcon field="date"></p-sortIcon>
+            <p-columnFilter
+              type="text"
+              field="date"
               display="menu"
             ></p-columnFilter>
           </div>
@@ -96,18 +107,21 @@
         </th>
       </tr>
     </ng-template>
-    <ng-template pTemplate="body" let-room>
+    <ng-template pTemplate="body" let-reserve>
       <tr>
         <td class="action-buttons">
           <button
             class="pi pi-trash showDetails"
-            (click)="warningDelete(room)"
+            (click)="warningDelete(reserve)"
           ></button>
         </td>
-        <td>{{ room.room_id }}</td>
-        <td>{{ room.seat_id }}</td>
-        <td *ngIf="isGlobalAdmin || showAllByCif">{{ room.teacher_email }}</td>
-        <td *ngIf="isGlobalAdmin">{{ room.center.name }}</td>
+        <td>{{ reserve.room_name }}</td>
+        <td>{{ reserve.seat_id }}</td>
+        <td>{{ reserve.date }}</td>
+        <td *ngIf="isGlobalAdmin || showAllByCif">
+          {{ reserve.teacher_email }}
+        </td>
+        <td *ngIf="isGlobalAdmin">{{ reserve.center.name }}</td>
       </tr>
     </ng-template>
   </p-table>
@@ -118,6 +132,13 @@
 </div>
 
 <p-confirmDialog #cd>
+  <ng-template pTemplate="message" let-message>
+    <div style="margin-left: 1rem">
+      <span>
+        Se eliminará la reserva para <b>{{ reservationToDelete }}</b>
+      </span>
+    </div>
+  </ng-template>
   <ng-template pTemplate="footer">
     <button
       type="button"
