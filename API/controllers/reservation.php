@@ -24,6 +24,10 @@
                 sendCode(SUCCESS_CODE, 'Data recovered successfully', json_encode(getReservationById($_GET['id'])));
             }elseif(isset($_GET['email'])){
                 sendCode(SUCCESS_CODE, 'Data recovered successfully', json_encode(getAllReservationsByTeacherEmail($_GET['email'])));
+            }elseif(isset($_GET['seat_id'])){
+                sendCode(SUCCESS_CODE, 'Data recovered successfully', json_encode(getAllReservationsDateBySeatId($_GET['seat_id'])));
+            }elseif(isset($_GET['room_id'])){
+                sendCode(SUCCESS_CODE, 'Data recovered successfully', json_encode(getAllReservationsDateByRoomId($_GET['room_id'])));
             }else{
                 sendCode(SUCCESS_CODE, 'Data recovered successfully', json_encode(getAllReservations()));
             }
@@ -51,8 +55,11 @@
             }
             break;
         case 'DELETE':
-            $id = basename($_SERVER['REQUEST_URI']);
-            $delete = deleteReservation($id);
+            $url = $_SERVER['REQUEST_URI'];
+            $params = explode('/', $url);
+            $id = $params[count($params) - 2];
+            $updateState = filter_var($params[count($params) - 1], FILTER_VALIDATE_BOOLEAN);
+            $delete = deleteReservation($id, $updateState);
             if ($delete) {
                 sendCode(SUCCESS_CODE, "Deleted successfully", '');
             } else {

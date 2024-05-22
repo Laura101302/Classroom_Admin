@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { MessageService, PrimeNGConfig } from 'primeng/api';
-import { forkJoin, map } from 'rxjs';
+import { forkJoin, map, of } from 'rxjs';
 import { Reserve } from 'src/interfaces/reserve';
 import { IResponse } from 'src/interfaces/response';
 import { Seat } from 'src/interfaces/seat';
@@ -28,6 +28,8 @@ export class ReservationFormComponent implements OnInit {
   showCheckbox: boolean = true;
   showDropdown: boolean = true;
   minDate!: Date;
+  disabledDates!: Date[];
+  reservationType!: number;
 
   constructor(
     private roomService: RoomService,
@@ -61,19 +63,39 @@ export class ReservationFormComponent implements OnInit {
       forkJoin({
         room: this.getRoomById(this.params['id']),
         allSeats: this.getAllSeatsByRoomId(this.params['id']),
-        seats: this.getAvailableSeatsByRoomId(this.params['id']),
       }).subscribe({
         next: (res) => {
-          this.form.patchValue({ room: res.room });
-          this.seats = res.seats;
+          this.form.patchValue({ room: res.room.name });
+          this.seats = res.allSeats;
 
           if (res.allSeats.length > this.seats.length) this.isDisabled = true;
+
+          if (
+            res.room.reservation_type === 1 ||
+            (res.room.reservation_type === 3 && !this.isDisabled)
+          ) {
+            this.disabledDates = [];
+
+            this.getAllReservesDateByRoomId().subscribe({
+              next: (res) => {
+                res.forEach((item: any) => {
+                  const date = item.date.split('/');
+                  this.disabledDates.push(
+                    new Date(date[2], date[1] - 1, date[0])
+                  );
+                });
+              },
+              error: () => {
+                this.showErrorMessage('Error al recuperar las fechas');
+              },
+            });
+          }
         },
       });
     }
   }
 
-  createReserve() {
+  checkAvailability() {
     const body = {
       id: this.form.value['id'],
       date: this.form.value['date'],
@@ -82,34 +104,76 @@ export class ReservationFormComponent implements OnInit {
       teacher_email: this.email,
     } as Reserve;
 
-    this.reservationService.createReserve(body).subscribe({
-      next: (res: IResponse) => {
-        if (this.selectedSeat) {
-          this.seatService
-            .updateState(this.selectedSeat.id, 0)
-            .subscribe((res: IResponse) => {
-              if (res.code === 200) {
-                this.getAvailableSeatsByRoomId(this.params['id']);
+    if (this.selectedSeat) {
+      forkJoin({
+        reserves: this.getAllReservesDateBySeatId(this.selectedSeat.id),
+      }).subscribe({
+        next: (res: any) => {
+          const selectedDate = this.formatDate(this.form.value['date']);
+          const match = res.reserves.some(
+            (item: any) => item.date === selectedDate
+          );
 
-                this.messageService.add({
-                  severity: 'success',
-                  summary: 'Reservada',
-                  detail: 'Reservada correctamente',
-                });
+          if (match) {
+            this.showErrorMessage(
+              'Ya existe una reserva para la fecha seleccionada'
+            );
+          } else this.createReserve(body);
+        },
+        error: () => {
+          this.showErrorMessage('Error al recuperar las reservas');
+        },
+      });
+    } else {
+      forkJoin({
+        reserves: this.getAllReservesDateByRoomId(),
+      }).subscribe({
+        next: (res: any) => {
+          const selectedDate = this.formatDate(this.form.value['date']);
+          const match = res.reserves.some(
+            (item: any) => item.date === selectedDate
+          );
 
-                setTimeout(() => {
-                  this.router.navigate(['my-reserves']);
-                }, 2000);
-              }
-            });
-        } else this.updateRoomState(true);
+          if (match) {
+            this.showErrorMessage(
+              'Ya existe una reserva para la fecha seleccionada'
+            );
+          } else this.createReserve(body);
+        },
+        error: () => {
+          this.showErrorMessage('Error al recuperar las reservas');
+        },
+      });
+    }
+  }
+
+  createReserve(body: Reserve) {
+    const selected = this.formatDate(body.date as unknown as Date);
+    const today = this.formatDate(new Date());
+
+    const observables = {
+      reserve: this.reservationService.createReserve(body),
+      update:
+        selected === today
+          ? this.selectedSeat
+            ? this.seatService.updateState(this.selectedSeat.id, 0)
+            : this.updateRoomState(true)
+          : of(null),
+    };
+    forkJoin(observables).subscribe({
+      next: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Reservada',
+          detail: 'Reservada correctamente',
+        });
+
+        setTimeout(() => {
+          this.router.navigate(['my-reserves']);
+        }, 2000);
       },
       error: () => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Error al crear la reserva',
-        });
+        this.showErrorMessage('Error al crear la reserva');
       },
     });
   }
@@ -118,10 +182,12 @@ export class ReservationFormComponent implements OnInit {
     return this.roomService.getRoomById(room_id).pipe(
       map((res: IResponse) => {
         const response = JSON.parse(res.response)[0];
+        this.reservationType = response.reservation_type;
 
         switch (response.reservation_type) {
           case 1: // Entera
             this.form.get('seat_id')?.setValue('');
+            this.form.get('seat_id')?.disable();
             this.isChecked = true;
             this.isDisabled = true;
             this.showDropdown = false;
@@ -139,27 +205,18 @@ export class ReservationFormComponent implements OnInit {
             break;
         }
 
-        return response.name;
+        return {
+          name: response.name,
+          reservation_type: response.reservation_type,
+        };
       })
     );
   }
 
   getAllSeatsByRoomId(room_id: number) {
-    return this.seatService.getAllSeatsByRoomId(room_id).pipe(
-      map((res: IResponse) => {
-        return JSON.parse(res.response);
-      })
-    );
-  }
-
-  getAvailableSeatsByRoomId(room_id: number) {
-    return this.seatService.getAvailableSeatsByRoomId(room_id).pipe(
-      map((res: IResponse) => {
-        const seats = JSON.parse(res.response);
-        if (seats.length === 0) this.updateRoomState(false);
-        return seats;
-      })
-    );
+    return this.seatService
+      .getAllSeatsByRoomId(room_id)
+      .pipe(map((res: IResponse) => JSON.parse(res.response)));
   }
 
   getCenterByCif(centerCif: string) {
@@ -169,45 +226,18 @@ export class ReservationFormComponent implements OnInit {
   }
 
   updateRoomState(fullRoom: boolean) {
-    this.roomService.updateState(this.params['id'], 0).subscribe({
-      next: (res) => {
-        if (res.code === 200) {
-          if (fullRoom) {
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Reservada',
-              detail: 'Reservada correctamente',
-            });
-
-            this.updateSeatStateByRoomId();
-          }
-
-          setTimeout(() => {
-            this.router.navigate(['my-reserves']);
-          }, 2000);
-        }
-      },
-      error: () => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Error al crear la reserva',
-        });
-      },
-    });
-  }
-
-  updateSeatStateByRoomId() {
-    this.seatService.updateSeatStateByRoomId(this.params['id'], 0).subscribe({
-      next: () => {},
-      error: () => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Error al actualizar el estado',
-        });
-      },
-    });
+    if (fullRoom)
+      return forkJoin({
+        updateState: this.roomService.updateState(this.params['id'], 0),
+        updateSeatStateByRoomId: this.seatService.updateSeatStateByRoomId(
+          this.params['id'],
+          0
+        ),
+      }).pipe(map((res) => res));
+    else
+      return forkJoin({
+        updateState: this.roomService.updateState(this.params['id'], 0),
+      }).pipe(map((res) => res));
   }
 
   checkbox(event: any) {
@@ -224,5 +254,49 @@ export class ReservationFormComponent implements OnInit {
     this.translateService
       .get('primeng')
       .subscribe((res) => this.primeNGConfig.setTranslation(res));
+  }
+
+  getAllReservesDateBySeatId(seat_id: number) {
+    return this.reservationService
+      .getAllReservesDateBySeatId(seat_id)
+      .pipe(map((res) => JSON.parse(res.response)));
+  }
+
+  getAllReservesDateByRoomId() {
+    return this.reservationService
+      .getAllReservesDateByRoomId(this.params['id'])
+      .pipe(map((res) => JSON.parse(res.response)));
+  }
+
+  formatDate(date: Date) {
+    const day = ('0' + date.getDate()).slice(-2);
+    const month = ('0' + (date.getMonth() + 1)).slice(-2);
+    const year = date.getFullYear();
+
+    return `${day}/${month}/${year}`;
+  }
+
+  onChangeDropdown(event: any) {
+    this.disabledDates = [];
+
+    this.getAllReservesDateBySeatId(event.value.id).subscribe({
+      next: (res) => {
+        res.forEach((item: any) => {
+          const date = item.date.split('/');
+          this.disabledDates.push(new Date(date[2], date[1] - 1, date[0]));
+        });
+      },
+      error: () => {
+        this.showErrorMessage('Error al recuperar las fechas');
+      },
+    });
+  }
+
+  showErrorMessage(message: string) {
+    this.messageService.add({
+      severity: 'error',
+      summary: 'Error',
+      detail: message,
+    });
   }
 }

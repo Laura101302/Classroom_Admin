@@ -32,7 +32,7 @@
         return $sql->execute([$json['id'], $date, $json['room_id'], $json['seat_id'], $json['teacher_email'], $json['id']]);
     }
 
-    function deleteReservation($id) {
+    function deleteReservation($id, $updateState) {
         $db = getDatabase();
     
         $getRoomId = $db->prepare("SELECT room_id FROM RESERVATION WHERE id = ?");
@@ -43,8 +43,10 @@
         $getSeatId->execute([$id]);
         $seatId = $getSeatId->fetchColumn();
     
-        updateRoomState($roomId, 1);
-        updateSeatState($seatId, 1);
+        if($updateState){
+            updateRoomState($roomId, 1);
+            updateSeatState($seatId, 1);
+        }
     
         $sql = $db->prepare("DELETE FROM RESERVATION WHERE id = ?");
         return $sql->execute([$id]);
@@ -68,6 +70,20 @@
         $db = getDatabase();
         $sql = $db->prepare("SELECT id, DATE_FORMAT(date, '%d/%m/%Y') as date, room_id, seat_id, teacher_email FROM RESERVATION WHERE teacher_email = ?;");
         $sql->execute([$email]);
+        return $sql->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    function getAllReservationsDateBySeatId($seat_id) {
+        $db = getDatabase();
+        $sql = $db->prepare("SELECT DATE_FORMAT(date, '%d/%m/%Y') as date FROM RESERVATION WHERE seat_id = ?;");
+        $sql->execute([$seat_id]);
+        return $sql->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    function getAllReservationsDateByRoomId($room_id) {
+        $db = getDatabase();
+        $sql = $db->prepare("SELECT DATE_FORMAT(date, '%d/%m/%Y') as date FROM RESERVATION WHERE room_id = ?;");
+        $sql->execute([$room_id]);
         return $sql->fetchAll(PDO::FETCH_ASSOC);
     }
 ?>

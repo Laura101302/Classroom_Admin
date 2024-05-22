@@ -18,7 +18,7 @@
     currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} reservas"
     [globalFilterFields]="
       isGlobalAdmin
-        ? ['', 'room_name', 'seat_id', 'date', 'teacher_email', 'center_cif']
+        ? ['', 'room_name', 'seat_id', 'teacher_email', 'center_cif', 'date']
         : ['', 'room_name', 'seat_id', 'date']
     "
     styleClass="p-datatable-striped"
@@ -69,17 +69,6 @@
             ></p-columnFilter>
           </div>
         </th>
-        <th pSortableColumn="date">
-          <div class="flex align-items-center">
-            Fecha
-            <p-sortIcon field="date"></p-sortIcon>
-            <p-columnFilter
-              type="text"
-              field="date"
-              display="menu"
-            ></p-columnFilter>
-          </div>
-        </th>
         <th
           pSortableColumn="teacher_email"
           *ngIf="isGlobalAdmin || showAllByCif"
@@ -105,6 +94,17 @@
             ></p-columnFilter>
           </div>
         </th>
+        <th pSortableColumn="date">
+          <div class="flex align-items-center">
+            Fecha
+            <p-sortIcon field="date"></p-sortIcon>
+            <p-columnFilter
+              type="text"
+              field="date"
+              display="menu"
+            ></p-columnFilter>
+          </div>
+        </th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-reserve>
@@ -117,11 +117,11 @@
         </td>
         <td>{{ reserve.room_name }}</td>
         <td>{{ reserve.seat_id }}</td>
-        <td>{{ reserve.date }}</td>
         <td *ngIf="isGlobalAdmin || showAllByCif">
           {{ reserve.teacher_email }}
         </td>
         <td *ngIf="isGlobalAdmin">{{ reserve.center.name }}</td>
+        <td>{{ reserve.date }}</td>
       </tr>
     </ng-template>
   </p-table>

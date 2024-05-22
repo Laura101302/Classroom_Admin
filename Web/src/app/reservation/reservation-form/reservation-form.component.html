@@ -2,7 +2,12 @@
 
 <h1>Reservar</h1>
 
-<form action="" method="post" [formGroup]="form" (ngSubmit)="createReserve()">
+<form
+  action=""
+  method="post"
+  [formGroup]="form"
+  (ngSubmit)="checkAvailability()"
+>
   <div class="input-wrapper">
     <div class="input">
       <label for="room">Sala</label>
@@ -19,6 +24,7 @@
         placeholder="Selecciona un puesto"
         id="seat_id"
         formControlName="seat_id"
+        (onChange)="onChangeDropdown($event)"
       ></p-dropdown>
     </div>
 
@@ -46,6 +52,7 @@
         id="date"
         formControlName="date"
         [disabledDays]="[0, 6]"
+        [disabledDates]="reservationType === 3 ? [] : disabledDates"
       />
     </div>
   </div>

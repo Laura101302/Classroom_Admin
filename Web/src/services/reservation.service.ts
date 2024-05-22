@@ -20,6 +20,14 @@ export class ReservationService {
     return this.http.get<IResponse>(this.url + `?email=${email}`);
   }
 
+  getAllReservesDateBySeatId(seat_id: number) {
+    return this.http.get<IResponse>(this.url + `?seat_id=${seat_id}`);
+  }
+
+  getAllReservesDateByRoomId(room_id: number) {
+    return this.http.get<IResponse>(this.url + `?room_id=${room_id}`);
+  }
+
   getReserveById(id: number) {
     return this.http.get<IResponse>(this.url + `?id=${id}`);
   }
@@ -32,7 +40,7 @@ export class ReservationService {
     return this.http.put<IResponse>(this.url, body);
   }
 
-  deleteReserve(id: number) {
-    return this.http.delete<IResponse>(this.url + '/' + id);
+  deleteReserve(id: number, updateState: boolean) {
+    return this.http.delete<IResponse>(this.url + '/' + id + '/' + updateState);
   }
 }

@@ -6,6 +6,10 @@
   <p-button (click)="create()">Nuevo puesto</p-button>
 </div>
 
+<p *ngIf="seats.length" class="advise">
+  El estado de los puestos se muestra respecto a la disponiblidad del día actual
+</p>
+
 <div *ngIf="seats.length">
   <p-table
     #dt1
