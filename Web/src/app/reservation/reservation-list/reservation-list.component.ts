@@ -125,13 +125,30 @@ export class ReservationListComponent implements OnInit {
             room: this.getRoomById(r.room_id),
             seat: this.getSeatById(r.seat_id),
           }).pipe(
-            map((data: any) => ({
-              ...r,
-              room_id: data.room.id,
-              room_name: data.room.name,
-              seat_id: data.seat,
-              reservation_type: data.room.reservation_type,
-            }))
+            map((data: any) => {
+              const date = r.date.split('/');
+              const selected = this.formatDate(
+                new Date(Number(date[2]), Number(date[1]) - 1, Number(date[0]))
+              );
+              const today = this.formatDate(new Date());
+
+              if (selected < today)
+                this.delete(
+                  r.id,
+                  data.room.reservation_type,
+                  r.room_id,
+                  r.date,
+                  true
+                );
+
+              return {
+                ...r,
+                room_id: data.room.id,
+                room_name: data.room.name,
+                seat_id: data.seat,
+                reservation_type: data.room.reservation_type,
+              };
+            })
           );
         });
 
@@ -207,7 +224,8 @@ export class ReservationListComponent implements OnInit {
     id: number,
     reservation_type: number | undefined,
     room_id: number,
-    date: string
+    date: string,
+    update: boolean = false
   ) {
     const dateSplit = date.split('/');
     const newDate = new Date(
@@ -226,8 +244,10 @@ export class ReservationListComponent implements OnInit {
       if (res.code === 200) {
         this.messageService.add({
           severity: 'success',
-          summary: 'Eliminada',
-          detail: 'Reserva eliminada correctamente',
+          summary: update ? 'Actualizado' : 'Eliminada',
+          detail: update
+            ? 'Actualización completada'
+            : 'Reserva eliminada correctamente',
         });
 
         setTimeout(() => {
