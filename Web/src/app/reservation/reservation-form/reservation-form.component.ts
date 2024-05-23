@@ -161,16 +161,54 @@ export class ReservationFormComponent implements OnInit {
           : of(null),
     };
     forkJoin(observables).subscribe({
-      next: () => {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Reservada',
-          detail: 'Reservada correctamente',
-        });
+      next: (res) => {
+        if (res.reserve.code === 200) {
+          forkJoin({
+            allReserves: this.reservationService.getAllReservesDateByRoomId(
+              this.params['id']
+            ),
+          }).subscribe({
+            next: (datesRes) => {
+              let dates = JSON.parse(datesRes.allReserves.response);
 
-        setTimeout(() => {
-          this.router.navigate(['my-reserves']);
-        }, 2000);
+              dates = dates.filter((item: any) => {
+                return item.date === today;
+              });
+
+              if (dates.length === this.seats.length) {
+                this.updateRoomState(false).subscribe({
+                  next: (updateRes) => {
+                    if (updateRes.updateState.code === 200) {
+                      this.messageService.add({
+                        severity: 'success',
+                        summary: 'Reservada',
+                        detail: 'Reservada correctamente',
+                      });
+                      setTimeout(() => {
+                        this.router.navigate(['my-reserves']);
+                      }, 2000);
+                    }
+                  },
+                  error: () => {
+                    this.showErrorMessage('Error al actualizar el estado');
+                  },
+                });
+              } else {
+                this.messageService.add({
+                  severity: 'success',
+                  summary: 'Reservada',
+                  detail: 'Reservada correctamente',
+                });
+                setTimeout(() => {
+                  this.router.navigate(['my-reserves']);
+                }, 2000);
+              }
+            },
+            error: () => {
+              this.showErrorMessage('Error al recoger las reservas');
+            },
+          });
+        }
       },
       error: () => {
         this.showErrorMessage('Error al crear la reserva');
