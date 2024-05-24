@@ -49,6 +49,8 @@ export class CenterFormComponent implements OnInit {
           city: this.center.city,
           province: this.center.province,
         });
+
+        this.form.get('cif')?.disable();
       });
     }
   }
@@ -79,8 +81,12 @@ export class CenterFormComponent implements OnInit {
   }
 
   editCenter() {
+    this.form.get('cif')?.enable();
+
     this.centerService.editCenter(this.form.value).subscribe({
       next: (res: any) => {
+        this.form.get('cif')?.disable();
+
         if (res.code === 200) {
           this.messageService.add({
             severity: 'success',
@@ -94,6 +100,8 @@ export class CenterFormComponent implements OnInit {
         }
       },
       error: () => {
+        this.form.get('cif')?.disable();
+
         this.messageService.add({
           severity: 'error',
           summary: 'Error',

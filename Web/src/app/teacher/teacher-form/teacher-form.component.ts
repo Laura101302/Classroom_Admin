@@ -82,11 +82,7 @@ export class TeacherFormComponent implements OnInit {
             if (params['dni']) this.setFormData(params['dni']);
           },
           error: () => {
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Error',
-              detail: 'Error al recuperar los datos',
-            });
+            this.showErrorMessage('Error al recuperar los datos');
           },
         });
       } else if (role === '1') this.isAdmin = true;
@@ -102,11 +98,7 @@ export class TeacherFormComponent implements OnInit {
             else this.form.patchValue({ center_cif: this.center });
           },
           error: () => {
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Error',
-              detail: 'Error al recuperar los datos',
-            });
+            this.showErrorMessage('Error al recuperar los datos');
           },
         });
       }
@@ -156,13 +148,11 @@ export class TeacherFormComponent implements OnInit {
           pass: this.teacher.pass,
           center_cif: this.selectedCenter || this.center,
         });
+
+        this.form.get('email')?.disable();
       },
       error: () => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Error al recuperar el profesor',
-        });
+        this.showErrorMessage('Error al recuperar el profesor');
       },
     });
   }
@@ -192,17 +182,21 @@ export class TeacherFormComponent implements OnInit {
           }, 2000);
         }
       },
-      error: () => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Error al crear el profesor',
-        });
+      error: (error) => {
+        if (error.error.message === 'DNI already in use') {
+          this.showErrorMessage('El DNI ya está en uso');
+        } else if (error.error.message === 'Email already in use') {
+          this.showErrorMessage('El email ya está en uso');
+        } else {
+          this.showErrorMessage('Error al crear el profesor');
+        }
       },
     });
   }
 
   editTeacher() {
+    this.form.get('email')?.enable();
+
     const form = {
       ...this.form.value,
       role_id: this.form.value.role_id.id,
@@ -212,6 +206,8 @@ export class TeacherFormComponent implements OnInit {
           : this.form.value.center_cif.cif
         : this.center,
     };
+
+    this.form.get('email')?.disable();
 
     this.teacherService.editTeacher(form).subscribe({
       next: (res: IResponse) => {
@@ -230,12 +226,16 @@ export class TeacherFormComponent implements OnInit {
         }
       },
       error: () => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Error al editar el profesor',
-        });
+        this.showErrorMessage('Error al editar el profesor');
       },
+    });
+  }
+
+  showErrorMessage(message: string) {
+    this.messageService.add({
+      severity: 'error',
+      summary: 'Error',
+      detail: message,
     });
   }
 }
