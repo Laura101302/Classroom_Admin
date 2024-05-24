@@ -70,12 +70,19 @@ export class CenterFormComponent implements OnInit {
           }, 2000);
         }
       },
-      error: () => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Ha ocurrido un error al crear el centro',
-        });
+      error: (error) => {
+        if (error.error.message === 'CIF already in use')
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'El CIF ya está en uso',
+          });
+        else
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Ha ocurrido un error al crear el centro',
+          });
       },
     });
   }
