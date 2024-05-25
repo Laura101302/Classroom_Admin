@@ -187,6 +187,8 @@ export class TeacherFormComponent implements OnInit {
           this.showErrorMessage('El DNI ya está en uso');
         } else if (error.error.message === 'Email already in use') {
           this.showErrorMessage('El email ya está en uso');
+        } else if (error.error.message === 'Invalid email format') {
+          this.showErrorMessage('El formato de email es incorrecto');
         } else {
           this.showErrorMessage('Error al crear el profesor');
         }
