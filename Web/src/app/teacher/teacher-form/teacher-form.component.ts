@@ -39,7 +39,10 @@ export class TeacherFormComponent implements OnInit {
   ) {
     this.isEditing
       ? (this.form = this.formBuilder.group({
-          dni: ['', Validators.required],
+          dni: [
+            '',
+            [Validators.required, Validators.pattern('^\\d{8}[A-Za-z]$')],
+          ],
           name: ['', Validators.required],
           surnames: ['', Validators.required],
           phone: ['', Validators.required],
@@ -49,7 +52,10 @@ export class TeacherFormComponent implements OnInit {
           center_cif: ['', Validators.required],
         }))
       : (this.form = this.formBuilder.group({
-          dni: ['', Validators.required],
+          dni: [
+            '',
+            [Validators.required, Validators.pattern('^\\d{8}[A-Za-z]$')],
+          ],
           name: ['', Validators.required],
           surnames: ['', Validators.required],
           phone: ['', Validators.required],
@@ -183,6 +189,8 @@ export class TeacherFormComponent implements OnInit {
           this.showMessageService.error('El DNI ya está en uso');
         } else if (error.error.message === 'Email already in use') {
           this.showMessageService.error('El email ya está en uso');
+        } else if (error.error.message === 'Invalid dni format') {
+          this.showMessageService.error('El formato de DNI es incorrecto');
         } else if (error.error.message === 'Invalid email format') {
           this.showMessageService.error('El formato de email es incorrecto');
         } else {

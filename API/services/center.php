@@ -11,6 +11,11 @@
             exit();
         }
 
+        if (!checkCif($json['cif'])) {
+            sendCode(INTERNAL_SERVER_ERROR_CODE, "Invalid cif format", '');
+            exit();
+        }
+
         $db = getDatabase();
         $sql = $db->prepare("INSERT INTO CENTER values(?, ?, ?, ?, ?, ?)");
         return $sql->execute([$json['cif'], $json['name'], $json['direction'], $json['postal_code'], $json['city'], $json['province']]);
@@ -40,5 +45,10 @@
         $sql = $db->prepare("SELECT * FROM CENTER;");
         $sql->execute();
         return $sql->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    function checkCif($cif) {
+        $pattern = '/^[A-Za-z]\d{8}$/';
+        return preg_match($pattern, $cif) === 1;
     }
 ?>
