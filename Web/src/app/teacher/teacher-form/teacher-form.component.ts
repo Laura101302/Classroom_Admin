@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MessageService } from 'primeng/api';
 import { forkJoin, map } from 'rxjs';
 import { Center } from 'src/interfaces/center';
 import { IResponse } from 'src/interfaces/response';
@@ -9,6 +8,7 @@ import { Role } from 'src/interfaces/role';
 import { Teacher } from 'src/interfaces/teacher';
 import { CenterService } from 'src/services/center.service';
 import { RoleService } from 'src/services/role.service';
+import { ShowMessageService } from 'src/services/show-message.service';
 import { TeacherService } from 'src/services/teacher.service';
 
 @Component({
@@ -34,8 +34,8 @@ export class TeacherFormComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private centerService: CenterService,
     private roleService: RoleService,
-    private messageService: MessageService,
-    private router: Router
+    private router: Router,
+    private showMessageService: ShowMessageService
   ) {
     this.isEditing
       ? (this.form = this.formBuilder.group({
@@ -82,7 +82,7 @@ export class TeacherFormComponent implements OnInit {
             if (params['dni']) this.setFormData(params['dni']);
           },
           error: () => {
-            this.showErrorMessage('Error al recuperar los datos');
+            this.showMessageService.error('Error al recuperar los datos');
           },
         });
       } else if (role === '1') this.isAdmin = true;
@@ -98,7 +98,7 @@ export class TeacherFormComponent implements OnInit {
             else this.form.patchValue({ center_cif: this.center });
           },
           error: () => {
-            this.showErrorMessage('Error al recuperar los datos');
+            this.showMessageService.error('Error al recuperar los datos');
           },
         });
       }
@@ -152,7 +152,7 @@ export class TeacherFormComponent implements OnInit {
         this.form.get('email')?.disable();
       },
       error: () => {
-        this.showErrorMessage('Error al recuperar el profesor');
+        this.showMessageService.error('Error al recuperar el profesor');
       },
     });
   }
@@ -171,11 +171,7 @@ export class TeacherFormComponent implements OnInit {
     this.teacherService.createTeacher(form).subscribe({
       next: (res: IResponse) => {
         if (res.code === 200) {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Creado',
-            detail: 'Creado correctamente',
-          });
+          this.showMessageService.success('Creado', 'Creado correctamente');
 
           setTimeout(() => {
             this.router.navigate(['teachers']);
@@ -184,13 +180,13 @@ export class TeacherFormComponent implements OnInit {
       },
       error: (error) => {
         if (error.error.message === 'DNI already in use') {
-          this.showErrorMessage('El DNI ya está en uso');
+          this.showMessageService.error('El DNI ya está en uso');
         } else if (error.error.message === 'Email already in use') {
-          this.showErrorMessage('El email ya está en uso');
+          this.showMessageService.error('El email ya está en uso');
         } else if (error.error.message === 'Invalid email format') {
-          this.showErrorMessage('El formato de email es incorrecto');
+          this.showMessageService.error('El formato de email es incorrecto');
         } else {
-          this.showErrorMessage('Error al crear el profesor');
+          this.showMessageService.error('Error al crear el profesor');
         }
       },
     });
@@ -214,11 +210,7 @@ export class TeacherFormComponent implements OnInit {
     this.teacherService.editTeacher(form).subscribe({
       next: (res: IResponse) => {
         if (res.code === 200) {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Editado',
-            detail: 'Editado correctamente',
-          });
+          this.showMessageService.success('Editado', 'Editado correctamente');
 
           setTimeout(() => {
             if (this.isAdmin || this.isGlobalAdmin)
@@ -228,16 +220,8 @@ export class TeacherFormComponent implements OnInit {
         }
       },
       error: () => {
-        this.showErrorMessage('Error al editar el profesor');
+        this.showMessageService.error('Error al editar el profesor');
       },
-    });
-  }
-
-  showErrorMessage(message: string) {
-    this.messageService.add({
-      severity: 'error',
-      summary: 'Error',
-      detail: message,
     });
   }
 }

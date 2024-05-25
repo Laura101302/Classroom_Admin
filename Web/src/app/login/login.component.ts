@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { MessageService } from 'primeng/api';
 import { IResponse } from 'src/interfaces/response';
 import { AuthService } from 'src/services/auth.service';
+import { ShowMessageService } from 'src/services/show-message.service';
 import { TeacherService } from 'src/services/teacher.service';
 
 @Component({
@@ -19,7 +19,7 @@ export class LoginComponent implements OnInit {
     private formBuilder: FormBuilder,
     private router: Router,
     private teacherService: TeacherService,
-    private messageService: MessageService
+    private showMessageService: ShowMessageService
   ) {
     this.form = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
@@ -51,21 +51,15 @@ export class LoginComponent implements OnInit {
                 });
               },
               error: () => {
-                this.messageService.add({
-                  severity: 'error',
-                  summary: 'Error',
-                  detail: 'Error al recuperar los datos',
-                });
+                this.showMessageService.error('Error al recuperar los datos');
               },
             });
         }
       },
       error: () => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'El usuario o la contraseña son incorrectos',
-        });
+        this.showMessageService.error(
+          'El usuario o la contraseña son incorrectos'
+        );
       },
     });
   }

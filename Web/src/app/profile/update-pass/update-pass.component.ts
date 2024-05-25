@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MessageService } from 'primeng/api';
+import { ShowMessageService } from 'src/services/show-message.service';
 import { UserService } from 'src/services/user.service';
 
 @Component({
@@ -16,9 +16,9 @@ export class UpdatePassComponent implements OnInit {
   constructor(
     private userService: UserService,
     private formBuilder: FormBuilder,
-    private messageService: MessageService,
     private activatedRoute: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private showMessageService: ShowMessageService
   ) {
     this.form = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
@@ -50,11 +50,7 @@ export class UpdatePassComponent implements OnInit {
 
     this.userService.updatePass(obj).subscribe({
       next: () => {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Editada',
-          detail: 'Editada correctamente',
-        });
+        this.showMessageService.success('Editada', 'Editada correctamente');
 
         setTimeout(() => {
           if (this.email === localStorage.getItem('user'))
@@ -63,11 +59,7 @@ export class UpdatePassComponent implements OnInit {
         }, 2000);
       },
       error: () => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Error al editar la contraseña',
-        });
+        this.showMessageService.error('Error al editar la contraseña');
       },
     });
   }
