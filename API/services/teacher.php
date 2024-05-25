@@ -17,6 +17,16 @@
             exit();
         }
 
+        if (!checkDni($json['dni'])) {
+            sendCode(INTERNAL_SERVER_ERROR_CODE, "Invalid dni format", '');
+            exit();
+        }
+
+        if (!filter_var($json['email'], FILTER_VALIDATE_EMAIL)) {
+            sendCode(INTERNAL_SERVER_ERROR_CODE, "Invalid email format", '');
+            exit();
+        }
+
         $HASH_PASS = password_hash($json['pass'], PASSWORD_BCRYPT);
         $db = getDatabase();
         $sql = $db->prepare("INSERT INTO TEACHER values(?, ?, ?, ?, ?, ?, ?, ?, ?)");
@@ -70,5 +80,10 @@
         $sql = $db->prepare("SELECT * FROM TEACHER;");
         $sql->execute();
         return $sql->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    function checkDni($dni) {
+        $pattern = '/^\d{8}[A-Za-z]$/';
+        return preg_match($pattern, $dni) === 1;
     }
 ?>

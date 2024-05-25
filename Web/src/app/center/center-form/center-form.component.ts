@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MessageService } from 'primeng/api';
 import { Center } from 'src/interfaces/center';
 import { IResponse } from 'src/interfaces/response';
 import { CenterService } from 'src/services/center.service';
+import { ShowMessageService } from 'src/services/show-message.service';
 
 @Component({
   selector: 'app-center-form',
@@ -20,11 +20,11 @@ export class CenterFormComponent implements OnInit {
     private centerService: CenterService,
     private formBuilder: FormBuilder,
     private activatedRoute: ActivatedRoute,
-    private messageService: MessageService,
-    private router: Router
+    private router: Router,
+    private showMessageService: ShowMessageService
   ) {
     this.form = this.formBuilder.group({
-      cif: ['', Validators.required],
+      cif: ['', [Validators.required, Validators.pattern('^[A-Za-z]\\d{8}$')]],
       name: ['', Validators.required],
       direction: ['', Validators.required],
       postal_code: ['', Validators.required],
@@ -49,6 +49,8 @@ export class CenterFormComponent implements OnInit {
           city: this.center.city,
           province: this.center.province,
         });
+
+        this.form.get('cif')?.disable();
       });
     }
   }
@@ -57,36 +59,35 @@ export class CenterFormComponent implements OnInit {
     this.centerService.createCenter(this.form.value).subscribe({
       next: (res: IResponse) => {
         if (res.code === 200) {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Creado',
-            detail: 'Creado correctamente',
-          });
+          this.showMessageService.success('Creado', 'Creado correctamente');
 
           setTimeout(() => {
             this.router.navigate(['centers']);
           }, 2000);
         }
       },
-      error: () => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Ha ocurrido un error al crear el centro',
-        });
+      error: (error) => {
+        if (error.error.message === 'CIF already in use')
+          this.showMessageService.error('El CIF ya está en uso');
+        else if (error.error.message === 'Invalid cif format')
+          this.showMessageService.error('El formato del CIF es incorrecto');
+        else
+          this.showMessageService.error(
+            'Ha ocurrido un error al crear el centro'
+          );
       },
     });
   }
 
   editCenter() {
+    this.form.get('cif')?.enable();
+
     this.centerService.editCenter(this.form.value).subscribe({
       next: (res: any) => {
+        this.form.get('cif')?.disable();
+
         if (res.code === 200) {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Editado',
-            detail: 'Editado correctamente',
-          });
+          this.showMessageService.success('Editado', 'Editado correctamente');
 
           setTimeout(() => {
             this.router.navigate(['centers']);
@@ -94,11 +95,10 @@ export class CenterFormComponent implements OnInit {
         }
       },
       error: () => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Ha ocurrido un error al editar el centro',
-        });
+        this.form.get('cif')?.disable();
+        this.showMessageService.error(
+          'Ha ocurrido un error al editar el centro'
+        );
       },
     });
   }

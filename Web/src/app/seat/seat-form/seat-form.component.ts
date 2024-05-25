@@ -3,9 +3,11 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { forkJoin, map, of } from 'rxjs';
+import { Center } from 'src/interfaces/center';
 import { IResponse } from 'src/interfaces/response';
 import { Room } from 'src/interfaces/room';
 import { Seat } from 'src/interfaces/seat';
+import { CenterService } from 'src/services/center.service';
 import { RoomService } from 'src/services/room.service';
 import { SeatService } from 'src/services/seat.service';
 
@@ -20,6 +22,8 @@ export class SeatFormComponent implements OnInit {
   seat!: Seat;
   rooms!: Room[];
   selectedRoom!: Room | undefined;
+  centers!: Center[];
+  selectedCenter!: Center | undefined;
   center!: string;
   isGlobalAdmin: boolean = false;
 
@@ -29,12 +33,14 @@ export class SeatFormComponent implements OnInit {
     private formBuilder: FormBuilder,
     private activatedRoute: ActivatedRoute,
     private messageService: MessageService,
-    private router: Router
+    private router: Router,
+    private centerService: CenterService
   ) {
     this.form = this.formBuilder.group({
       id: [''],
       name: ['', Validators.required],
       state: [''],
+      center_cif: [''],
       room_id: ['', Validators.required],
     });
   }
@@ -49,11 +55,14 @@ export class SeatFormComponent implements OnInit {
       this.isGlobalAdmin = true;
 
       forkJoin({
+        centers: this.getAllCenters(),
         rooms: this.getAllRooms(),
       }).subscribe({
         next: (res) => {
-          this.rooms = res.rooms;
-          if (params['id']) this.setFormData(params['id']);
+          if (params['id']) {
+            this.rooms = res.rooms;
+            this.setFormData(params['id']);
+          } else this.centers = res.centers;
         },
         error: () => {
           this.messageService.add({
@@ -68,6 +77,7 @@ export class SeatFormComponent implements OnInit {
         rooms: this.getAllRoomsByCif(),
       }).subscribe({
         next: (res) => {
+          this.form.get('center_cif')?.disable();
           this.rooms = res.rooms;
           if (params['id']) this.setFormData(params['id']);
         },
@@ -82,6 +92,12 @@ export class SeatFormComponent implements OnInit {
     }
   }
 
+  getAllCenters() {
+    return this.centerService
+      .getAllCenters()
+      .pipe(map((res: IResponse) => JSON.parse(res.response)));
+  }
+
   getAllRooms() {
     return this.roomService
       .getAllRooms()
@@ -90,12 +106,32 @@ export class SeatFormComponent implements OnInit {
 
   getAllRoomsByCif() {
     return this.roomService
-      .getAllRoomsByCif(this.center)
+      .getAllRoomsByCif(
+        this.selectedCenter ? this.selectedCenter.cif : this.center
+      )
       .pipe(map((res: IResponse) => JSON.parse(res.response)));
+  }
+
+  getRooms() {
+    forkJoin({
+      rooms: this.getAllRoomsByCif(),
+    }).subscribe({
+      next: (res) => {
+        this.rooms = res.rooms;
+      },
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al recuperar los datos',
+        });
+      },
+    });
   }
 
   setFormData(id: number) {
     this.isEditing = true;
+    this.form.get('center_cif')?.disable();
     this.seatService.getSeatById(id).subscribe({
       next: (res: IResponse) => {
         this.seat = JSON.parse(res.response)[0];
@@ -125,6 +161,7 @@ export class SeatFormComponent implements OnInit {
   }
 
   createSeat() {
+    this.form.get('center_cif')?.disable();
     const form = {
       ...this.form.value,
       state: 1,

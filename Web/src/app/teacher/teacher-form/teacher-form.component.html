@@ -60,6 +60,7 @@
         placeholder="Selecciona un rol"
         id="role_id"
         formControlName="role_id"
+        emptyMessage="Sin resultados"
       ></p-dropdown>
     </div>
 
@@ -85,6 +86,7 @@
         placeholder="Selecciona un centro"
         id="center_cif"
         formControlName="center_cif"
+        emptyMessage="Sin resultados"
       ></p-dropdown>
     </div>
   </div>
@@ -98,7 +100,7 @@
         [label]="isEditing ? 'Editar' : 'Añadir'"
       ></p-button>
       <p-button type="reset" severity="danger" label="Limpiar"></p-button>
-      <p-button type="button" label="Volver" routerLink="/teachers"></p-button>
+      <p-button type="button" label="Volver" (click)="goBack()"></p-button>
     </div>
 
     <p-button

@@ -15,6 +15,10 @@
   Para reservar una sala, diríjase a "Reservas" > "Reservar"
 </p>
 
+<p *ngIf="rooms.length" class="advise">
+  El estado de las salas se muestra respecto a la disponiblidad del día actual
+</p>
+
 <div *ngIf="rooms.length">
   <p-table
     #dt1
@@ -168,10 +172,7 @@
             *ngIf="canReserve"
             class="pi pi-calendar showDetails"
             (click)="reserve(room.id)"
-            [disabled]="room.state !== 'Disponible'"
-            [ngStyle]="{
-              cursor: room.state === 'Disponible' ? 'pointer' : 'default'
-            }"
+            style="cursor: 'pointer'"
           ></button>
           <button
             class="pi pi-file-edit showDetails"

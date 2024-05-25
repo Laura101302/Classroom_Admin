@@ -125,13 +125,30 @@ export class ReservationListComponent implements OnInit {
             room: this.getRoomById(r.room_id),
             seat: this.getSeatById(r.seat_id),
           }).pipe(
-            map((data: any) => ({
-              ...r,
-              room_id: data.room.id,
-              room_name: data.room.name,
-              seat_id: data.seat,
-              reservation_type: data.room.reservation_type,
-            }))
+            map((data: any) => {
+              const date = r.date.split('/');
+              const selected = this.formatDate(
+                new Date(Number(date[2]), Number(date[1]) - 1, Number(date[0]))
+              );
+              const today = this.formatDate(new Date());
+
+              if (selected < today)
+                this.delete(
+                  r.id,
+                  data.room.reservation_type,
+                  r.room_id,
+                  r.date,
+                  true
+                );
+
+              return {
+                ...r,
+                room_id: data.room.id,
+                room_name: data.room.name,
+                seat_id: data.seat,
+                reservation_type: data.room.reservation_type,
+              };
+            })
           );
         });
 
@@ -192,22 +209,45 @@ export class ReservationListComponent implements OnInit {
       rejectButtonStyleClass: 'p-button-text',
 
       accept: () => {
-        this.delete(reserve.id, reserve.reservation_type, reserve.room_id);
+        this.delete(
+          reserve.id,
+          reserve.reservation_type,
+          reserve.room_id,
+          reserve.date
+        );
       },
       reject: () => {},
     });
   }
 
-  delete(id: number, reservation_type: number | undefined, room_id: number) {
-    if (reservation_type && reservation_type === 1)
-      this.updateSeatStateByRoomId(room_id);
+  delete(
+    id: number,
+    reservation_type: number | undefined,
+    room_id: number,
+    date: string,
+    update: boolean = false
+  ) {
+    const dateSplit = date.split('/');
+    const newDate = new Date(
+      Number(dateSplit[2]),
+      Number(dateSplit[1]) - 1,
+      Number(dateSplit[0])
+    );
+    const selected = this.formatDate(newDate);
+    const today = this.formatDate(new Date());
+    const updateState = selected === today ? true : false;
 
-    this.reservationService.deleteReserve(id).subscribe((res) => {
+    if (reservation_type && reservation_type === 1)
+      updateState ? this.updateSeatStateByRoomId(room_id) : '';
+
+    this.reservationService.deleteReserve(id, updateState).subscribe((res) => {
       if (res.code === 200) {
         this.messageService.add({
           severity: 'success',
-          summary: 'Eliminada',
-          detail: 'Reserva eliminada correctamente',
+          summary: update ? 'Actualizado' : 'Eliminada',
+          detail: update
+            ? 'Actualización completada'
+            : 'Reserva eliminada correctamente',
         });
 
         setTimeout(() => {
@@ -234,6 +274,14 @@ export class ReservationListComponent implements OnInit {
         });
       },
     });
+  }
+
+  formatDate(date: Date) {
+    const day = ('0' + date.getDate()).slice(-2);
+    const month = ('0' + (date.getMonth() + 1)).slice(-2);
+    const year = date.getFullYear();
+
+    return `${day}/${month}/${year}`;
   }
 
   applyFilterGlobal($event: any, stringVal: string) {

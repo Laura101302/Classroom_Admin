@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MessageService } from 'primeng/api';
 import { forkJoin, map } from 'rxjs';
 import { Center } from 'src/interfaces/center';
 import { IResponse } from 'src/interfaces/response';
@@ -9,6 +8,7 @@ import { Role } from 'src/interfaces/role';
 import { Teacher } from 'src/interfaces/teacher';
 import { CenterService } from 'src/services/center.service';
 import { RoleService } from 'src/services/role.service';
+import { ShowMessageService } from 'src/services/show-message.service';
 import { TeacherService } from 'src/services/teacher.service';
 
 @Component({
@@ -34,12 +34,15 @@ export class TeacherFormComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private centerService: CenterService,
     private roleService: RoleService,
-    private messageService: MessageService,
-    private router: Router
+    private router: Router,
+    private showMessageService: ShowMessageService
   ) {
     this.isEditing
       ? (this.form = this.formBuilder.group({
-          dni: ['', Validators.required],
+          dni: [
+            '',
+            [Validators.required, Validators.pattern('^\\d{8}[A-Za-z]$')],
+          ],
           name: ['', Validators.required],
           surnames: ['', Validators.required],
           phone: ['', Validators.required],
@@ -49,7 +52,10 @@ export class TeacherFormComponent implements OnInit {
           center_cif: ['', Validators.required],
         }))
       : (this.form = this.formBuilder.group({
-          dni: ['', Validators.required],
+          dni: [
+            '',
+            [Validators.required, Validators.pattern('^\\d{8}[A-Za-z]$')],
+          ],
           name: ['', Validators.required],
           surnames: ['', Validators.required],
           phone: ['', Validators.required],
@@ -82,11 +88,7 @@ export class TeacherFormComponent implements OnInit {
             if (params['dni']) this.setFormData(params['dni']);
           },
           error: () => {
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Error',
-              detail: 'Error al recuperar los datos',
-            });
+            this.showMessageService.error('Error al recuperar los datos');
           },
         });
       } else if (role === '1') this.isAdmin = true;
@@ -102,11 +104,7 @@ export class TeacherFormComponent implements OnInit {
             else this.form.patchValue({ center_cif: this.center });
           },
           error: () => {
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Error',
-              detail: 'Error al recuperar los datos',
-            });
+            this.showMessageService.error('Error al recuperar los datos');
           },
         });
       }
@@ -156,13 +154,11 @@ export class TeacherFormComponent implements OnInit {
           pass: this.teacher.pass,
           center_cif: this.selectedCenter || this.center,
         });
+
+        this.form.get('email')?.disable();
       },
       error: () => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Error al recuperar el profesor',
-        });
+        this.showMessageService.error('Error al recuperar el profesor');
       },
     });
   }
@@ -181,28 +177,32 @@ export class TeacherFormComponent implements OnInit {
     this.teacherService.createTeacher(form).subscribe({
       next: (res: IResponse) => {
         if (res.code === 200) {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Creado',
-            detail: 'Creado correctamente',
-          });
+          this.showMessageService.success('Creado', 'Creado correctamente');
 
           setTimeout(() => {
             this.router.navigate(['teachers']);
           }, 2000);
         }
       },
-      error: () => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Error al crear el profesor',
-        });
+      error: (error) => {
+        if (error.error.message === 'DNI already in use') {
+          this.showMessageService.error('El DNI ya está en uso');
+        } else if (error.error.message === 'Email already in use') {
+          this.showMessageService.error('El email ya está en uso');
+        } else if (error.error.message === 'Invalid dni format') {
+          this.showMessageService.error('El formato de DNI es incorrecto');
+        } else if (error.error.message === 'Invalid email format') {
+          this.showMessageService.error('El formato de email es incorrecto');
+        } else {
+          this.showMessageService.error('Error al crear el profesor');
+        }
       },
     });
   }
 
   editTeacher() {
+    this.form.get('email')?.enable();
+
     const form = {
       ...this.form.value,
       role_id: this.form.value.role_id.id,
@@ -213,14 +213,12 @@ export class TeacherFormComponent implements OnInit {
         : this.center,
     };
 
+    this.form.get('email')?.disable();
+
     this.teacherService.editTeacher(form).subscribe({
       next: (res: IResponse) => {
         if (res.code === 200) {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Editado',
-            detail: 'Editado correctamente',
-          });
+          this.showMessageService.success('Editado', 'Editado correctamente');
 
           setTimeout(() => {
             if (this.isAdmin || this.isGlobalAdmin)
@@ -230,12 +228,17 @@ export class TeacherFormComponent implements OnInit {
         }
       },
       error: () => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Error al editar el profesor',
-        });
+        this.showMessageService.error('Error al editar el profesor');
       },
     });
+  }
+
+  goBack() {
+    if (
+      this.isEditing &&
+      this.form.get('email')?.value === localStorage.getItem('user')
+    )
+      this.router.navigate(['']);
+    else this.router.navigate(['teachers']);
   }
 }
