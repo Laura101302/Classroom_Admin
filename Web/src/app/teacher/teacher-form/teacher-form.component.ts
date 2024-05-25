@@ -232,4 +232,13 @@ export class TeacherFormComponent implements OnInit {
       },
     });
   }
+
+  goBack() {
+    if (
+      this.isEditing &&
+      this.form.get('email')?.value === localStorage.getItem('user')
+    )
+      this.router.navigate(['']);
+    else this.router.navigate(['teachers']);
+  }
 }
