@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ConfirmationService } from 'primeng/api';
 import { forkJoin, map } from 'rxjs';
 import { Center } from 'src/interfaces/center';
 import { IResponse } from 'src/interfaces/response';
@@ -35,7 +36,8 @@ export class TeacherFormComponent implements OnInit {
     private centerService: CenterService,
     private roleService: RoleService,
     private router: Router,
-    private showMessageService: ShowMessageService
+    private showMessageService: ShowMessageService,
+    private confirmationService: ConfirmationService
   ) {
     this.isEditing
       ? (this.form = this.formBuilder.group({
@@ -62,7 +64,13 @@ export class TeacherFormComponent implements OnInit {
           email: ['', [Validators.required, Validators.email]],
           birthdate: ['', Validators.required],
           role_id: ['', Validators.required],
-          pass: ['', Validators.required],
+          pass: [
+            '',
+            [
+              Validators.required,
+              Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/),
+            ],
+          ],
           center_cif: ['', Validators.required],
         }));
   }
@@ -193,6 +201,10 @@ export class TeacherFormComponent implements OnInit {
           this.showMessageService.error('El formato de DNI es incorrecto');
         } else if (error.error.message === 'Invalid email format') {
           this.showMessageService.error('El formato de email es incorrecto');
+        } else if (error.error.message === 'Invalid pass format') {
+          this.showMessageService.error(
+            'El formato de contraseña es incorrecto'
+          );
         } else {
           this.showMessageService.error('Error al crear el profesor');
         }
@@ -230,6 +242,16 @@ export class TeacherFormComponent implements OnInit {
       error: () => {
         this.showMessageService.error('Error al editar el profesor');
       },
+    });
+  }
+
+  showPassInfo() {
+    this.confirmationService.confirm({
+      target: event?.target as EventTarget,
+      header: 'Información',
+      icon: 'pi pi-info-circle',
+
+      accept: () => {},
     });
   }
 
