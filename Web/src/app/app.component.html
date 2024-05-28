@@ -1,0 +1,21 @@
+<div class="fixed w-full h-full spinner" *ngIf="showSpinner | async">
+  <p-progressSpinner
+    styleClass="w-7rem h-7rem"
+    strokeWidth="5"
+    fill="var(--surface-ground)"
+    animationDuration="1s"
+    [style]="{ 'background-color': 'transparent' }"
+  ></p-progressSpinner>
+</div>
+
+<div [ngClass]="isLogged ? 'layout-wrapper' : ''">
+  <div>
+    <div class="layout-sidebar" *ngIf="isLogged">
+      <app-menu></app-menu>
+    </div>
+    <div class="layout-main" [ngClass]="isLogged ? 'layout-margin' : ''">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+  <app-footer *ngIf="isLogged"></app-footer>
+</div>

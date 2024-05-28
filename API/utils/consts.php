@@ -1,0 +1,8 @@
+<?php
+    const SUCCESS_CODE = 200; 
+    const BAD_REQUEST_ERROR_CODE = 400;
+    const UNAUTHORIZED_ERROR_CODE = 401;
+    const FORBIDDEN_ERROR_CODE = 403;
+    const NOT_FOUND_ERROR_CODE = 404;
+    const INTERNAL_SERVER_ERROR_CODE = 500;
+?>

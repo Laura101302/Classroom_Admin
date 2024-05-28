@@ -1,0 +1,117 @@
+<p-toast></p-toast>
+
+<h1>{{ isEditing ? "Editar" : "Nueva" }} sala</h1>
+
+<form
+  action=""
+  method="post"
+  [formGroup]="form"
+  (ngSubmit)="isEditing ? editRoom() : createRoom()"
+>
+  <div class="input-wrapper">
+    <div class="input">
+      <label for="name">Nombre</label>
+      <input pInputText type="text" id="name" formControlName="name" />
+    </div>
+
+    <div class="input">
+      <label for="seats_number">Número de asientos</label>
+      <input
+        pInputText
+        type="number"
+        id="seats_number"
+        formControlName="seats_number"
+      />
+    </div>
+  </div>
+
+  <div class="input-wrapper">
+    <div class="input">
+      <label for="floor_number">Planta</label>
+      <input
+        pInputText
+        type="number"
+        id="floor_number"
+        formControlName="floor_number"
+      />
+    </div>
+
+    <div class="input">
+      <label for="reservation_type">Tipo de reserva</label>
+      <p-dropdown
+        [options]="reserveTypes"
+        [(ngModel)]="selectedReserveType"
+        optionLabel="name"
+        [showClear]="false"
+        placeholder="Selecciona un tipo"
+        id="reservation_type"
+        formControlName="reservation_type"
+        emptyMessage="Sin resultados"
+      ></p-dropdown>
+    </div>
+  </div>
+
+  <div class="input-wrapper">
+    <div class="input">
+      <label for="room_type_id">Tipo de sala</label>
+      <p-dropdown
+        [options]="roomTypes"
+        [(ngModel)]="selectedRoomType"
+        optionLabel="name"
+        [showClear]="false"
+        placeholder="Selecciona un tipo"
+        id="room_type_id"
+        formControlName="room_type_id"
+        emptyMessage="Sin resultados"
+      ></p-dropdown>
+    </div>
+
+    <div class="input">
+      <label for="allowed_roles_ids">Reserva permitida</label>
+      <p-multiSelect
+        [options]="roles"
+        [(ngModel)]="selectedRoles"
+        optionLabel="name"
+        placeholder="Selecciona los roles"
+        id="allowed_roles_ids"
+        formControlName="allowed_roles_ids"
+      ></p-multiSelect>
+    </div>
+  </div>
+
+  <div class="input-wrapper" *ngIf="isGlobalAdmin">
+    <div class="input">
+      <label for="center_cif">Centro</label>
+      <p-dropdown
+        [options]="centers"
+        [(ngModel)]="selectedCenter"
+        optionLabel="name"
+        [showClear]="false"
+        placeholder="Selecciona un centro"
+        id="center_cif"
+        formControlName="center_cif"
+        emptyMessage="Sin resultados"
+      ></p-dropdown>
+    </div>
+  </div>
+
+  <div class="buttons">
+    <p-button
+      type="submit"
+      severity="success"
+      [disabled]="form.invalid"
+      [label]="isEditing ? 'Editar' : 'Añadir'"
+    ></p-button>
+    <p-button
+      type="button"
+      severity="danger"
+      label="Limpiar"
+      (click)="resetForm()"
+    ></p-button>
+    <p-button
+      type="button"
+      label="Volver"
+      [routerLink]="isAdmin ? '/all-rooms' : '/rooms'"
+    ></p-button>
+  </div>
+</form>

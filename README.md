@@ -1,5 +1,7 @@
 # Classroom Admin
 
+# Classroom Admin
+
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.2.9.
 
 ## Functional requirements
@@ -20,4 +22,5 @@ Run `npm i` to install all dependencies.
 Run `npm start` to run the project.
 
 ## Author
+
 © Laura López (@Laura101302)

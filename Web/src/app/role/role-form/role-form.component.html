@@ -1,0 +1,23 @@
+<p-toast></p-toast>
+
+<h1>Editar rol</h1>
+
+<form action="" method="post" [formGroup]="form" (ngSubmit)="editRole()">
+  <div class="input-wrapper">
+    <div class="input">
+      <label for="name">Nombre</label>
+      <input pInputText type="text" id="name" formControlName="name" />
+    </div>
+  </div>
+
+  <div class="buttons">
+    <p-button
+      type="submit"
+      severity="success"
+      [disabled]="form.invalid"
+      label="Editar"
+    ></p-button>
+    <p-button type="reset" severity="danger" label="Limpiar"></p-button>
+    <p-button type="button" label="Volver" routerLink="/roles"></p-button>
+  </div>
+</form>

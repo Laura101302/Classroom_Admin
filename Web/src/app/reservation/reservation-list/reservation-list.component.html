@@ -1,0 +1,164 @@
+<p-toast></p-toast>
+
+<h1>Listado de reservas</h1>
+
+<div class="new-button" *ngIf="!isGlobalAdmin">
+  <p-button routerLink="/rooms">Nueva reserva</p-button>
+</div>
+
+<div *ngIf="reservations.length">
+  <p-table
+    #dt1
+    [value]="reservations"
+    dataKey="id"
+    [rows]="10"
+    [showCurrentPageReport]="true"
+    [rowsPerPageOptions]="[10, 25, 50]"
+    [paginator]="true"
+    currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} reservas"
+    [globalFilterFields]="
+      isGlobalAdmin
+        ? ['', 'room_name', 'seat_id', 'teacher_email', 'center_cif', 'date']
+        : ['', 'room_name', 'seat_id', 'date']
+    "
+    styleClass="p-datatable-striped"
+    [tableStyle]="{ 'min-width': '50rem' }"
+  >
+    <ng-template pTemplate="caption">
+      <div class="flex">
+        <button
+          pButton
+          label="Limpiar"
+          class="p-button-outlined"
+          icon="pi pi-filter-slash"
+          (click)="clearFilter(dt1)"
+        ></button>
+        <span class="p-input-icon-left ml-auto">
+          <i class="pi pi-search"></i>
+          <input
+            pInputText
+            type="text"
+            (input)="applyFilterGlobal($event, 'contains')"
+            placeholder="Buscar..."
+          />
+        </span>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="header">
+      <tr>
+        <th></th>
+        <th pSortableColumn="room_name">
+          <div class="flex align-items-center">
+            Sala
+            <p-sortIcon field="room_name"></p-sortIcon>
+            <p-columnFilter
+              type="text"
+              field="room_name"
+              display="menu"
+            ></p-columnFilter>
+          </div>
+        </th>
+        <th pSortableColumn="seat_id">
+          <div class="flex align-items-center">
+            Puesto
+            <p-sortIcon field="seat_id"></p-sortIcon>
+            <p-columnFilter
+              type="text"
+              field="seat_id"
+              display="menu"
+            ></p-columnFilter>
+          </div>
+        </th>
+        <th
+          pSortableColumn="teacher_email"
+          *ngIf="isGlobalAdmin || showAllByCif"
+        >
+          <div class="flex align-items-center">
+            Profesor
+            <p-sortIcon field="teacher_email"></p-sortIcon>
+            <p-columnFilter
+              type="text"
+              field="teacher_email"
+              display="menu"
+            ></p-columnFilter>
+          </div>
+        </th>
+        <th pSortableColumn="center_cif" *ngIf="isGlobalAdmin">
+          <div class="flex align-items-center">
+            Centro
+            <p-sortIcon field="center_cif"></p-sortIcon>
+            <p-columnFilter
+              type="text"
+              field="center_cif"
+              display="menu"
+            ></p-columnFilter>
+          </div>
+        </th>
+        <th pSortableColumn="date">
+          <div class="flex align-items-center">
+            Fecha
+            <p-sortIcon field="date"></p-sortIcon>
+            <p-columnFilter
+              type="text"
+              field="date"
+              display="menu"
+            ></p-columnFilter>
+          </div>
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-reserve>
+      <tr>
+        <td class="action-buttons">
+          <button
+            class="pi pi-trash showDetails"
+            (click)="warningDelete(reserve)"
+          ></button>
+        </td>
+        <td>{{ reserve.room_name }}</td>
+        <td>{{ reserve.seat_id }}</td>
+        <td *ngIf="isGlobalAdmin || showAllByCif">
+          {{ reserve.teacher_email }}
+        </td>
+        <td *ngIf="isGlobalAdmin">{{ reserve.center.name }}</td>
+        <td>{{ reserve.date }}</td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+
+<div *ngIf="!reservations.length || error">
+  <p>No hay reservas para mostrar</p>
+</div>
+
+<p-confirmDialog #cd>
+  <ng-template pTemplate="message" let-message>
+    <div style="margin-left: 1rem">
+      <span>
+        Se eliminará la reserva para <b>{{ reservationToDelete }}</b>
+      </span>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <button
+      type="button"
+      class="p-element p-ripple p-button-text p-confirm-dialog-reject p-button p-component ng-star-inserted"
+      ng-reflect-label="Cancelar"
+      ng-reflect-ng-class="p-confirm-dialog-reject"
+      (click)="cd.reject()"
+    >
+      <i class="none ng-star-inserted"></i>
+      <span class="p-button-label">Cancelar</span>
+    </button>
+    <button
+      type="button"
+      class="p-element p-ripple p-button-danger p-button-text p-confirm-dialog-accept p-button p-component ng-star-inserted"
+      ng-reflect-label="Eliminar"
+      ng-reflect-ng-class="p-confirm-dialog-accept"
+      (click)="cd.accept()"
+    >
+      <i class="none ng-star-inserted"></i>
+      <span class="p-button-label">Eliminar</span>
+    </button>
+  </ng-template>
+</p-confirmDialog>

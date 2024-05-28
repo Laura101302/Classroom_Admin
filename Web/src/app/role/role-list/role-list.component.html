@@ -1,0 +1,73 @@
+<p-toast></p-toast>
+
+<h1>Listado de roles</h1>
+
+<div *ngIf="roles.length">
+  <p-table
+    #dt1
+    [value]="roles"
+    dataKey="id"
+    [rows]="10"
+    [showCurrentPageReport]="true"
+    [rowsPerPageOptions]="[10, 25, 50]"
+    [paginator]="true"
+    currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} roles"
+    [globalFilterFields]="['', 'name']"
+    styleClass="p-datatable-striped"
+    [tableStyle]="{ 'min-width': '50rem' }"
+  >
+    <ng-template pTemplate="caption">
+      <div class="flex">
+        <button
+          pButton
+          label="Limpiar"
+          class="p-button-outlined"
+          icon="pi pi-filter-slash"
+          (click)="clearFilter(dt1)"
+        ></button>
+        <span class="p-input-icon-left ml-auto">
+          <i class="pi pi-search"></i>
+          <input
+            pInputText
+            type="text"
+            (input)="applyFilterGlobal($event, 'contains')"
+            placeholder="Buscar..."
+          />
+        </span>
+      </div>
+    </ng-template>
+
+    <ng-template pTemplate="header">
+      <tr>
+        <th></th>
+        <th pSortableColumn="name">
+          <div class="flex align-items-center">
+            Nombre
+            <p-sortIcon field="name"></p-sortIcon>
+            <p-columnFilter
+              type="text"
+              field="name"
+              display="menu"
+            ></p-columnFilter>
+          </div>
+        </th>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-role>
+      <tr>
+        <td class="action-buttons">
+          <button
+            class="pi pi-file-edit showDetails"
+            (click)="edit(role.id)"
+          ></button>
+        </td>
+        <td>{{ role.name }}</td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+
+<div *ngIf="!roles.length || error">
+  <p>No hay roles para mostrar</p>
+</div>

@@ -1,0 +1,55 @@
+<p-toast></p-toast>
+
+<h1>Cambiar contraseña</h1>
+
+<form action="" method="post" [formGroup]="form" (ngSubmit)="updatePass()">
+  <div class="input-wrapper">
+    <div class="input">
+      <label for="email">Correo electrónico</label>
+      <input pInputText type="email" id="email" formControlName="email" />
+    </div>
+
+    <div class="input">
+      <div class="new-pass">
+        <label for="pass">Nueva contraseña</label>
+        <button
+          type="button"
+          class="pi pi-info-circle showDetails"
+          (click)="showPassInfo()"
+        ></button>
+      </div>
+      <p-password
+        id="pass"
+        formControlName="pass"
+        [toggleMask]="true"
+        [feedback]="false"
+        [style]="{ width: '100%' }"
+        [inputStyle]="{ width: '100%' }"
+      />
+    </div>
+  </div>
+
+  <div class="buttons">
+    <p-button
+      type="submit"
+      severity="success"
+      [disabled]="form.invalid"
+      label="Editar"
+    ></p-button>
+    <p-button type="button" label="Volver" (click)="goBack()"></p-button>
+  </div>
+</form>
+
+<p-confirmDialog #cd>
+  <ng-template pTemplate="message" let-message>
+    <div style="margin-left: 1rem">
+      <span>La contraseña debe contener al menos:</span>
+      <ul>
+        <li>Una letra minúscula</li>
+        <li>Una letra mayúscula</li>
+        <li>Un número</li>
+      </ul>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer"></ng-template>
+</p-confirmDialog>

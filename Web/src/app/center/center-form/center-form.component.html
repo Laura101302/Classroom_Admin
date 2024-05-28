@@ -1,0 +1,72 @@
+<p-toast></p-toast>
+
+<h1>{{ isEditing ? "Editar centro" : "Nuevo centro" }}</h1>
+
+<form
+  action=""
+  method="post"
+  [formGroup]="form"
+  (ngSubmit)="isEditing ? editCenter() : createCenter()"
+>
+  <div class="input-wrapper">
+    <div class="input">
+      <label for="cif">CIF</label>
+      <input pInputText type="text" id="cif" formControlName="cif" />
+    </div>
+
+    <div class="input">
+      <label for="name">Nombre</label>
+      <input pInputText type="text" id="name" formControlName="name" />
+    </div>
+  </div>
+
+  <div class="input-wrapper">
+    <div class="input">
+      <label for="direction">Dirección</label>
+      <input
+        pInputText
+        type="text"
+        id="direction"
+        formControlName="direction"
+      />
+    </div>
+
+    <div class="input">
+      <label for="postal_code">Código postal</label>
+      <input
+        pInputText
+        type="number"
+        id="postal_code"
+        formControlName="postal_code"
+      />
+    </div>
+  </div>
+
+  <div class="input-wrapper">
+    <div class="input">
+      <label for="city">Ciudad</label>
+      <input pInputText type="text" id="city" formControlName="city" />
+    </div>
+
+    <div class="input">
+      <label for="province">Provincia</label>
+      <input pInputText type="text" id="province" formControlName="province" />
+    </div>
+  </div>
+
+  <div class="buttons">
+    <p-button
+      type="submit"
+      severity="success"
+      [disabled]="form.invalid"
+      [label]="isEditing ? 'Editar' : 'Añadir'"
+    ></p-button>
+    <p-button
+      type="button"
+      severity="danger"
+      label="Limpiar"
+      (click)="resetForm()"
+    ></p-button>
+    <p-button type="button" label="Volver" routerLink="/centers"></p-button>
+  </div>
+</form>

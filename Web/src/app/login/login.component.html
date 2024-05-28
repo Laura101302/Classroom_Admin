@@ -1,0 +1,40 @@
+<p-toast></p-toast>
+
+<div class="form-wrapper">
+  <div class="form">
+    <div class="header">
+      <img src="../../assets/text-logo.png" />
+    </div>
+
+    <h3>Iniciar sesión</h3>
+
+    <form action="" method="post" [formGroup]="form" (ngSubmit)="signIn()">
+      <div class="input-wrapper-login">
+        <div class="input">
+          <label for="email">Correo electrónico</label>
+          <input pInputText type="email" id="email" formControlName="email" />
+        </div>
+
+        <div class="input">
+          <label for="pass">Contraseña</label>
+          <p-password
+            id="pass"
+            formControlName="pass"
+            [toggleMask]="true"
+            [feedback]="false"
+            [style]="{ width: '100%' }"
+            [inputStyle]="{ width: '100%' }"
+          />
+        </div>
+      </div>
+
+      <div class="buttons">
+        <p-button
+          type="submit"
+          [disabled]="form.invalid"
+          label="Iniciar sesión"
+        ></p-button>
+      </div>
+    </form>
+  </div>
+</div>

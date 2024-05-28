@@ -1,0 +1,75 @@
+@import "../node_modules/primeng/resources/primeng.min.css";
+@import "../node_modules/primeflex/primeflex.scss";
+@import "../node_modules/primeicons/primeicons.css";
+
+html,
+body {
+  margin: 0;
+}
+
+.p-button {
+  font-weight: bold !important;
+}
+
+.showDetails {
+  border: 1px solid #3b82f6;
+  border-radius: 7px;
+  background-color: #eff6ff;
+  padding: 5px;
+  cursor: pointer;
+}
+
+.p-dropdown,
+.p-multiSelect {
+  width: 100%;
+}
+
+p-multiselect > .p-multiselect.p-component.p-inputwrapper {
+  width: 100%;
+}
+
+.new-button {
+  margin-bottom: 2vh;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 1vw;
+}
+
+.advise {
+  font-style: italic;
+  font-size: 14px;
+}
+
+.input-wrapper {
+  display: flex;
+  justify-content: space-evenly;
+  margin: 1vh 0;
+  flex-wrap: wrap;
+  gap: 1vh;
+
+  .input {
+    display: flex;
+    flex-direction: column;
+    gap: 1vh;
+
+    & > input,
+    p-dropdown,
+    p-multiSelect {
+      width: 280px;
+    }
+  }
+
+  .checkbox {
+    flex-direction: row;
+    width: 280px;
+    margin-top: 3vh;
+    justify-content: center;
+
+    label {
+      display: flex;
+      align-items: center;
+    }
+  }
+}

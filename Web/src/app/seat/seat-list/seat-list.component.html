@@ -1,0 +1,164 @@
+<p-toast></p-toast>
+
+<h1>Listado de puestos</h1>
+
+<div class="new-button" *ngIf="isGlobalAdmin || isAdmin">
+  <p-button (click)="create()">Nuevo puesto</p-button>
+</div>
+
+<p *ngIf="seats.length" class="advise">
+  El estado de los puestos se muestra respecto a la disponiblidad del día actual
+</p>
+
+<div *ngIf="seats.length">
+  <p-table
+    #dt1
+    [value]="seats"
+    dataKey="id"
+    [rows]="10"
+    [showCurrentPageReport]="true"
+    [rowsPerPageOptions]="[10, 25, 50]"
+    [paginator]="true"
+    currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} puestos"
+    [globalFilterFields]="
+      isGlobalAdmin
+        ? ['', 'name', 'state', 'room_name', 'center_name']
+        : ['', 'name', 'state', 'room_name']
+    "
+    styleClass="p-datatable-striped"
+    [tableStyle]="{ 'min-width': '50rem' }"
+  >
+    <ng-template pTemplate="caption">
+      <div class="flex">
+        <button
+          pButton
+          label="Limpiar"
+          class="p-button-outlined"
+          icon="pi pi-filter-slash"
+          (click)="clearFilter(dt1)"
+        ></button>
+        <span class="p-input-icon-left ml-auto">
+          <i class="pi pi-search"></i>
+          <input
+            pInputText
+            type="text"
+            (input)="applyFilterGlobal($event, 'contains')"
+            placeholder="Buscar..."
+          />
+        </span>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="header">
+      <tr>
+        <th *ngIf="isGlobalAdmin || isAdmin"></th>
+        <th pSortableColumn="name">
+          <div class="flex align-items-center">
+            Nombre
+            <p-sortIcon field="name"></p-sortIcon>
+            <p-columnFilter
+              type="text"
+              field="name"
+              display="menu"
+            ></p-columnFilter>
+          </div>
+        </th>
+        <th pSortableColumn="state">
+          <div class="flex align-items-center">
+            Estado
+            <p-sortIcon field="state"></p-sortIcon>
+            <p-columnFilter
+              type="text"
+              field="state"
+              display="menu"
+            ></p-columnFilter>
+          </div>
+        </th>
+        <th pSortableColumn="room_name">
+          <div class="flex align-items-center">
+            Sala
+            <p-sortIcon field="room_name"></p-sortIcon>
+            <p-columnFilter
+              type="text"
+              field="room_name"
+              display="menu"
+            ></p-columnFilter>
+          </div>
+        </th>
+        <th pSortableColumn="center_name" *ngIf="isGlobalAdmin">
+          <div class="flex align-items-center">
+            Centro
+            <p-sortIcon field="center_name"></p-sortIcon>
+            <p-columnFilter
+              type="text"
+              field="center_name"
+              display="menu"
+            ></p-columnFilter>
+          </div>
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-seat>
+      <tr>
+        <td class="action-buttons">
+          <button
+            class="pi pi-file-edit showDetails"
+            (click)="edit(seat.id)"
+            *ngIf="isGlobalAdmin || isAdmin"
+          ></button>
+          <button
+            class="pi pi-trash showDetails"
+            (click)="warningDelete(seat)"
+            *ngIf="isGlobalAdmin || isAdmin"
+          ></button>
+        </td>
+        <td>{{ seat.name }}</td>
+        <td
+          [ngStyle]="{
+            color: seat.state === 'Disponible' ? '#22c55e' : '#ef4444'
+          }"
+        >
+          {{ seat.state }}
+        </td>
+        <td>{{ seat.room_name }}</td>
+        <td *ngIf="isGlobalAdmin">{{ seat.center_name }}</td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+
+<div *ngIf="!seats.length || error">
+  <p>No hay puestos para mostrar</p>
+</div>
+
+<p-confirmDialog #cd>
+  <ng-template pTemplate="message" let-message>
+    <div style="margin-left: 1rem">
+      <span>
+        Se eliminará el puesto <b>{{ seatToDelete }}</b> y las reservas
+        asociadas
+      </span>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <button
+      type="button"
+      class="p-element p-ripple p-button-text p-confirm-dialog-reject p-button p-component ng-star-inserted"
+      ng-reflect-label="Cancelar"
+      ng-reflect-ng-class="p-confirm-dialog-reject"
+      (click)="cd.reject()"
+    >
+      <i class="none ng-star-inserted"></i>
+      <span class="p-button-label">Cancelar</span>
+    </button>
+    <button
+      type="button"
+      class="p-element p-ripple p-button-danger p-button-text p-confirm-dialog-accept p-button p-component ng-star-inserted"
+      ng-reflect-label="Eliminar"
+      ng-reflect-ng-class="p-confirm-dialog-accept"
+      (click)="cd.accept()"
+    >
+      <i class="none ng-star-inserted"></i>
+      <span class="p-button-label">Eliminar</span>
+    </button>
+  </ng-template>
+</p-confirmDialog>
