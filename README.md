@@ -15,7 +15,13 @@ Minimum versions for application operation:
 
 ## Run proyect
 
-Go to the Web folder with `cd Web`
+Download [XAMPP](https://www.apachefriends.org/es/download.html) and start Apache and MySQL.
+
+Clone the project into your C:\xampp\htdocs folder.
+
+Open the project in [Visual Studio Code](https://code.visualstudio.com/Download).
+
+Go to the Web folder with `cd Web`.
 
 Run `npm i` to install all dependencies.
 
