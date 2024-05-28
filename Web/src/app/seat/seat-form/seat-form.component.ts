@@ -143,12 +143,13 @@ export class SeatFormComponent implements OnInit {
 
         this.form = this.formBuilder.group({
           id: this.seat.id,
-          name: this.seat.name,
+          name: [this.seat.name, Validators.required],
           state: this.seat.state,
-          room_id: this.seat.room_id,
+          room_id: [
+            { value: this.seat.room_id, disabled: true },
+            Validators.required,
+          ],
         });
-
-        this.form.get('room_id')?.disable();
       },
       error: () => {
         this.messageService.add({
@@ -250,5 +251,10 @@ export class SeatFormComponent implements OnInit {
         });
       },
     });
+  }
+
+  resetForm() {
+    this.form.reset();
+    this.form.get('room_id')?.setValue(this.seat.room_id);
   }
 }

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ConfirmationService } from 'primeng/api';
 import { forkJoin, map } from 'rxjs';
 import { Center } from 'src/interfaces/center';
 import { IResponse } from 'src/interfaces/response';
@@ -35,36 +36,26 @@ export class TeacherFormComponent implements OnInit {
     private centerService: CenterService,
     private roleService: RoleService,
     private router: Router,
-    private showMessageService: ShowMessageService
+    private showMessageService: ShowMessageService,
+    private confirmationService: ConfirmationService
   ) {
-    this.isEditing
-      ? (this.form = this.formBuilder.group({
-          dni: [
-            '',
-            [Validators.required, Validators.pattern('^\\d{8}[A-Za-z]$')],
-          ],
-          name: ['', Validators.required],
-          surnames: ['', Validators.required],
-          phone: ['', Validators.required],
-          email: ['', [Validators.required, Validators.email]],
-          birthdate: ['', Validators.required],
-          role_id: ['', Validators.required],
-          center_cif: ['', Validators.required],
-        }))
-      : (this.form = this.formBuilder.group({
-          dni: [
-            '',
-            [Validators.required, Validators.pattern('^\\d{8}[A-Za-z]$')],
-          ],
-          name: ['', Validators.required],
-          surnames: ['', Validators.required],
-          phone: ['', Validators.required],
-          email: ['', [Validators.required, Validators.email]],
-          birthdate: ['', Validators.required],
-          role_id: ['', Validators.required],
-          pass: ['', Validators.required],
-          center_cif: ['', Validators.required],
-        }));
+    this.form = this.formBuilder.group({
+      dni: ['', [Validators.required, Validators.pattern('^\\d{8}[A-Za-z]$')]],
+      name: ['', Validators.required],
+      surnames: ['', Validators.required],
+      phone: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
+      birthdate: ['', Validators.required],
+      role_id: ['', Validators.required],
+      pass: [
+        '',
+        [
+          Validators.required,
+          Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/),
+        ],
+      ],
+      center_cif: ['', Validators.required],
+    });
   }
 
   ngOnInit(): void {
@@ -144,18 +135,22 @@ export class TeacherFormComponent implements OnInit {
           );
 
         this.form = this.formBuilder.group({
-          dni: this.teacher.dni,
-          name: this.teacher.name,
-          surnames: this.teacher.surnames,
-          phone: this.teacher.phone,
-          email: this.teacher.email,
-          birthdate: this.teacher.birthdate,
-          role_id: this.selectedRole,
+          dni: [
+            this.teacher.dni,
+            [Validators.required, Validators.pattern('^\\d{8}[A-Za-z]$')],
+          ],
+          name: [this.teacher.name, Validators.required],
+          surnames: [this.teacher.surnames, Validators.required],
+          phone: [this.teacher.phone, Validators.required],
+          email: [
+            { value: this.teacher.email, disabled: true },
+            [Validators.required, Validators.email],
+          ],
+          birthdate: [this.teacher.birthdate, Validators.required],
+          role_id: [this.selectedRole, Validators.required],
           pass: this.teacher.pass,
-          center_cif: this.selectedCenter || this.center,
+          center_cif: [this.selectedCenter || this.center, Validators.required],
         });
-
-        this.form.get('email')?.disable();
       },
       error: () => {
         this.showMessageService.error('Error al recuperar el profesor');
@@ -193,6 +188,10 @@ export class TeacherFormComponent implements OnInit {
           this.showMessageService.error('El formato de DNI es incorrecto');
         } else if (error.error.message === 'Invalid email format') {
           this.showMessageService.error('El formato de email es incorrecto');
+        } else if (error.error.message === 'Invalid pass format') {
+          this.showMessageService.error(
+            'El formato de contraseña es incorrecto'
+          );
         } else {
           this.showMessageService.error('Error al crear el profesor');
         }
@@ -231,6 +230,21 @@ export class TeacherFormComponent implements OnInit {
         this.showMessageService.error('Error al editar el profesor');
       },
     });
+  }
+
+  showPassInfo() {
+    this.confirmationService.confirm({
+      target: event?.target as EventTarget,
+      header: 'Información',
+      icon: 'pi pi-info-circle',
+
+      accept: () => {},
+    });
+  }
+
+  resetForm() {
+    this.form.reset();
+    this.form.get('email')?.setValue(this.teacher.email);
   }
 
   goBack() {

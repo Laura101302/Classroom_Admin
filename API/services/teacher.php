@@ -22,6 +22,11 @@
             exit();
         }
 
+        if (!checkPass($json['pass'])) {
+            sendCode(INTERNAL_SERVER_ERROR_CODE, "Invalid pass format", '');
+            exit();
+        }
+
         if (!filter_var($json['email'], FILTER_VALIDATE_EMAIL)) {
             sendCode(INTERNAL_SERVER_ERROR_CODE, "Invalid email format", '');
             exit();
@@ -85,5 +90,13 @@
     function checkDni($dni) {
         $pattern = '/^\d{8}[A-Za-z]$/';
         return preg_match($pattern, $dni) === 1;
+    }
+
+    function checkPass($pass) {
+        if (!preg_match('/\d/', $pass)) return false;
+        if (!preg_match('/[a-z]/', $pass)) return false;
+        if (!preg_match('/[A-Z]/', $pass)) return false;
+        
+        return true;
     }
 ?>

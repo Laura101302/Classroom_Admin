@@ -145,7 +145,7 @@ export class SeatListComponent implements OnInit {
     this.confirmationService.confirm({
       target: event?.target as EventTarget,
       header: 'Eliminar puesto',
-      icon: 'pi pi-info-circle',
+      icon: 'pi pi-exclamation-triangle',
       acceptButtonStyleClass: 'p-button-danger p-button-text',
       rejectButtonStyleClass: 'p-button-text',
 

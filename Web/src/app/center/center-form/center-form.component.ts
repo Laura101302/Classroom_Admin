@@ -42,12 +42,15 @@ export class CenterFormComponent implements OnInit {
         this.center = JSON.parse(res.response)[0];
 
         this.form = this.formBuilder.group({
-          cif: this.center.cif,
-          name: this.center.name,
-          direction: this.center.direction,
-          postal_code: this.center.postal_code,
-          city: this.center.city,
-          province: this.center.province,
+          cif: [
+            this.center.cif,
+            [Validators.required, Validators.pattern('^[A-Za-z]\\d{8}$')],
+          ],
+          name: [this.center.name, Validators.required],
+          direction: [this.center.direction, Validators.required],
+          postal_code: [this.center.postal_code, Validators.required],
+          city: [this.center.city, Validators.required],
+          province: [this.center.province, Validators.required],
         });
 
         this.form.get('cif')?.disable();
@@ -101,5 +104,10 @@ export class CenterFormComponent implements OnInit {
         );
       },
     });
+  }
+
+  resetForm() {
+    this.form.reset();
+    this.form.get('cif')?.setValue(this.center.cif);
   }
 }
