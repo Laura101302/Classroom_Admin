@@ -186,13 +186,16 @@ export class RoomFormComponent implements OnInit {
 
       this.form = this.formBuilder.group({
         id: this.room.id,
-        name: this.room.name,
-        seats_number: { value: this.room.seats_number, disabled: true },
-        floor_number: this.room.floor_number,
-        reservation_type: this.room.reservation_type,
-        room_type_id: this.room.room_type_id,
-        center_cif: this.room.center_cif,
-        allowed_roles_ids: this.room.allowed_roles_ids,
+        name: [this.room.name, Validators.required],
+        seats_number: [
+          { value: this.room.seats_number, disabled: true },
+          Validators.required,
+        ],
+        floor_number: [this.room.floor_number, Validators.required],
+        reservation_type: [this.room.reservation_type, Validators.required],
+        room_type_id: [this.room.room_type_id, Validators.required],
+        center_cif: [this.room.center_cif, Validators.required],
+        allowed_roles_ids: [this.room.allowed_roles_ids, Validators.required],
       });
     });
   }
@@ -320,5 +323,10 @@ export class RoomFormComponent implements OnInit {
         });
       },
     });
+  }
+
+  resetForm() {
+    this.form.reset();
+    this.form.get('seats_number')?.setValue(this.room.seats_number);
   }
 }

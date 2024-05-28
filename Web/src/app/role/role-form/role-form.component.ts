@@ -37,7 +37,7 @@ export class RoleFormComponent implements OnInit {
 
           this.form = this.formBuilder.group({
             id: this.role.id,
-            name: this.role.name,
+            name: [this.role.name, Validators.required],
           });
         },
         error: () => {
