@@ -15,6 +15,8 @@ Minimum versions for application operation:
 
 ## Run proyect
 
+Go to the Web folder with `cd Web`
+
 Run `npm i` to install all dependencies.
 
 Run `npm start` to run the project.
