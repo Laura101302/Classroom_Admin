@@ -55,6 +55,12 @@
               type="text"
               field="room_name"
               display="menu"
+              [showMatchModes]="false"
+              [showAddButton]="false"
+              [showOperator]="false"
+              placeholder="Buscar por Sala"
+              matchMode="contains"
+              (click)="filterOpen()"
             ></p-columnFilter>
           </div>
         </th>
@@ -66,6 +72,12 @@
               type="text"
               field="seat_id"
               display="menu"
+              [showMatchModes]="false"
+              [showAddButton]="false"
+              [showOperator]="false"
+              placeholder="Buscar por Puesto"
+              matchMode="contains"
+              (click)="filterOpen()"
             ></p-columnFilter>
           </div>
         </th>
@@ -80,6 +92,12 @@
               type="text"
               field="teacher_email"
               display="menu"
+              [showMatchModes]="false"
+              [showAddButton]="false"
+              [showOperator]="false"
+              placeholder="Buscar por Profesor"
+              matchMode="contains"
+              (click)="filterOpen()"
             ></p-columnFilter>
           </div>
         </th>
@@ -91,6 +109,12 @@
               type="text"
               field="center_cif"
               display="menu"
+              [showMatchModes]="false"
+              [showAddButton]="false"
+              [showOperator]="false"
+              placeholder="Buscar por Centro"
+              matchMode="contains"
+              (click)="filterOpen()"
             ></p-columnFilter>
           </div>
         </th>
@@ -102,6 +126,12 @@
               type="text"
               field="date"
               display="menu"
+              [showMatchModes]="false"
+              [showAddButton]="false"
+              [showOperator]="false"
+              placeholder="Buscar por Fecha"
+              matchMode="contains"
+              (click)="filterOpen()"
             ></p-columnFilter>
           </div>
         </th>
