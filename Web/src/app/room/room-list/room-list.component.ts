@@ -51,13 +51,10 @@ export class RoomListComponent implements OnInit {
           this.isAdmin = true;
           const path = this.activatedRoute.snapshot.routeConfig?.path;
 
-          if (path && path === 'all-rooms') {
-            this.canReserve = false;
-            this.getAllRooms();
-          } else {
-            this.canReserve = true;
-            this.getAllRoomsByCif();
-          }
+          if (path && path === 'all-rooms') this.canReserve = false;
+          else this.canReserve = true;
+
+          this.getAllRoomsByCif();
         } else {
           this.canReserve = true;
           this.getAllRoomsByCif();
