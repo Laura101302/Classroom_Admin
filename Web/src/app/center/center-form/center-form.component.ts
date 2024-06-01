@@ -108,6 +108,6 @@ export class CenterFormComponent implements OnInit {
 
   resetForm() {
     this.form.reset();
-    this.form.get('cif')?.setValue(this.center.cif);
+    if (this.isEditing) this.form.get('cif')?.setValue(this.center.cif);
   }
 }

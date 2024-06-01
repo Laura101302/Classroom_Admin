@@ -244,7 +244,7 @@ export class TeacherFormComponent implements OnInit {
 
   resetForm() {
     this.form.reset();
-    this.form.get('email')?.setValue(this.teacher.email);
+    if (this.isEditing) this.form.get('email')?.setValue(this.teacher.email);
   }
 
   goBack() {

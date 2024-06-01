@@ -331,10 +331,12 @@ export class RoomFormComponent implements OnInit {
   }
 
   resetForm() {
-    this.form.get('name')?.setValue('');
-    this.form.get('floor_number')?.setValue('');
-    this.form.get('reservation_type')?.setValue('');
-    this.form.get('room_type_id')?.setValue('');
-    this.form.get('allowed_roles_ids')?.setValue('');
+    if (this.isEditing) {
+      this.form.get('name')?.setValue('');
+      this.form.get('floor_number')?.setValue('');
+      this.form.get('reservation_type')?.setValue('');
+      this.form.get('room_type_id')?.setValue('');
+      this.form.get('allowed_roles_ids')?.setValue('');
+    } else this.form.reset();
   }
 }
