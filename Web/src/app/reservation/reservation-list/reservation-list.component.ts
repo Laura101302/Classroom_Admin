@@ -71,19 +71,36 @@ export class ReservationListComponent implements OnInit {
           }).pipe(
             switchMap((data: any) => {
               const date = r.date.split('/');
-              const selected = this.formatDate(
-                new Date(Number(date[2]), Number(date[1]) - 1, Number(date[0]))
-              );
-              const today = this.formatDate(new Date());
 
-              if (selected < today)
-                this.delete(
-                  r.id,
-                  data.room.reservation_type,
-                  r.room_id,
-                  r.date,
-                  true
-                );
+              const selectedDate = new Date(
+                Number(date[2]),
+                Number(date[1]) - 1,
+                Number(date[0])
+              );
+              const selected =
+                selectedDate.getDate() +
+                '-' +
+                selectedDate.getMonth() +
+                '-' +
+                selectedDate.getFullYear();
+
+              const todayDate = new Date();
+              const today =
+                todayDate.getDate() +
+                '-' +
+                todayDate.getMonth() +
+                '-' +
+                todayDate.getFullYear();
+
+              if (selected !== today)
+                if (selectedDate < todayDate)
+                  this.delete(
+                    r.id,
+                    data.room.reservation_type,
+                    r.room_id,
+                    r.date,
+                    true
+                  );
 
               return this.getCenterByCif(data.room.center_cif).pipe(
                 map((center: any) => ({
@@ -142,19 +159,36 @@ export class ReservationListComponent implements OnInit {
           }).pipe(
             map((data: any) => {
               const date = r.date.split('/');
-              const selected = this.formatDate(
-                new Date(Number(date[2]), Number(date[1]) - 1, Number(date[0]))
-              );
-              const today = this.formatDate(new Date());
 
-              if (selected < today)
-                this.delete(
-                  r.id,
-                  data.room.reservation_type,
-                  r.room_id,
-                  r.date,
-                  true
-                );
+              const selectedDate = new Date(
+                Number(date[2]),
+                Number(date[1]) - 1,
+                Number(date[0])
+              );
+              const selected =
+                selectedDate.getDate() +
+                '-' +
+                selectedDate.getMonth() +
+                '-' +
+                selectedDate.getFullYear();
+
+              const todayDate = new Date();
+              const today =
+                todayDate.getDate() +
+                '-' +
+                todayDate.getMonth() +
+                '-' +
+                todayDate.getFullYear();
+
+              if (selected !== today)
+                if (selectedDate < todayDate)
+                  this.delete(
+                    r.id,
+                    data.room.reservation_type,
+                    r.room_id,
+                    r.date,
+                    true
+                  );
 
               return {
                 ...r,
