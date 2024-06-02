@@ -48,6 +48,12 @@
               type="text"
               field="name"
               display="menu"
+              [showMatchModes]="false"
+              [showAddButton]="false"
+              [showOperator]="false"
+              placeholder="Buscar por Nombre"
+              matchMode="contains"
+              (click)="filterOpen()"
             ></p-columnFilter>
           </div>
         </th>

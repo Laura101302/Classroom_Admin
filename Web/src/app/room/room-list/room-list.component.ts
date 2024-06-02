@@ -51,13 +51,10 @@ export class RoomListComponent implements OnInit {
           this.isAdmin = true;
           const path = this.activatedRoute.snapshot.routeConfig?.path;
 
-          if (path && path === 'all-rooms') {
-            this.canReserve = false;
-            this.getAllRooms();
-          } else {
-            this.canReserve = true;
-            this.getAllRoomsByCif();
-          }
+          if (path && path === 'all-rooms') this.canReserve = false;
+          else this.canReserve = true;
+
+          this.getAllRoomsByCif();
         } else {
           this.canReserve = true;
           this.getAllRoomsByCif();
@@ -285,5 +282,24 @@ export class RoomListComponent implements OnInit {
 
   clearFilter(table: Table) {
     table.clear();
+  }
+
+  contains(selector: string, text: string) {
+    var elements = document.querySelectorAll(selector);
+    return Array.prototype.filter.call(elements, function (element) {
+      return RegExp(text).test(element.textContent);
+    });
+  }
+
+  filterOpen() {
+    let element = this.contains('span', 'Clear')[0];
+    if (element && element !== undefined) {
+      element.textContent = 'Limpiar';
+    }
+
+    let element2 = this.contains('span', 'Apply')[0];
+    if (element2 && element2 !== undefined) {
+      element2.textContent = 'Aplicar';
+    }
   }
 }

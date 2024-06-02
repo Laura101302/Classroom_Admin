@@ -147,9 +147,18 @@ export class TeacherFormComponent implements OnInit {
             [Validators.required, Validators.email],
           ],
           birthdate: [this.teacher.birthdate, Validators.required],
-          role_id: [this.selectedRole, Validators.required],
+          role_id: [
+            {
+              value: this.selectedRole,
+              disabled: this.isGlobalAdmin || this.isAdmin ? false : true,
+            },
+            Validators.required,
+          ],
           pass: this.teacher.pass,
-          center_cif: [this.selectedCenter || this.center, Validators.required],
+          center_cif: [
+            { value: this.selectedCenter || this.center, disabled: true },
+            Validators.required,
+          ],
         });
       },
       error: () => {
@@ -201,6 +210,8 @@ export class TeacherFormComponent implements OnInit {
 
   editTeacher() {
     this.form.get('email')?.enable();
+    this.form.get('center_cif')?.enable();
+    this.form.get('role_id')?.enable();
 
     const form = {
       ...this.form.value,
@@ -213,6 +224,10 @@ export class TeacherFormComponent implements OnInit {
     };
 
     this.form.get('email')?.disable();
+    this.form.get('center_cif')?.disable();
+    this.isGlobalAdmin || this.isAdmin
+      ? ''
+      : this.form.get('role_id')?.disable();
 
     this.teacherService.editTeacher(form).subscribe({
       next: (res: IResponse) => {
@@ -243,8 +258,14 @@ export class TeacherFormComponent implements OnInit {
   }
 
   resetForm() {
-    this.form.reset();
-    this.form.get('email')?.setValue(this.teacher.email);
+    if (this.isEditing) {
+      this.form.get('dni')?.setValue('');
+      this.form.get('name')?.setValue('');
+      this.form.get('surnames')?.setValue('');
+      this.form.get('phone')?.setValue('');
+      this.form.get('birthdate')?.setValue('');
+      this.form.get('role_id')?.setValue('');
+    } else this.form.reset();
   }
 
   goBack() {

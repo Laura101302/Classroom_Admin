@@ -68,12 +68,7 @@ export class ReservationFormComponent implements OnInit {
           this.form.patchValue({ room: res.room.name });
           this.seats = res.allSeats;
 
-          if (res.allSeats.length > this.seats.length) this.isDisabled = true;
-
-          if (
-            res.room.reservation_type === 1 ||
-            (res.room.reservation_type === 3 && !this.isDisabled)
-          ) {
+          if (res.room.reservation_type === 1) {
             this.disabledDates = [];
 
             this.getAllReservesDateByRoomId().subscribe({
@@ -284,6 +279,20 @@ export class ReservationFormComponent implements OnInit {
     if (this.isChecked) {
       this.form.get('seat_id')?.setValue('');
       this.form.get('seat_id')?.disable();
+
+      this.getAllReservesDateByRoomId().subscribe({
+        next: (res) => {
+          this.disabledDates = [];
+
+          res.forEach((item: any) => {
+            const date = item.date.split('/');
+            this.disabledDates.push(new Date(date[2], date[1] - 1, date[0]));
+          });
+        },
+        error: () => {
+          this.showErrorMessage('Error al recuperar las fechas');
+        },
+      });
     } else this.form.get('seat_id')?.enable();
   }
 

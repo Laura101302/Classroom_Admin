@@ -232,4 +232,23 @@ export class TeacherListComponent {
   clearFilter(table: Table) {
     table.clear();
   }
+
+  contains(selector: string, text: string) {
+    var elements = document.querySelectorAll(selector);
+    return Array.prototype.filter.call(elements, function (element) {
+      return RegExp(text).test(element.textContent);
+    });
+  }
+
+  filterOpen() {
+    let element = this.contains('span', 'Clear')[0];
+    if (element && element !== undefined) {
+      element.textContent = 'Limpiar';
+    }
+
+    let element2 = this.contains('span', 'Apply')[0];
+    if (element2 && element2 !== undefined) {
+      element2.textContent = 'Aplicar';
+    }
+  }
 }

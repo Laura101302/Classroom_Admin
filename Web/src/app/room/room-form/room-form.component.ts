@@ -194,7 +194,10 @@ export class RoomFormComponent implements OnInit {
         floor_number: [this.room.floor_number, Validators.required],
         reservation_type: [this.room.reservation_type, Validators.required],
         room_type_id: [this.room.room_type_id, Validators.required],
-        center_cif: [this.room.center_cif, Validators.required],
+        center_cif: [
+          { value: this.room.center_cif, disabled: true },
+          Validators.required,
+        ],
         allowed_roles_ids: [this.room.allowed_roles_ids, Validators.required],
       });
     });
@@ -285,6 +288,7 @@ export class RoomFormComponent implements OnInit {
     );
 
     this.form.get('seats_number')?.enable();
+    this.form.get('center_cif')?.enable();
 
     const form = {
       ...this.form.value,
@@ -298,6 +302,7 @@ export class RoomFormComponent implements OnInit {
     };
 
     this.form.get('seats_number')?.disable();
+    this.form.get('center_cif')?.disable();
 
     this.roomService.editRoom(form).subscribe({
       next: (res: IResponse) => {
@@ -326,7 +331,12 @@ export class RoomFormComponent implements OnInit {
   }
 
   resetForm() {
-    this.form.reset();
-    this.form.get('seats_number')?.setValue(this.room.seats_number);
+    if (this.isEditing) {
+      this.form.get('name')?.setValue('');
+      this.form.get('floor_number')?.setValue('');
+      this.form.get('reservation_type')?.setValue('');
+      this.form.get('room_type_id')?.setValue('');
+      this.form.get('allowed_roles_ids')?.setValue('');
+    } else this.form.reset();
   }
 }
