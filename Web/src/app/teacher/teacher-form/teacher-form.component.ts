@@ -149,7 +149,10 @@ export class TeacherFormComponent implements OnInit {
           birthdate: [this.teacher.birthdate, Validators.required],
           role_id: [this.selectedRole, Validators.required],
           pass: this.teacher.pass,
-          center_cif: [this.selectedCenter || this.center, Validators.required],
+          center_cif: [
+            { value: this.selectedCenter || this.center, disabled: true },
+            Validators.required,
+          ],
         });
       },
       error: () => {
@@ -201,6 +204,7 @@ export class TeacherFormComponent implements OnInit {
 
   editTeacher() {
     this.form.get('email')?.enable();
+    this.form.get('center_cif')?.enable();
 
     const form = {
       ...this.form.value,
@@ -213,6 +217,7 @@ export class TeacherFormComponent implements OnInit {
     };
 
     this.form.get('email')?.disable();
+    this.form.get('center_cif')?.disable();
 
     this.teacherService.editTeacher(form).subscribe({
       next: (res: IResponse) => {
@@ -243,8 +248,14 @@ export class TeacherFormComponent implements OnInit {
   }
 
   resetForm() {
-    this.form.reset();
-    if (this.isEditing) this.form.get('email')?.setValue(this.teacher.email);
+    if (this.isEditing) {
+      this.form.get('dni')?.setValue('');
+      this.form.get('name')?.setValue('');
+      this.form.get('surnames')?.setValue('');
+      this.form.get('phone')?.setValue('');
+      this.form.get('birthdate')?.setValue('');
+      this.form.get('role_id')?.setValue('');
+    } else this.form.reset();
   }
 
   goBack() {
