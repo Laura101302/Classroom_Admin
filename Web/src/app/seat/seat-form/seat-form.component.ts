@@ -254,7 +254,7 @@ export class SeatFormComponent implements OnInit {
   }
 
   resetForm() {
-    this.form.reset();
-    this.form.get('room_id')?.setValue(this.seat.room_id);
+    if (this.isEditing) this.form.get('name')?.setValue('');
+    else this.form.reset();
   }
 }

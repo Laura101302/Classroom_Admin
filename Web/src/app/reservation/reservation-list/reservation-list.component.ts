@@ -70,6 +70,38 @@ export class ReservationListComponent implements OnInit {
             seat: this.getSeatById(r.seat_id),
           }).pipe(
             switchMap((data: any) => {
+              const date = r.date.split('/');
+
+              const selectedDate = new Date(
+                Number(date[2]),
+                Number(date[1]) - 1,
+                Number(date[0])
+              );
+              const selected =
+                selectedDate.getDate() +
+                '-' +
+                selectedDate.getMonth() +
+                '-' +
+                selectedDate.getFullYear();
+
+              const todayDate = new Date();
+              const today =
+                todayDate.getDate() +
+                '-' +
+                todayDate.getMonth() +
+                '-' +
+                todayDate.getFullYear();
+
+              if (selected !== today)
+                if (selectedDate < todayDate)
+                  this.delete(
+                    r.id,
+                    data.room.reservation_type,
+                    r.room_id,
+                    r.date,
+                    true
+                  );
+
               return this.getCenterByCif(data.room.center_cif).pipe(
                 map((center: any) => ({
                   ...r,
@@ -127,19 +159,36 @@ export class ReservationListComponent implements OnInit {
           }).pipe(
             map((data: any) => {
               const date = r.date.split('/');
-              const selected = this.formatDate(
-                new Date(Number(date[2]), Number(date[1]) - 1, Number(date[0]))
-              );
-              const today = this.formatDate(new Date());
 
-              if (selected < today)
-                this.delete(
-                  r.id,
-                  data.room.reservation_type,
-                  r.room_id,
-                  r.date,
-                  true
-                );
+              const selectedDate = new Date(
+                Number(date[2]),
+                Number(date[1]) - 1,
+                Number(date[0])
+              );
+              const selected =
+                selectedDate.getDate() +
+                '-' +
+                selectedDate.getMonth() +
+                '-' +
+                selectedDate.getFullYear();
+
+              const todayDate = new Date();
+              const today =
+                todayDate.getDate() +
+                '-' +
+                todayDate.getMonth() +
+                '-' +
+                todayDate.getFullYear();
+
+              if (selected !== today)
+                if (selectedDate < todayDate)
+                  this.delete(
+                    r.id,
+                    data.room.reservation_type,
+                    r.room_id,
+                    r.date,
+                    true
+                  );
 
               return {
                 ...r,
@@ -293,5 +342,24 @@ export class ReservationListComponent implements OnInit {
 
   clearFilter(table: Table) {
     table.clear();
+  }
+
+  contains(selector: string, text: string) {
+    var elements = document.querySelectorAll(selector);
+    return Array.prototype.filter.call(elements, function (element) {
+      return RegExp(text).test(element.textContent);
+    });
+  }
+
+  filterOpen() {
+    let element = this.contains('span', 'Clear')[0];
+    if (element && element !== undefined) {
+      element.textContent = 'Limpiar';
+    }
+
+    let element2 = this.contains('span', 'Apply')[0];
+    if (element2 && element2 !== undefined) {
+      element2.textContent = 'Aplicar';
+    }
   }
 }

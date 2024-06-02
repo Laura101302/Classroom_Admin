@@ -59,6 +59,12 @@
               type="text"
               field="name"
               display="menu"
+              [showMatchModes]="false"
+              [showAddButton]="false"
+              [showOperator]="false"
+              placeholder="Buscar por Nombre"
+              matchMode="contains"
+              (click)="filterOpen()"
             ></p-columnFilter>
           </div>
         </th>
@@ -70,6 +76,12 @@
               type="text"
               field="state"
               display="menu"
+              [showMatchModes]="false"
+              [showAddButton]="false"
+              [showOperator]="false"
+              placeholder="Buscar por Estado"
+              matchMode="contains"
+              (click)="filterOpen()"
             ></p-columnFilter>
           </div>
         </th>
@@ -81,6 +93,12 @@
               type="text"
               field="room_name"
               display="menu"
+              [showMatchModes]="false"
+              [showAddButton]="false"
+              [showOperator]="false"
+              placeholder="Buscar por Sala"
+              matchMode="contains"
+              (click)="filterOpen()"
             ></p-columnFilter>
           </div>
         </th>
@@ -92,6 +110,12 @@
               type="text"
               field="center_name"
               display="menu"
+              [showMatchModes]="false"
+              [showAddButton]="false"
+              [showOperator]="false"
+              placeholder="Buscar por Centro"
+              matchMode="contains"
+              (click)="filterOpen()"
             ></p-columnFilter>
           </div>
         </th>
