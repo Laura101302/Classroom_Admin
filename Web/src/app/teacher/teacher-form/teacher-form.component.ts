@@ -147,7 +147,13 @@ export class TeacherFormComponent implements OnInit {
             [Validators.required, Validators.email],
           ],
           birthdate: [this.teacher.birthdate, Validators.required],
-          role_id: [this.selectedRole, Validators.required],
+          role_id: [
+            {
+              value: this.selectedRole,
+              disabled: this.isGlobalAdmin || this.isAdmin ? false : true,
+            },
+            Validators.required,
+          ],
           pass: this.teacher.pass,
           center_cif: [
             { value: this.selectedCenter || this.center, disabled: true },
@@ -205,6 +211,7 @@ export class TeacherFormComponent implements OnInit {
   editTeacher() {
     this.form.get('email')?.enable();
     this.form.get('center_cif')?.enable();
+    this.form.get('role_id')?.enable();
 
     const form = {
       ...this.form.value,
@@ -218,6 +225,9 @@ export class TeacherFormComponent implements OnInit {
 
     this.form.get('email')?.disable();
     this.form.get('center_cif')?.disable();
+    this.isGlobalAdmin || this.isAdmin
+      ? ''
+      : this.form.get('role_id')?.disable();
 
     this.teacherService.editTeacher(form).subscribe({
       next: (res: IResponse) => {
