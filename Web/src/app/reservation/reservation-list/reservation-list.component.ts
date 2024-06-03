@@ -99,6 +99,7 @@ export class ReservationListComponent implements OnInit {
                     data.room.reservation_type,
                     r.room_id,
                     r.date,
+                    r.seat_id,
                     true
                   );
 
@@ -187,6 +188,7 @@ export class ReservationListComponent implements OnInit {
                     data.room.reservation_type,
                     r.room_id,
                     r.date,
+                    r.seat_id,
                     true
                   );
 
@@ -262,7 +264,8 @@ export class ReservationListComponent implements OnInit {
           reserve.id,
           reserve.reservation_type,
           reserve.room_id,
-          reserve.date
+          reserve.date,
+          reserve.seat_id
         );
       },
       reject: () => {},
@@ -274,6 +277,7 @@ export class ReservationListComponent implements OnInit {
     reservation_type: number | undefined,
     room_id: number,
     date: string,
+    seat_id: any | undefined,
     update: boolean = false
   ) {
     const dateSplit = date.split('/');
@@ -286,8 +290,12 @@ export class ReservationListComponent implements OnInit {
     const today = this.formatDate(new Date());
     const updateState = selected === today ? true : false;
 
-    if (reservation_type && reservation_type === 1)
-      updateState ? this.updateSeatStateByRoomId(room_id) : '';
+    if (reservation_type)
+      if (
+        reservation_type === 1 ||
+        (reservation_type === 3 && seat_id === 'Sala entera')
+      )
+        updateState ? this.updateSeatStateByRoomId(room_id) : '';
 
     this.reservationService.deleteReserve(id, updateState).subscribe((res) => {
       if (res.code === 200) {
